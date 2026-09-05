@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>3MR ❤️ Roa</title>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Amiri:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
 
-    <!-- Firebase Compatibility SDKs -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -72,14 +71,10 @@
             flex-direction: column;
             z-index: 10;
             background: radial-gradient(circle at center, rgba(40, 10, 20, 0.8) 0%, var(--bg-deep) 100%);
-            transition: opacity 0.2s ease, visibility 0.2s;
         }
 
         .hidden {
             display: none !important;
-            opacity: 0 !important;
-            visibility: hidden !important;
-            pointer-events: none !important;
         }
 
         /* Splash Screen */
@@ -154,7 +149,7 @@
             margin-bottom: 4px;
         }
 
-        input[type="text"], input[type="password"], input[type="number"], textarea, select {
+        input[type="text"], input[type="password"] {
             width: 100%;
             padding: 10px 12px;
             border-radius: var(--radius-md);
@@ -186,7 +181,7 @@
             color: #000;
         }
 
-        /* Main App Layout */
+        /* App Screen */
         #app-screen {
             z-index: 100;
             display: flex;
@@ -463,44 +458,59 @@
             cursor: pointer;
         }
 
-        .stories-grid {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-        }
-
-        .story-circle-item {
+        .stories-list {
             display: flex;
             flex-direction: column;
+            gap: 12px;
+        }
+
+        .story-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: 12px;
+        }
+
+        .story-header {
+            display: flex;
             align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            flex-shrink: 0;
+            gap: 8px;
+            margin-bottom: 8px;
         }
 
-        .story-avatar-ring {
-            width: 60px;
-            height: 60px;
+        .story-avatar {
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
-            padding: 2px;
-            background: linear-gradient(135deg, var(--gold), var(--bright-red));
-        }
-
-        .story-avatar-ring img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
+            border: 1px solid var(--gold);
             object-fit: cover;
-            border: 2px solid var(--bg-deep);
         }
 
-        .story-username {
-            font-size: 0.75rem;
+        .story-author {
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: var(--gold);
+        }
+
+        .story-time {
+            font-size: 0.7rem;
             color: var(--text-sub);
+            margin-right: auto;
         }
 
-        /* Profile View */
+        .story-body {
+            font-size: 0.95rem;
+            color: var(--text-main);
+            white-space: pre-wrap;
+        }
+
+        .story-media {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
+
+        /* Admin / Profile View */
         #members-view {
             padding: 12px;
             overflow-y: auto;
@@ -512,13 +522,13 @@
             border-radius: var(--radius-lg);
             padding: 20px 15px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .profile-avatar-container {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 12px;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 10px;
             position: relative;
             cursor: pointer;
         }
@@ -547,6 +557,20 @@
             color: var(--gold);
         }
 
+        .admin-box {
+            background: rgba(40, 10, 20, 0.9);
+            border: 1px solid var(--gold);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .admin-box h4 {
+            color: var(--gold);
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
         .user-card-item {
             background: rgba(20, 8, 14, 0.6);
             border: 1px solid rgba(212,175,55,0.15);
@@ -561,7 +585,6 @@
         .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #2ec4b6; }
         .offline-dot { width: 8px; height: 8px; border-radius: 50%; background: #666; }
 
-        /* Ticker Footer */
         .marquee-footer {
             height: 30px;
             background: linear-gradient(90deg, #300008, #600010, #300008);
@@ -610,7 +633,7 @@
             <p>أدخل اسم المستخدم والكود للعبور</p>
             <div class="input-group">
                 <label>اسم المستخدم</label>
-                <input type="text" id="login-username" placeholder="مثال: 3MR أو Roa">
+                <input type="text" id="login-username" placeholder="3MR أو Roa">
             </div>
             <div class="input-group">
                 <label>الكود الخفي</label>
@@ -620,7 +643,7 @@
         </div>
     </div>
 
-    <!-- Main Application Screen -->
+    <!-- App Screen -->
     <div id="app-screen" class="screen hidden">
         
         <header class="app-header">
@@ -640,7 +663,7 @@
                 📖 الحالات
             </div>
             <div class="tab-item" onclick="switchTab('members-view', this)">
-                👑 الملف الشخصي
+                👑 التحكم والملف
             </div>
         </nav>
 
@@ -672,15 +695,15 @@
             <!-- Stories View -->
             <section id="stories-view" class="view-content">
                 <div class="story-actions-bar">
-                    <div class="story-create-btn" onclick="createStory('text')">📝 حالة نصية</div>
-                    <div class="story-create-btn" onclick="createStory('media')">🖼️ صورة / فيديو</div>
+                    <div class="story-create-btn" onclick="createStoryText()">📝 نشر حالة نصية</div>
+                    <div class="story-create-btn" onclick="triggerStoryImageUpload()">🖼️ نشر صورة</div>
+                    <input type="file" id="story-image-input" accept="image/*" style="display:none;" onchange="handleStoryImageUpload(this)">
                 </div>
                 
-                <h3 style="color:var(--rose-gold); font-size:0.85rem; margin-bottom:10px;">الحالات الحالية</h3>
-                <div class="stories-grid" id="stories-list-container"></div>
+                <div class="stories-list" id="stories-list-container"></div>
             </section>
 
-            <!-- Profile View -->
+            <!-- Profile & Admin View -->
             <section id="members-view" class="view-content">
                 <div class="profile-card">
                     <div class="profile-avatar-container" onclick="triggerProfileAvatarChange()">
@@ -693,7 +716,9 @@
                     <div style="font-size:0.85rem; color:var(--rose-gold); margin-top:4px;" id="my-profile-role">--</div>
                 </div>
 
-                <h3 style="color:var(--gold); font-size:0.9rem; margin-bottom:10px;">الأعضاء</h3>
+                <div id="admin-panel-container"></div>
+
+                <h3 style="color:var(--gold); font-size:0.9rem; margin-bottom:10px;">الأعضاء المتواجدون</h3>
                 <div id="users-list-container"></div>
             </section>
 
@@ -708,7 +733,6 @@
     </div>
 
     <script>
-        // Firebase Setup
         const firebaseConfig = {
             databaseURL: "https://rewaa2lby-default-rtdb.firebaseio.com/"
         };
@@ -724,14 +748,13 @@
             'Roa': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80'
         };
 
-        // Canvas Hearts
         function initHeartsCanvas() {
             const canvas = document.getElementById('hearts-canvas');
             const ctx = canvas.getContext('2d');
             let width = canvas.width = window.innerWidth;
             let height = canvas.height = window.innerHeight;
 
-            const hearts = Array.from({ length: 15 }, () => ({
+            const hearts = Array.from({ length: 12 }, () => ({
                 x: Math.random() * width,
                 y: Math.random() * height,
                 size: Math.random() * 8 + 4,
@@ -740,15 +763,10 @@
             }));
 
             function drawHeart(x, y, size, color) {
-                ctx.save();
-                ctx.beginPath();
-                ctx.translate(x, y);
-                ctx.moveTo(0, 0);
+                ctx.save(); ctx.beginPath(); ctx.translate(x, y); ctx.moveTo(0, 0);
                 ctx.bezierCurveTo(-size / 2, -size / 2, -size, size / 3, 0, size);
                 ctx.bezierCurveTo(size, size / 3, size / 2, -size / 2, 0, 0);
-                ctx.fillStyle = color;
-                ctx.fill();
-                ctx.restore();
+                ctx.fillStyle = color; ctx.fill(); ctx.restore();
             }
 
             function animate() {
@@ -760,7 +778,6 @@
                 });
                 requestAnimationFrame(animate);
             }
-
             animate();
         }
 
@@ -773,19 +790,19 @@
                 } else {
                     document.getElementById('login-screen').classList.remove('hidden');
                 }
-            }, 1500);
+            }, 1000);
         });
 
         function handleLogin() {
             const u = document.getElementById('login-username').value.trim();
             const c = document.getElementById('login-code').value.trim();
 
-            if (!u || !c) return alert('أدخل البيانات كاملة!');
+            if (!u || !c) return alert('أدخل البيانات!');
 
             if (u === '3MR' && c === '772009') {
-                currentUser = { username: '3MR', role: 'القائد 👑' };
+                currentUser = { username: '3MR', role: 'المالك والآدمن 👑', isAdmin: true };
             } else if (u === 'Roa' && c === '15102009') {
-                currentUser = { username: 'Roa', role: 'قلب القائد ❤️' };
+                currentUser = { username: 'Roa', role: 'قلب القائد ❤️', isAdmin: false };
             } else {
                 return alert('بيانات غير صحيحة!');
             }
@@ -819,12 +836,22 @@
 
             document.getElementById('my-profile-name').innerText = currentUser.username;
             document.getElementById('my-profile-role').innerText = currentUser.role;
-            document.getElementById('my-profile-badge-container').innerHTML = `<div class="golden-crown-badge">👑 موثق</div>`;
+            document.getElementById('my-profile-badge-container').innerHTML = `<div class="golden-crown-badge">${currentUser.isAdmin ? '👑 أدمن' : '❤️ عضو مميز'}</div>`;
+
+            if (currentUser.isAdmin) {
+                document.getElementById('admin-panel-container').innerHTML = `
+                    <div class="admin-box">
+                        <h4>⚙️ لوحة أدمن التطبيق</h4>
+                        <button class="btn btn-gold" onclick="clearAllChatMessages()">مسح كل الشات 🗑️</button>
+                    </div>
+                `;
+            }
 
             initListeners();
         }
 
         function initListeners() {
+            // Typing Indicator
             db.ref('typing').on('value', snap => {
                 const data = snap.val() || {};
                 const indicator = document.getElementById('typing-indicator');
@@ -837,8 +864,8 @@
                 indicator.innerText = txt;
             });
 
-            // Chat Messages (عرض الوقت فقط)
-            db.ref('messages').limitToLast(40).on('value', snap => {
+            // Chat Messages (سريعة جداً - آخر 30 رسالة فقط)
+            db.ref('messages').limitToLast(30).on('value', snap => {
                 const container = document.getElementById('chat-messages-container');
                 container.innerHTML = '';
                 const msgs = snap.val() || {};
@@ -846,8 +873,6 @@
                 Object.keys(msgs).forEach(key => {
                     const m = msgs[key];
                     const isMe = m.sender === currentUser.username;
-                    
-                    // الوقت فقط
                     const timeStr = new Date(m.timestamp || Date.now()).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
 
                     const wrapper = document.createElement('div');
@@ -876,7 +901,41 @@
                 container.scrollTop = container.scrollHeight;
             });
 
-            // Users List
+            // Stories Listener
+            db.ref('stories').limitToLast(20).on('value', snap => {
+                const container = document.getElementById('stories-list-container');
+                container.innerHTML = '';
+                const stories = snap.val() || {};
+
+                const keys = Object.keys(stories).reverse();
+                if (keys.length === 0) {
+                    container.innerHTML = '<div style="text-align:center; color:var(--text-sub); font-size:0.85rem;">لا توجد حالات حالياً. كن أول من ينشر!</div>';
+                    return;
+                }
+
+                keys.forEach(key => {
+                    const s = stories[key];
+                    const timeStr = new Date(s.timestamp || Date.now()).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+
+                    const card = document.createElement('div');
+                    card.className = 'story-card';
+
+                    let mediaHtml = s.image ? `<img src="${s.image}" class="story-media">` : '';
+
+                    card.innerHTML = `
+                        <div class="story-header">
+                            <img src="${s.avatar || DEFAULT_AVATARS[s.username]}" class="story-avatar">
+                            <span class="story-author">${s.username}</span>
+                            <span class="story-time">${timeStr}</span>
+                        </div>
+                        <div class="story-body">${s.text || ''}</div>
+                        ${mediaHtml}
+                    `;
+                    container.appendChild(card);
+                });
+            });
+
+            // Users Status Listener
             db.ref('users').on('value', snap => {
                 const container = document.getElementById('users-list-container');
                 container.innerHTML = '';
@@ -895,7 +954,7 @@
                         </div>
                         <div class="flex-row">
                             <span class="${isOnline ? 'online-dot' : 'offline-dot'}"></span>
-                            <span style="font-size:0.75rem; color:var(--text-sub);">${isOnline ? 'نشط' : 'غير نشط'}</span>
+                            <span style="font-size:0.75rem; color:var(--text-sub);">${isOnline ? 'متصل' : 'غير متصل'}</span>
                         </div>
                     `;
                     container.appendChild(card);
@@ -948,9 +1007,69 @@
         function handleChatImageUpload(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = e => sendChatMessage(e.target.result);
+                reader.onload = e => compressAndSendImage(e.target.result, url => sendChatMessage(url));
                 reader.readAsDataURL(input.files[0]);
             }
+        }
+
+        /* Stories Functions */
+        function createStoryText() {
+            const txt = prompt('اكتب نص الحالة:');
+            if (txt && txt.trim()) {
+                db.ref('stories').push({
+                    username: currentUser.username,
+                    avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username],
+                    text: txt.trim(),
+                    image: null,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+            }
+        }
+
+        function triggerStoryImageUpload() { document.getElementById('story-image-input').click(); }
+        function handleStoryImageUpload(input) {
+            if (input.files && input.files[0]) {
+                const txt = prompt('اكتب تعليق على الصورة (اختياري):') || '';
+                const reader = new FileReader();
+                reader.onload = e => {
+                    compressAndSendImage(e.target.result, url => {
+                        db.ref('stories').push({
+                            username: currentUser.username,
+                            avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username],
+                            text: txt,
+                            image: url,
+                            timestamp: firebase.database.ServerValue.TIMESTAMP
+                        });
+                    });
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        /* Image Compression for Instant Speed */
+        function compressAndSendImage(base64Str, callback) {
+            const img = new Image();
+            img.src = base64Str;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                const maxDim = 600;
+
+                if (width > height && width > maxDim) {
+                    height = Math.round((height * maxDim) / width);
+                    width = maxDim;
+                } else if (height > maxDim) {
+                    width = Math.round((width * maxDim) / height);
+                    height = maxDim;
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                callback(canvas.toDataURL('image/jpeg', 0.6));
+            };
         }
 
         function triggerProfileAvatarChange() { document.getElementById('profile-avatar-file-input').click(); }
@@ -958,27 +1077,17 @@
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = e => {
-                    const dataUrl = e.target.result;
-                    db.ref(`users/${currentUser.username}/avatar`).set(dataUrl);
+                    compressAndSendImage(e.target.result, url => {
+                        db.ref(`users/${currentUser.username}/avatar`).set(url);
+                    });
                 };
                 reader.readAsDataURL(input.files[0]);
             }
         }
 
-        function createStory(type) {
-            if (type === 'text') {
-                const txt = prompt('اكتب نص الحالة:');
-                if (txt) {
-                    db.ref('stories').push({
-                        username: currentUser.username,
-                        userAvatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username],
-                        type: 'text',
-                        content: txt,
-                        timestamp: firebase.database.ServerValue.TIMESTAMP
-                    });
-                }
-            } else {
-                alert('يمكنك رفع الحالات من خلال اختيار الصور في المحادثة أو إرسال النوايا.');
+        function clearAllChatMessages() {
+            if (confirm('هل أنت تأكد من مسح جميع الرسائل؟')) {
+                db.ref('messages').remove();
             }
         }
 
