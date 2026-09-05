@@ -104,15 +104,15 @@
             color: var(--rose-gold);
         }
 
-        /* Login Screen */
-        #login-screen {
+        /* Auth Screen */
+        #auth-screen {
             z-index: 8000;
             justify-content: center;
             align-items: center;
             padding: 20px;
         }
 
-        .login-box {
+        .auth-box {
             width: 100%;
             max-width: 360px;
             background: var(--card-bg);
@@ -122,14 +122,14 @@
             text-align: center;
         }
 
-        .login-box h2 {
+        .auth-box h2 {
             font-family: var(--font-title);
             color: var(--gold);
             font-size: 1.8rem;
             margin-bottom: 6px;
         }
 
-        .login-box p {
+        .auth-box p {
             color: var(--text-sub);
             font-size: 0.85rem;
             margin-bottom: 20px;
@@ -177,6 +177,14 @@
         .btn-gold {
             background: linear-gradient(135deg, #b8860b, var(--gold));
             color: #000;
+        }
+
+        .toggle-auth {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--rose-gold);
+            cursor: pointer;
+            text-decoration: underline;
         }
 
         /* App Screen */
@@ -298,13 +306,13 @@
             align-items: center;
             gap: 5px;
             margin-bottom: 2px;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--rose-gold);
         }
 
         .msg-avatar {
-            width: 20px;
-            height: 20px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             object-fit: cover;
             border: 1px solid var(--gold);
@@ -359,6 +367,9 @@
             color: rgba(255,255,255,0.5);
             margin-top: 3px;
         }
+
+        .verified-badge { color: #1DA1F2; font-size: 0.85rem; }
+        .owner-badge { color: var(--gold); font-size: 0.85rem; }
 
         .chat-controls-area {
             flex-shrink: 0;
@@ -518,7 +529,7 @@
             margin-right: 5px;
         }
 
-        /* Profile View */
+        /* Profile & Admin View */
         #members-view {
             padding: 12px;
             overflow-y: auto;
@@ -549,34 +560,12 @@
             border: 2px solid var(--gold);
         }
 
-        .profile-name {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .golden-crown-badge {
-            display: inline-block;
-            background: rgba(212,175,55,0.2);
-            border: 1px solid var(--gold);
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.75rem;
-            color: var(--gold);
-        }
-
         .admin-box {
             background: rgba(40, 10, 20, 0.9);
             border: 1px solid var(--gold);
             border-radius: var(--radius-md);
             padding: 12px;
             margin-bottom: 15px;
-        }
-
-        .admin-box h4 {
-            color: var(--gold);
-            margin-bottom: 8px;
-            font-size: 0.9rem;
         }
 
         .user-card-item {
@@ -588,6 +577,14 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 8px;
+        }
+
+        .badge-btn {
+            padding: 4px 8px;
+            font-size: 0.7rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
         }
 
         .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #2ec4b6; }
@@ -634,26 +631,26 @@
         </div>
     </div>
 
-    <!-- Login Screen -->
-    <div id="login-screen" class="screen hidden">
-        <div class="login-box">
-            <h2>تسجيل الدخول</h2>
-            <p>أدخل اسم المستخدم والكود للعبور</p>
+    <!-- Auth Screen -->
+    <div id="auth-screen" class="screen hidden">
+        <div class="auth-box">
+            <h2 id="auth-title">تسجيل الدخول</h2>
+            <p id="auth-desc">أدخل بياناتك للعبور</p>
             <div class="input-group">
                 <label>اسم المستخدم</label>
-                <input type="text" id="login-username" placeholder="3MR أو Roa">
+                <input type="text" id="auth-username" placeholder="اسمك">
             </div>
             <div class="input-group">
-                <label>الكود الخفي</label>
-                <input type="password" id="login-code" placeholder="••••••••">
+                <label>كلمة المرور / الكود</label>
+                <input type="password" id="auth-password" placeholder="••••••••">
             </div>
-            <button class="btn btn-gold mt-10" onclick="handleLogin()">دخول ❤️</button>
+            <button class="btn btn-gold mt-10" id="auth-btn" onclick="handleAuth()">دخول ❤️</button>
+            <div class="toggle-auth" onclick="toggleAuthMode()" id="auth-toggle-text">معندكش حساب؟ سجل جديد من هنا</div>
         </div>
     </div>
 
     <!-- App Screen -->
     <div id="app-screen" class="screen hidden">
-        
         <header class="app-header">
             <div class="header-title">
                 <span>3MR ❤️ Roa</span>
@@ -664,19 +661,12 @@
         </header>
 
         <nav class="app-tabs">
-            <div class="tab-item active" onclick="switchTab('chat-view', this)">
-                💬 المحادثة
-            </div>
-            <div class="tab-item" onclick="switchTab('stories-view', this)">
-                📖 الحالات
-            </div>
-            <div class="tab-item" onclick="switchTab('members-view', this)">
-                👑 التحكم والملف
-            </div>
+            <div class="tab-item active" onclick="switchTab('chat-view', this)">💬 المحادثة</div>
+            <div class="tab-item" onclick="switchTab('stories-view', this)">📖 الحالات</div>
+            <div class="tab-item" onclick="switchTab('members-view', this)">👑 الأعضاء والتحكم</div>
         </nav>
 
         <main class="app-views">
-            
             <!-- Chat View -->
             <section id="chat-view" class="view-content active">
                 <div class="chat-messages" id="chat-messages-container"></div>
@@ -707,11 +697,10 @@
                     <div class="story-create-btn" onclick="triggerStoryImageUpload()">🖼️ نشر صورة</div>
                     <input type="file" id="story-image-input" accept="image/*" style="display:none;" onchange="handleStoryImageUpload(this)">
                 </div>
-                
                 <div class="stories-list" id="stories-list-container"></div>
             </section>
 
-            <!-- Profile & Admin View -->
+            <!-- Members & Profile View -->
             <section id="members-view" class="view-content">
                 <div class="profile-card">
                     <div class="profile-avatar-container" onclick="triggerProfileAvatarChange()">
@@ -719,17 +708,15 @@
                     </div>
                     <input type="file" id="profile-avatar-file-input" accept="image/*" style="display:none;" onchange="handleProfileAvatarUpload(this)">
 
-                    <div class="profile-name" id="my-profile-name">--</div>
-                    <div id="my-profile-badge-container"></div>
-                    <div style="font-size:0.85rem; color:var(--rose-gold); margin-top:4px;" id="my-profile-role">--</div>
+                    <h3 id="my-profile-name">--</h3>
+                    <p id="my-profile-role" style="color:var(--rose-gold); font-size:0.85rem; margin-top:4px;"></p>
                 </div>
 
                 <div id="admin-panel-container"></div>
 
-                <h3 style="color:var(--gold); font-size:0.9rem; margin-bottom:10px;">الأعضاء المتواجدون</h3>
+                <h3 style="color:var(--gold); font-size:0.9rem; margin-bottom:10px;">قائمة الأعضاء المتواجدين</h3>
                 <div id="users-list-container"></div>
             </section>
-
         </main>
 
         <footer class="marquee-footer">
@@ -737,7 +724,6 @@
                 روءا قلبي اللي بعشقها ❤️ • روءا قلبي اللي بعشقها ❤️ • روءا قلبي اللي بعشقها ❤️
             </div>
         </footer>
-
     </div>
 
     <script>
@@ -748,6 +734,7 @@
         const db = firebase.database();
 
         let currentUser = JSON.parse(localStorage.getItem('3mr_roa_session')) || null;
+        let isRegisterMode = false;
         let selectedReplyMsg = null;
         let typingTimeout = null;
 
@@ -796,27 +783,64 @@
                 if (currentUser) {
                     launchMainApp();
                 } else {
-                    document.getElementById('login-screen').classList.remove('hidden');
+                    document.getElementById('auth-screen').classList.remove('hidden');
                 }
             }, 600);
         });
 
-        function handleLogin() {
-            const u = document.getElementById('login-username').value.trim();
-            const c = document.getElementById('login-code').value.trim();
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('auth-title').innerText = isRegisterMode ? "تسجيل حساب جديد" : "تسجيل الدخول";
+            document.getElementById('auth-desc').innerText = isRegisterMode ? "أنشئ حسابك للانضمام إلينا" : "أدخل بياناتك للعبور";
+            document.getElementById('auth-btn').innerText = isRegisterMode ? "إنشاء حساب ✨" : "دخول ❤️";
+            document.getElementById('auth-toggle-text').innerText = isRegisterMode ? "عندك حساب بالفعل؟ سجل دخول" : "معندكش حساب؟ سجل جديد من هنا";
+        }
 
-            if (!u || !c) return alert('أدخل البيانات!');
+        function handleAuth() {
+            const u = document.getElementById('auth-username').value.trim();
+            const p = document.getElementById('auth-password').value.trim();
 
-            if (u === '3MR' && c === '772009') {
-                currentUser = { username: '3MR', role: 'المالك والآدمن 👑', isAdmin: true };
-            } else if (u === 'Roa' && c === '15102009') {
-                currentUser = { username: 'Roa', role: 'قلب القائد ❤️', isAdmin: false };
-            } else {
-                return alert('بيانات غير صحيحة!');
+            if (!u || !p) return alert('أدخل كل البيانات!');
+
+            // الحسابات الأساسية الخاصة بالملاك
+            if (u === '3MR' && p === '772009') {
+                saveSession('3MR', true, true, 'المالك والآدمن 👑');
+                return;
+            }
+            if (u === 'Roa' && p === '15102009') {
+                saveSession('Roa', true, false, 'قلب القائد ❤️');
+                return;
             }
 
+            db.ref(`users/${u}`).once('value', snap => {
+                const userData = snap.val();
+
+                if (isRegisterMode) {
+                    if (userData) return alert('اسم المستخدم موجود بالفعل!');
+                    
+                    const newUser = {
+                        username: u,
+                        password: p,
+                        isVerified: false,
+                        isAdmin: false,
+                        role: 'عضو مميز'
+                    };
+                    db.ref(`users/${u}`).set(newUser, err => {
+                        if (!err) saveSession(u, false, false, 'عضو مميز');
+                    });
+                } else {
+                    if (!userData || userData.password !== p) {
+                        return alert('اسم المستخدم أو كلمة المرور غير صحيحة!');
+                    }
+                    saveSession(u, userData.isVerified || false, userData.isAdmin || false, userData.role || 'عضو مميز');
+                }
+            });
+        }
+
+        function saveSession(username, isVerified, isAdmin, role) {
+            currentUser = { username, isVerified, isAdmin, role };
             localStorage.setItem('3mr_roa_session', JSON.stringify(currentUser));
-            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('auth-screen').classList.add('hidden');
             launchMainApp();
         }
 
@@ -827,30 +851,36 @@
 
         function launchMainApp() {
             document.getElementById('app-screen').classList.remove('hidden');
-            
+
             db.ref(`users/${currentUser.username}`).update({
                 username: currentUser.username,
-                role: currentUser.role,
                 status: 'online'
             });
 
             db.ref(`users/${currentUser.username}/status`).onDisconnect().set('offline');
 
-            db.ref(`users/${currentUser.username}/avatar`).on('value', snap => {
-                const url = snap.val() || DEFAULT_AVATARS[currentUser.username] || DEFAULT_AVATARS['3MR'];
-                currentUser.avatar = url;
-                document.getElementById('my-profile-img').src = url;
-            });
+            // مزامنة حالة التوثيق وصورة البروفايل تلقائياً
+            db.ref(`users/${currentUser.username}`).on('value', snap => {
+                const val = snap.val() || {};
+                currentUser.isVerified = (currentUser.username === '3MR' || currentUser.username === 'Roa') ? true : (val.isVerified || false);
+                currentUser.isAdmin = (currentUser.username === '3MR') ? true : (val.isAdmin || false);
+                currentUser.avatar = val.avatar || DEFAULT_AVATARS[currentUser.username] || DEFAULT_AVATARS['3MR'];
 
-            document.getElementById('my-profile-name').innerText = currentUser.username;
-            document.getElementById('my-profile-role').innerText = currentUser.role;
-            document.getElementById('my-profile-badge-container').innerHTML = `<div class="golden-crown-badge">${currentUser.isAdmin ? '👑 أدمن' : '❤️ عضو مميز'}</div>`;
+                document.getElementById('my-profile-img').src = currentUser.avatar;
+                
+                let badges = '';
+                if (currentUser.isAdmin) badges += '<span class="owner-badge">👑 (مالك)</span> ';
+                if (currentUser.isVerified) badges += '<span class="verified-badge">✔</span>';
+
+                document.getElementById('my-profile-name').innerHTML = `${currentUser.username} ${badges}`;
+                document.getElementById('my-profile-role').innerText = currentUser.role || 'عضو';
+            });
 
             if (currentUser.isAdmin) {
                 document.getElementById('admin-panel-container').innerHTML = `
                     <div class="admin-box">
-                        <h4>⚙️ لوحة تحكم الأدمن</h4>
-                        <button class="btn btn-gold" onclick="clearAllChatMessages()">مسح كل المحادثات 🗑️</button>
+                        <h4 style="color:var(--gold); margin-bottom:8px;">⚙️ لوحة تحكم الأدمن</h4>
+                        <button class="btn btn-gold" onclick="clearAllChatMessages()">مسح المحادثات بالكامل 🗑️</button>
                     </div>
                 `;
             }
@@ -859,7 +889,7 @@
         }
 
         function initListeners() {
-            // Typing Indicator
+            // مؤشر الكتابة
             db.ref('typing').on('value', snap => {
                 const data = snap.val() || {};
                 const indicator = document.getElementById('typing-indicator');
@@ -872,10 +902,10 @@
                 indicator.innerText = txt;
             });
 
-            // INSTANT MESSAGING MECHANISM (child_added)
+            // الشات السريع المباشر (child_added + limitToLast لأعلى أداء)
             const chatContainer = document.getElementById('chat-messages-container');
             
-            db.ref('messages').limitToLast(50).on('child_added', snap => {
+            db.ref('messages').limitToLast(40).on('child_added', snap => {
                 const m = snap.val();
                 const key = snap.key;
                 if (!m) return;
@@ -887,13 +917,17 @@
                 wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
                 wrapper.id = `msg-${key}`;
 
+                let badgeHtml = '';
+                if (m.isAdmin) badgeHtml += `<span class="owner-badge">👑</span> `;
+                if (m.isVerified) badgeHtml += `<span class="verified-badge">✔</span>`;
+
                 let quoteHtml = m.replyTo ? `<div class="msg-quote"><b>${m.replyTo.sender}:</b> ${m.replyTo.text}</div>` : '';
                 let imgHtml = m.image ? `<img src="${m.image}" class="msg-img">` : '';
 
                 wrapper.innerHTML = `
                     <div class="msg-header">
-                        <img src="${m.avatar}" class="msg-avatar">
-                        <span>${m.sender}</span>
+                        <img src="${m.avatar || DEFAULT_AVATARS['3MR']}" class="msg-avatar">
+                        <span>${m.sender} ${badgeHtml}</span>
                     </div>
                     <div class="msg-bubble" onclick="setReplyTarget('${m.sender}', '${m.text || 'صورة'}')">
                         ${quoteHtml}
@@ -908,13 +942,13 @@
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             });
 
-            // Handle Chat Cleared Event
             db.ref('messages').on('child_removed', snap => {
                 const el = document.getElementById(`msg-${snap.key}`);
                 if (el) el.remove();
+                else chatContainer.innerHTML = '';
             });
 
-            // Stories Listener
+            // استماع للحالات (Stories)
             db.ref('stories').on('value', snap => {
                 const container = document.getElementById('stories-list-container');
                 container.innerHTML = '';
@@ -938,7 +972,7 @@
 
                     card.innerHTML = `
                         <div class="story-header">
-                            <img src="${s.avatar || DEFAULT_AVATARS[s.username]}" class="story-avatar">
+                            <img src="${s.avatar || DEFAULT_AVATARS['3MR']}" class="story-avatar">
                             <span class="story-author">${s.username}</span>
                             ${deleteBtn}
                             <span class="story-time">${timeStr}</span>
@@ -950,24 +984,40 @@
                 });
             });
 
-            // Users Status
+            // قائمة الأعضاء والتحكم بالتوثيق
             db.ref('users').on('value', snap => {
                 const container = document.getElementById('users-list-container');
                 container.innerHTML = '';
                 const users = snap.val() || {};
+
                 Object.keys(users).forEach(u => {
                     const usr = users[u];
                     const isOnline = usr.status === 'online';
                     const card = document.createElement('div');
                     card.className = 'user-card-item';
+
+                    let isOwnerUser = (u === '3MR' || u === 'Roa');
+                    let isVerifiedUser = isOwnerUser || usr.isVerified;
+
+                    let actionsHtml = '';
+                    if (currentUser.isAdmin && !isOwnerUser) {
+                        const verifiedText = usr.isVerified ? 'إلغاء التوثيق ✖' : 'توثيق ✔';
+                        actionsHtml = `<button class="badge-btn" style="background:var(--gold); color:#000;" onclick="toggleVerify('${u}', ${!usr.isVerified})">${verifiedText}</button>`;
+                    }
+
                     card.innerHTML = `
                         <div class="flex-row">
-                            <img src="${usr.avatar || DEFAULT_AVATARS[u]}" style="width:32px; height:32px; border-radius:50%; border:1px solid var(--gold);">
+                            <img src="${usr.avatar || DEFAULT_AVATARS[u] || DEFAULT_AVATARS['3MR']}" style="width:32px; height:32px; border-radius:50%; border:1px solid var(--gold);">
                             <div>
-                                <div style="font-weight:bold; font-size:0.85rem;">${usr.username}</div>
+                                <div style="font-weight:bold; font-size:0.85rem;">
+                                    ${usr.username || u} 
+                                    ${isOwnerUser ? '<span class="owner-badge">👑</span>' : ''} 
+                                    ${isVerifiedUser ? '<span class="verified-badge">✔</span>' : ''}
+                                </div>
                             </div>
                         </div>
                         <div class="flex-row">
+                            ${actionsHtml}
                             <span class="${isOnline ? 'online-dot' : 'offline-dot'}"></span>
                             <span style="font-size:0.75rem; color:var(--text-sub);">${isOnline ? 'متصل' : 'غير متصل'}</span>
                         </div>
@@ -991,9 +1041,11 @@
 
             const msgObj = {
                 sender: currentUser.username,
-                avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username],
+                avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username] || DEFAULT_AVATARS['3MR'],
                 text: text || '',
                 image: imageUrl || null,
+                isVerified: currentUser.isVerified || false,
+                isAdmin: currentUser.isAdmin || false,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             };
 
@@ -1005,7 +1057,7 @@
             cancelReply();
             db.ref(`typing/${currentUser.username}`).remove();
 
-            // Push message instantly
+            // الدفع السريع المباشر
             db.ref('messages').push(msgObj);
         }
 
@@ -1018,6 +1070,10 @@
         function cancelReply() {
             selectedReplyMsg = null;
             document.getElementById('reply-preview').style.display = 'none';
+        }
+
+        function toggleVerify(username, status) {
+            db.ref(`users/${username}/isVerified`).set(status);
         }
 
         function triggerChatImageUpload() { document.getElementById('chat-image-input').click(); }
@@ -1035,7 +1091,7 @@
             if (txt && txt.trim()) {
                 db.ref('stories').push({
                     username: currentUser.username,
-                    avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username],
+                    avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username] || DEFAULT_AVATARS['3MR'],
                     text: txt.trim(),
                     image: null,
                     timestamp: firebase.database.ServerValue.TIMESTAMP
@@ -1052,7 +1108,7 @@
                     compressAndSendImage(e.target.result, url => {
                         db.ref('stories').push({
                             username: currentUser.username,
-                            avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username],
+                            avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username] || DEFAULT_AVATARS['3MR'],
                             text: txt,
                             image: url,
                             timestamp: firebase.database.ServerValue.TIMESTAMP
@@ -1111,7 +1167,6 @@
         function clearAllChatMessages() {
             if (confirm('هل أنت تأكد من مسح جميع الرسائل؟')) {
                 db.ref('messages').remove();
-                document.getElementById('chat-messages-container').innerHTML = '';
             }
         }
 
