@@ -53,7 +53,7 @@
             position: fixed;
         }
 
-        /* القلوب المتحركة الناعمة */
+        /* خلفية القلوب الناعمة */
         #hearts-canvas {
             position: fixed;
             inset: 0;
@@ -61,10 +61,9 @@
             height: 100%;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.6;
+            opacity: 0.5;
         }
 
-        /* Screen Wrapper */
         .screen {
             position: absolute;
             inset: 0;
@@ -74,7 +73,7 @@
             flex-direction: column;
             z-index: 10;
             background: radial-gradient(circle at center, rgba(40, 10, 20, 0.8) 0%, var(--bg-deep) 100%);
-            transition: opacity 0.4s ease, visibility 0.4s;
+            transition: opacity 0.3s ease, visibility 0.3s;
         }
 
         .hidden {
@@ -210,7 +209,7 @@
             box-shadow: 0 4px 15px var(--gold-glow);
         }
 
-        /* --- 3. Main App Screen Layout --- */
+        /* --- 3. Main App Layout --- */
         #app-screen {
             z-index: 100;
             display: flex;
@@ -218,7 +217,6 @@
             justify-content: space-between;
         }
 
-        /* App Header */
         .app-header {
             height: 60px;
             background: rgba(15, 5, 8, 0.92);
@@ -265,7 +263,6 @@
 
         .icon-btn:hover { background: var(--card-border); }
 
-        /* Navigation Tabs */
         .app-tabs {
             height: 50px;
             background: rgba(10, 3, 6, 0.85);
@@ -296,7 +293,6 @@
             font-weight: 700;
         }
 
-        /* Main View Container */
         .app-views {
             flex: 1;
             position: relative;
@@ -317,7 +313,7 @@
             display: flex;
         }
 
-        /* --- 4. Chat View (Perfect Responsive Engine) --- */
+        /* --- 4. Chat View --- */
         #chat-view {
             display: flex;
             flex-direction: column;
@@ -342,21 +338,16 @@
             flex-direction: column;
             max-width: 82%;
             position: relative;
-            animation: fadeInMsg 0.3s ease;
+            animation: fadeInMsg 0.25s ease-out;
         }
 
         @keyframes fadeInMsg {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .msg-wrapper.me {
-            align-self: flex-start;
-        }
-
-        .msg-wrapper.them {
-            align-self: flex-end;
-        }
+        .msg-wrapper.me { align-self: flex-start; }
+        .msg-wrapper.them { align-self: flex-end; }
 
         .msg-header {
             display: flex;
@@ -466,7 +457,7 @@
 
         .action-icon:hover { transform: scale(1.3); }
 
-        /* Floating Controls & Input Bar */
+        /* شريط الكتابة محصور للشات فقط */
         .chat-controls-area {
             flex-shrink: 0;
             background: rgba(12, 4, 8, 0.95);
@@ -616,7 +607,7 @@
             color: var(--text-sub);
         }
 
-        /* Story Fullscreen Viewer */
+        /* Fullscreen Story Viewer */
         #story-viewer-modal {
             position: fixed;
             inset: 0;
@@ -726,7 +717,7 @@
             gap: 8px;
         }
 
-        /* --- 6. Members & Profile View --- */
+        /* --- 6. Profile View --- */
         #members-view {
             padding: 15px;
             overflow-y: auto;
@@ -793,7 +784,6 @@
             gap: 6px;
         }
 
-        /* التاج الأصفر التفاعلي المميز جداً */
         .golden-crown-badge {
             display: inline-flex;
             align-items: center;
@@ -846,7 +836,7 @@
             background: #666;
         }
 
-        /* --- 7. Ticker Footer (الشريط المتحرك الفاخر) --- */
+        /* --- 7. Ticker Footer --- */
         .marquee-footer {
             height: 34px;
             background: linear-gradient(90deg, #300008, #600010, #300008);
@@ -874,7 +864,7 @@
             100% { transform: translate3d(-100%, 0, 0); }
         }
 
-        /* --- 8. Admin Panel Modal --- */
+        /* --- 8. Modals --- */
         #admin-panel-modal {
             position: fixed;
             inset: 0;
@@ -910,7 +900,6 @@
             margin-bottom: 12px;
         }
 
-        /* Alerts & Maintenance Overlays */
         #global-alert-modal, #maintenance-modal {
             position: fixed;
             inset: 0;
@@ -933,15 +922,12 @@
             box-shadow: 0 0 40px var(--gold-glow);
         }
 
-        /* General Utilities */
         .flex-row { display: flex; gap: 10px; align-items: center; }
         .mt-10 { margin-top: 10px; }
-        .text-gold { color: var(--gold); }
     </style>
 </head>
 <body>
 
-    <!-- خلفية القلوب المتحركة -->
     <canvas id="hearts-canvas"></canvas>
 
     <!-- 1. Splash Screen -->
@@ -972,7 +958,6 @@
     <!-- 3. Main Application Screen -->
     <div id="app-screen" class="screen hidden">
         
-        <!-- Header -->
         <header class="app-header">
             <div class="header-title" onclick="tryOpenAdmin()">
                 <span>3MR ❤️ Roa</span>
@@ -983,7 +968,6 @@
             </div>
         </header>
 
-        <!-- Tabs -->
         <nav class="app-tabs">
             <div class="tab-item active" onclick="switchTab('chat-view', this)">
                 💬 المحادثة
@@ -996,15 +980,12 @@
             </div>
         </nav>
 
-        <!-- Dynamic Views Container -->
         <main class="app-views">
             
-            <!-- A. Chat View -->
+            <!-- A. Chat View (صندوق الكتابة موجود بداخل قسم الشات فقط) -->
             <section id="chat-view" class="view-content active">
                 
-                <div class="chat-messages" id="chat-messages-container">
-                    <!-- Messages will be injected here dynamically -->
-                </div>
+                <div class="chat-messages" id="chat-messages-container"></div>
 
                 <div class="chat-controls-area">
                     <div class="typing-indicator-bar" id="typing-indicator"></div>
@@ -1034,12 +1015,10 @@
                 </div>
                 
                 <h3 style="color:var(--rose-gold); font-size:0.95rem; margin-bottom:12px;">الحالات الحالية</h3>
-                <div class="stories-grid" id="stories-list-container">
-                    <!-- Stories injected dynamically -->
-                </div>
+                <div class="stories-grid" id="stories-list-container"></div>
             </section>
 
-            <!-- C. Profile & Members View -->
+            <!-- C. Profile View -->
             <section id="members-view" class="view-content">
                 <div class="profile-card">
                     <div class="profile-avatar-container" onclick="triggerProfileAvatarChange()">
@@ -1048,23 +1027,18 @@
                     </div>
                     <input type="file" id="profile-avatar-file-input" accept="image/*" style="display:none;" onchange="handleProfileAvatarUpload(this)">
 
-                    <div class="profile-name" id="my-profile-name">
-                        --
-                    </div>
+                    <div class="profile-name" id="my-profile-name">--</div>
                     <div id="my-profile-badge-container"></div>
                     <div class="profile-role" id="my-profile-role">--</div>
-                    <div style="font-size:0.8rem; color:var(--text-sub);" id="my-profile-status">حالة الاتصال: نشط الان</div>
+                    <div style="font-size:0.8rem; color:var(--text-sub);" id="my-profile-status">حالة الاتصال: نشط الآن</div>
                 </div>
 
                 <h3 style="color:var(--gold); font-size:1rem; margin-bottom:12px;">أعضاء النظام</h3>
-                <div id="users-list-container">
-                    <!-- Users list injected dynamically -->
-                </div>
+                <div id="users-list-container"></div>
             </section>
 
         </main>
 
-        <!-- Marquee Ticker Footer -->
         <footer class="marquee-footer">
             <div class="marquee-content">
                 روءا قلبي اللي بعشقها ❤️ • روءا قلبي اللي بعشقها ❤️ • روءا قلبي اللي بعشقها ❤️ • روءا قلبي اللي بعشقها ❤️
@@ -1148,7 +1122,7 @@
         </div>
     </div>
 
-    <!-- Alert Modal -->
+    <!-- Global Alert Modal -->
     <div id="global-alert-modal">
         <div class="modal-box">
             <h2 style="color:var(--gold); margin-bottom:15px;">📢 إعلان هام</h2>
@@ -1165,7 +1139,6 @@
         </div>
     </div>
 
-    <!-- Application Script Engine -->
     <script>
         // --- 1. Firebase Initialization ---
         const firebaseConfig = {
@@ -1174,7 +1147,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // --- 2. State & Variables ---
+        // --- 2. Variables & State ---
         let currentUser = JSON.parse(localStorage.getItem('3mr_roa_session')) || null;
         let selectedReplyMsg = null;
         let typingTimeout = null;
@@ -1182,25 +1155,24 @@
         let currentStoryIndex = 0;
         let storyTimerInterval = null;
 
-        // Base Avatars
         const DEFAULT_AVATARS = {
             '3MR': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
             'Roa': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80'
         };
 
-        // --- 3. Background Hearts Animation ---
+        // --- 3. Animation Engine ---
         function initHeartsCanvas() {
             const canvas = document.getElementById('hearts-canvas');
             const ctx = canvas.getContext('2d');
             let width = canvas.width = window.innerWidth;
             let height = canvas.height = window.innerHeight;
 
-            const hearts = Array.from({ length: 25 }, () => ({
+            const hearts = Array.from({ length: 20 }, () => ({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                size: Math.random() * 12 + 8,
-                speedY: Math.random() * 0.8 + 0.3,
-                opacity: Math.random() * 0.5 + 0.2
+                size: Math.random() * 10 + 6,
+                speedY: Math.random() * 0.6 + 0.2,
+                opacity: Math.random() * 0.4 + 0.2
             }));
 
             function drawHeart(x, y, size, color) {
@@ -1244,7 +1216,7 @@
                 } else {
                     document.getElementById('login-screen').classList.remove('hidden');
                 }
-            }, 2500);
+            }, 2000);
         });
 
         // --- 5. Authentication ---
@@ -1276,11 +1248,10 @@
             location.reload();
         }
 
-        // --- 6. Core Application Setup ---
+        // --- 6. Main App Launcher ---
         function launchMainApp() {
             document.getElementById('app-screen').classList.remove('hidden');
             
-            // Sync user data to DB
             db.ref(`users/${currentUser.username}`).update({
                 username: currentUser.username,
                 role: currentUser.role,
@@ -1288,11 +1259,9 @@
                 status: 'online'
             });
 
-            // Setup Online Heartbeat
             db.ref(`users/${currentUser.username}/status`).onDisconnect().set('offline');
             db.ref(`users/${currentUser.username}/lastSeen`).onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
 
-            // Fetch User Profile Picture
             db.ref(`users/${currentUser.username}/avatar`).on('value', snap => {
                 const url = snap.val() || DEFAULT_AVATARS[currentUser.username] || DEFAULT_AVATARS['3MR'];
                 currentUser.avatar = url;
@@ -1306,12 +1275,10 @@
         function setupProfileView() {
             document.getElementById('my-profile-name').innerText = currentUser.username;
             document.getElementById('my-profile-role').innerText = currentUser.role;
-
-            const badgeContainer = document.getElementById('my-profile-badge-container');
-            badgeContainer.innerHTML = `<div class="golden-crown-badge">👑 توثيق ملكي ممتاز</div>`;
+            document.getElementById('my-profile-badge-container').innerHTML = `<div class="golden-crown-badge">👑 توثيق ملكي ممتاز</div>`;
         }
 
-        // --- 7. Realtime Sync & Data Listeners ---
+        // --- 7. Optimized Data Listeners ---
         function initDatabaseListeners() {
             // Maintenance Check
             db.ref('settings/maintenance').on('value', snap => {
@@ -1325,7 +1292,7 @@
                 }
             });
 
-            // Global Alerts Check
+            // Alert Check
             db.ref('settings/alert').on('value', snap => {
                 const val = snap.val();
                 if (val && localStorage.getItem('read_alert_' + val.id) !== 'true') {
@@ -1335,7 +1302,7 @@
                 }
             });
 
-            // Typing Indicators Sync
+            // Typing Indicator
             db.ref('typing').on('value', snap => {
                 const data = snap.val() || {};
                 const indicator = document.getElementById('typing-indicator');
@@ -1349,8 +1316,8 @@
                 indicator.innerText = typingText;
             });
 
-            // Chat Messages Realtime Stream
-            db.ref('messages').limitToLast(60).on('value', snap => {
+            // Fast Chat Stream (عرض الوقت فقط)
+            db.ref('messages').limitToLast(50).on('value', snap => {
                 const container = document.getElementById('chat-messages-container');
                 container.innerHTML = '';
                 const msgs = snap.val() || {};
@@ -1364,7 +1331,7 @@
                 container.scrollTop = container.scrollHeight;
             });
 
-            // Stories Realtime Stream
+            // Stories Stream
             db.ref('stories').on('value', snap => {
                 const container = document.getElementById('stories-list-container');
                 container.innerHTML = '';
@@ -1374,7 +1341,7 @@
                 Object.keys(storiesData).forEach(id => {
                     const s = storiesData[id];
                     s.id = id;
-                    if (Date.now() - s.timestamp < 86400000) { // 24 Hours filter
+                    if (Date.now() - s.timestamp < 86400000) {
                         if (!grouped[s.username]) grouped[s.username] = [];
                         grouped[s.username].push(s);
                     }
@@ -1397,7 +1364,7 @@
                 });
             });
 
-            // Users List Sync
+            // Users Stream
             db.ref('users').on('value', snap => {
                 const container = document.getElementById('users-list-container');
                 const adminSelect = document.getElementById('admin-user-select');
@@ -1408,7 +1375,6 @@
                 Object.keys(users).forEach(u => {
                     const usr = users[u];
                     const isOnline = usr.status === 'online';
-                    const isV = true; // Both 3MR and Roa are always verified
 
                     const card = document.createElement('div');
                     card.className = 'user-card-item';
@@ -1416,7 +1382,7 @@
                         <div class="flex-row">
                             <img src="${usr.avatar || DEFAULT_AVATARS[u]}" style="width:40px; height:40px; border-radius:50%; border:1px solid var(--gold);">
                             <div>
-                                <div style="font-weight:bold;">${usr.username} ${isV ? '👑' : ''}</div>
+                                <div style="font-weight:bold;">${usr.username} 👑</div>
                                 <div style="font-size:0.75rem; color:var(--rose-gold);">${usr.role || ''}</div>
                             </div>
                         </div>
@@ -1434,7 +1400,7 @@
             });
         }
 
-        // --- 8. Chat Engine & Features ---
+        // --- 8. Chat Engine ---
         function handleTypingEvent() {
             db.ref(`typing/${currentUser.username}`).set({
                 timestamp: firebase.database.ServerValue.TIMESTAMP
@@ -1443,7 +1409,7 @@
             clearTimeout(typingTimeout);
             typingTimeout = setTimeout(() => {
                 db.ref(`typing/${currentUser.username}`).remove();
-            }, 3000);
+            }, 2500);
         }
 
         function sendChatMessage(imageUrl = null) {
@@ -1477,8 +1443,8 @@
 
         function renderMessageBubble(m, container) {
             const isMe = m.sender === currentUser.username;
+            // عرض الوقت فقط بصيغة رايقة مثل (10:42 م)
             const timeStr = new Date(m.timestamp || Date.now()).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-            const dateStr = new Date(m.timestamp || Date.now()).toLocaleDateString('ar-EG', { month: '2-digit', day: '2-digit' });
 
             const wrapper = document.createElement('div');
             wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
@@ -1515,7 +1481,7 @@
                 </div>
                 <div class="msg-footer">
                     ${m.edited ? '<span>تم التعديل •</span>' : ''}
-                    <span>${dateStr} • ${timeStr}</span>
+                    <span>${timeStr}</span>
                 </div>
             `;
 
@@ -1538,7 +1504,7 @@
         }
 
         function deleteMessage(msgKey) {
-            if (confirm('هل تريد حذف هذه الرسالة؟')) {
+            if (confirm('حذف الرسالة؟')) {
                 db.ref(`messages/${msgKey}`).remove();
             }
         }
@@ -1606,15 +1572,12 @@
             const story = activeStoriesList[currentStoryIndex];
             if (!story) return;
 
-            // Register View
             db.ref(`stories/${story.id}/views/${currentUser.username}`).set(true);
 
-            // Set Header
             document.getElementById('story-view-avatar').src = story.userAvatar || DEFAULT_AVATARS[story.username];
             document.getElementById('story-view-username').innerText = story.username;
             document.getElementById('story-view-time').innerText = new Date(story.timestamp).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
 
-            // Show Delete Button if Owner or Admin
             const deleteBtn = document.getElementById('story-delete-btn');
             if (story.username === currentUser.username || currentUser.username === '3MR') {
                 deleteBtn.style.display = 'inline-block';
@@ -1622,7 +1585,6 @@
                 deleteBtn.style.display = 'none';
             }
 
-            // Display Content
             const area = document.getElementById('story-display-area');
             area.innerHTML = '';
             if (story.type === 'text') {
@@ -1633,11 +1595,9 @@
                 area.innerHTML = `<img src="${story.content}">`;
             }
 
-            // Views Count
             const viewsCount = story.views ? Object.keys(story.views).length : 1;
             document.getElementById('story-views-count').innerText = `👁 ${viewsCount} مشاهدة`;
 
-            // Progress Bar Engine
             const barsContainer = document.getElementById('story-progress-bars');
             barsContainer.innerHTML = '';
             activeStoriesList.forEach((_, idx) => {
@@ -1715,7 +1675,7 @@
             alert('تم إرسال الرد في المحادثة ❤️');
         }
 
-        // --- 10. Profile Avatar Auto-Uploader ---
+        // --- 10. Profile Avatar Auto Upload ---
         function triggerProfileAvatarChange() {
             document.getElementById('profile-avatar-file-input').click();
         }
@@ -1735,7 +1695,7 @@
             }
         }
 
-        // --- 11. Admin Panel Engine ---
+        // --- 11. Admin Functions ---
         function tryOpenAdmin() {
             if (currentUser.username === '3MR') {
                 document.getElementById('admin-panel-modal').style.display = 'flex';
@@ -1756,13 +1716,13 @@
         function adminGrantAuth() {
             const user = document.getElementById('admin-user-select').value;
             const dur = document.getElementById('admin-auth-duration').value || 60;
-            alert(`تم منح التوثيق والتمييز لـ ${user} لمدة ${dur} دقيقة`);
+            alert(`تم منح التوثيق لـ ${user} لمدة ${dur} دقيقة`);
         }
 
         function adminRevokeAuth() {
             const user = document.getElementById('admin-user-select').value;
             if (user === '3MR' || user === 'Roa') {
-                alert('عذراً! لا يمكن سحب التوثيق الملكي من الحسابات الأساسية نهائياً.');
+                alert('عذراً! لا يمكن سحب التوثيق من الحسابات الأساسية.');
                 return;
             }
             alert(`تم سحب التوثيق من ${user}`);
@@ -1772,11 +1732,8 @@
             const text = document.getElementById('admin-announcement-text').value.trim();
             if (!text) return;
 
-            db.ref('settings/alert').set({
-                text: text,
-                id: Date.now()
-            });
-            alert('تم نشر الإعلان بنجاح!');
+            db.ref('settings/alert').set({ text: text, id: Date.now() });
+            alert('تم نشر الإعلان!');
         }
 
         function adminToggleMaintenance(status) {
@@ -1785,17 +1742,17 @@
                 enabled: status,
                 message: msg || 'السيرفر تحت الصيانة الآن'
             });
-            alert(status ? 'تم تفعيل وضع الصيانة!' : 'تم إلغاء وضع الصيانة!');
+            alert(status ? 'تم تفعيل الصيانة!' : 'تم إلغاء الصيانة!');
         }
 
         function adminClearChat() {
-            if (confirm('هل أنت متأكد من حذف كامل محادثات الشات؟')) {
+            if (confirm('مسح كامل المحادثات؟')) {
                 db.ref('messages').remove();
             }
         }
 
         function adminClearStories() {
-            if (confirm('هل أنت متأكد من مسح جميع الستوريات؟')) {
+            if (confirm('مسح جميع الستوريات؟')) {
                 db.ref('stories').remove();
             }
         }
@@ -1805,7 +1762,7 @@
             document.getElementById('global-alert-modal').style.display = 'none';
         }
 
-        // --- 12. Helpers & Navigation ---
+        // --- 12. Helpers ---
         function switchTab(viewId, tabEl) {
             document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
