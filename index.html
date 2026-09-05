@@ -1,0 +1,1822 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>3MR ❤️ Roa</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Amiri:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Firebase Compatibility SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --bg-deep: #0f0508;
+            --card-bg: rgba(26, 10, 16, 0.75);
+            --card-border: rgba(212, 175, 55, 0.25);
+            --accent-red: #8B0000;
+            --rose-gold: #e8a598;
+            --bright-red: #d62828;
+            --gold: #D4AF37;
+            --gold-glow: rgba(212, 175, 55, 0.4);
+            --text-main: #fff5f5;
+            --text-sub: #d1b8c0;
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --font-main: 'Tajawal', sans-serif;
+            --font-title: 'Amiri', serif;
+            --sab: env(safe-area-inset-bottom, 0px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            height: 100dvh;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            overflow: hidden;
+            position: fixed;
+        }
+
+        /* القلوب المتحركة الناعمة */
+        #hearts-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.6;
+        }
+
+        /* Screen Wrapper */
+        .screen {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            background: radial-gradient(circle at center, rgba(40, 10, 20, 0.8) 0%, var(--bg-deep) 100%);
+            transition: opacity 0.4s ease, visibility 0.4s;
+        }
+
+        .hidden {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        /* --- 1. Splash Screen --- */
+        #splash-screen {
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: var(--bg-deep);
+        }
+
+        .splash-card {
+            padding: 40px;
+            border-radius: var(--radius-lg);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 20px var(--gold-glow);
+            animation: pulseCard 3s infinite alternate;
+        }
+
+        .splash-title {
+            font-family: var(--font-title);
+            font-size: 2.8rem;
+            color: var(--gold);
+            text-shadow: 0 0 15px var(--gold-glow);
+            margin-bottom: 10px;
+        }
+
+        .splash-sub {
+            font-size: 1.1rem;
+            color: var(--rose-gold);
+            letter-spacing: 2px;
+        }
+
+        @keyframes pulseCard {
+            0% { transform: scale(0.98); box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(212,175,55,0.2); }
+            100% { transform: scale(1.02); box-shadow: 0 15px 45px rgba(0,0,0,0.9), 0 0 30px rgba(212,175,55,0.5); }
+        }
+
+        /* --- 2. Login Screen --- */
+        #login-screen {
+            z-index: 8000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 380px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .login-box h2 {
+            font-family: var(--font-title);
+            color: var(--gold);
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .login-box p {
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--rose-gold);
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="password"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: rgba(10, 3, 6, 0.7);
+            color: var(--text-main);
+            font-family: var(--font-main);
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: linear-gradient(135deg, var(--accent-red), var(--bright-red));
+            color: #fff;
+            font-family: var(--font-main);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(214, 40, 40, 0.4);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:active { transform: scale(0.97); }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #b8860b, var(--gold));
+            color: #000;
+            box-shadow: 0 4px 15px var(--gold-glow);
+        }
+
+        /* --- 3. Main App Screen Layout --- */
+        #app-screen {
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* App Header */
+        .app-header {
+            height: 60px;
+            background: rgba(15, 5, 8, 0.92);
+            border-bottom: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            backdrop-filter: blur(10px);
+            z-index: 200;
+            flex-shrink: 0;
+        }
+
+        .header-title {
+            font-family: var(--font-title);
+            font-size: 1.4rem;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(212,175,55,0.2);
+            color: var(--text-main);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .icon-btn:hover { background: var(--card-border); }
+
+        /* Navigation Tabs */
+        .app-tabs {
+            height: 50px;
+            background: rgba(10, 3, 6, 0.85);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-shrink: 0;
+            z-index: 190;
+        }
+
+        .tab-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-sub);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-item.active {
+            color: var(--gold);
+            border-bottom-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+            font-weight: 700;
+        }
+
+        /* Main View Container */
+        .app-views {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .view-content {
+            position: absolute;
+            inset: 0;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .view-content.active {
+            display: flex;
+        }
+
+        /* --- 4. Chat View (Perfect Responsive Engine) --- */
+        #chat-view {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            position: relative;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .msg-wrapper {
+            display: flex;
+            flex-direction: column;
+            max-width: 82%;
+            position: relative;
+            animation: fadeInMsg 0.3s ease;
+        }
+
+        @keyframes fadeInMsg {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .msg-wrapper.me {
+            align-self: flex-start;
+        }
+
+        .msg-wrapper.them {
+            align-self: flex-end;
+        }
+
+        .msg-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            font-size: 0.75rem;
+            color: var(--rose-gold);
+        }
+
+        .msg-avatar {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--gold);
+        }
+
+        .msg-bubble {
+            padding: 10px 14px;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            position: relative;
+            word-break: break-word;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+
+        .msg-wrapper.me .msg-bubble {
+            background: linear-gradient(135deg, #500a12, #800e1b);
+            border: 1px solid rgba(214, 40, 40, 0.3);
+            color: #fff;
+            border-top-right-radius: 4px;
+        }
+
+        .msg-wrapper.them .msg-bubble {
+            background: linear-gradient(135deg, #1c1018, #2a1522);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            border-top-left-radius: 4px;
+        }
+
+        .msg-img {
+            max-width: 100%;
+            max-height: 220px;
+            border-radius: 8px;
+            margin-top: 6px;
+            display: block;
+        }
+
+        .msg-quote {
+            background: rgba(0,0,0,0.3);
+            border-right: 3px solid var(--gold);
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            margin-bottom: 6px;
+        }
+
+        .msg-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+        .msg-reactions {
+            display: flex;
+            gap: 2px;
+            position: absolute;
+            bottom: -10px;
+            right: 10px;
+            background: rgba(20, 5, 10, 0.9);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1px 6px;
+            font-size: 0.75rem;
+        }
+
+        .msg-actions-menu {
+            display: none;
+            position: absolute;
+            top: -35px;
+            background: #1a0a10;
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            padding: 2px 8px;
+            gap: 8px;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .msg-wrapper:hover .msg-actions-menu, .msg-wrapper:active .msg-actions-menu {
+            display: flex;
+        }
+
+        .action-icon {
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: transform 0.2s;
+        }
+
+        .action-icon:hover { transform: scale(1.3); }
+
+        /* Floating Controls & Input Bar */
+        .chat-controls-area {
+            flex-shrink: 0;
+            background: rgba(12, 4, 8, 0.95);
+            border-top: 1px solid var(--card-border);
+            padding: 8px 12px calc(8px + var(--sab)) 12px;
+            backdrop-filter: blur(12px);
+            z-index: 100;
+        }
+
+        .typing-indicator-bar {
+            height: 20px;
+            font-size: 0.8rem;
+            color: var(--rose-gold);
+            font-style: italic;
+            padding-right: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .reply-preview-box {
+            display: none;
+            background: rgba(40, 10, 20, 0.8);
+            border-right: 3px solid var(--gold);
+            padding: 6px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+        }
+
+        .reply-preview-box .text {
+            color: var(--text-sub);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 85%;
+        }
+
+        .chat-input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-input-row input {
+            flex: 1;
+            margin: 0;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(212,175,55,0.25);
+            padding: 12px 15px;
+            border-radius: 25px;
+        }
+
+        .attach-btn, .send-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .attach-btn {
+            background: rgba(255,255,255,0.08);
+            color: var(--rose-gold);
+            border: 1px solid rgba(212,175,55,0.2);
+            font-size: 1.1rem;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, var(--gold), #b8860b);
+            color: #000;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 10px var(--gold-glow);
+        }
+
+        /* --- 5. Stories View --- */
+        #stories-view {
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .story-actions-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .story-create-btn {
+            flex: 1;
+            padding: 12px;
+            background: rgba(26, 10, 16, 0.8);
+            border: 1px dashed var(--gold);
+            border-radius: var(--radius-md);
+            color: var(--gold);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .story-create-btn:hover { background: rgba(212,175,55,0.1); }
+
+        .stories-grid {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .story-circle-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .story-avatar-ring {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            padding: 2px;
+            background: linear-gradient(135deg, var(--gold), var(--bright-red));
+            box-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        .story-avatar-ring img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--bg-deep);
+        }
+
+        .story-username {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+        }
+
+        /* Story Fullscreen Viewer */
+        #story-viewer-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            background: #000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .story-progress-container {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            gap: 4px;
+            z-index: 10;
+        }
+
+        .story-progress-bar {
+            flex: 1;
+            height: 3px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .story-progress-fill {
+            height: 100%;
+            background: #fff;
+            width: 0%;
+        }
+
+        .story-viewer-header {
+            position: absolute;
+            top: 24px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+            color: #fff;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.7), transparent);
+            padding: 10px;
+        }
+
+        .story-user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .story-user-info img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1px solid var(--gold);
+        }
+
+        .story-main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        .story-main-content img, .story-main-content video {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        .story-text-display {
+            font-family: var(--font-title);
+            font-size: 2rem;
+            color: var(--gold);
+            text-align: center;
+            text-shadow: 0 0 20px var(--gold-glow);
+            padding: 30px;
+            background: rgba(20, 5, 10, 0.85);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+        }
+
+        .story-viewer-footer {
+            padding: 12px;
+            background: rgba(0,0,0,0.85);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .story-reactions-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            font-size: 1.4rem;
+        }
+
+        .story-reply-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* --- 6. Members & Profile View --- */
+        #members-view {
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 25px 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .profile-avatar-container {
+            position: relative;
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 15px;
+            cursor: pointer;
+        }
+
+        .profile-avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--gold);
+            box-shadow: 0 0 20px var(--gold-glow);
+            transition: transform 0.3s;
+        }
+
+        .profile-avatar-container:hover .profile-avatar-img {
+            transform: scale(1.03);
+        }
+
+        .avatar-edit-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: 0.3s;
+            color: #fff;
+            font-size: 1.5rem;
+        }
+
+        .profile-avatar-container:hover .avatar-edit-overlay {
+            opacity: 1;
+        }
+
+        .profile-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* التاج الأصفر التفاعلي المميز جداً */
+        .golden-crown-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, rgba(212,175,55,0.2), rgba(255,215,0,0.4));
+            border: 1px solid var(--gold);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--gold);
+            box-shadow: 0 0 10px var(--gold-glow);
+            animation: crownGlow 2.5s infinite alternate;
+        }
+
+        @keyframes crownGlow {
+            0% { box-shadow: 0 0 5px var(--gold-glow); }
+            100% { box-shadow: 0 0 18px rgba(255, 215, 0, 0.8); }
+        }
+
+        .profile-role {
+            font-size: 0.95rem;
+            color: var(--rose-gold);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .user-card-item {
+            background: rgba(20, 8, 14, 0.6);
+            border: 1px solid rgba(212,175,55,0.15);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .online-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #2ec4b6;
+            box-shadow: 0 0 8px #2ec4b6;
+        }
+
+        .offline-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #666;
+        }
+
+        /* --- 7. Ticker Footer (الشريط المتحرك الفاخر) --- */
+        .marquee-footer {
+            height: 34px;
+            background: linear-gradient(90deg, #300008, #600010, #300008);
+            border-top: 1px solid var(--gold);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            z-index: 200;
+            flex-shrink: 0;
+        }
+
+        .marquee-content {
+            display: inline-block;
+            white-space: nowrap;
+            padding-right: 100%;
+            animation: marquee 18s linear infinite;
+            font-family: var(--font-title);
+            font-size: 1.1rem;
+            color: var(--gold);
+            text-shadow: 0 0 8px var(--gold-glow);
+        }
+
+        @keyframes marquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* --- 8. Admin Panel Modal --- */
+        #admin-panel-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 90000;
+            background: rgba(10, 3, 6, 0.95);
+            backdrop-filter: blur(15px);
+            display: none;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .admin-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .admin-section h3 {
+            color: var(--gold);
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+        }
+
+        /* Alerts & Maintenance Overlays */
+        #global-alert-modal, #maintenance-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 200000;
+            background: rgba(0,0,0,0.92);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .modal-box {
+            background: var(--card-bg);
+            border: 2px solid var(--gold);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            max-width: 400px;
+            box-shadow: 0 0 40px var(--gold-glow);
+        }
+
+        /* General Utilities */
+        .flex-row { display: flex; gap: 10px; align-items: center; }
+        .mt-10 { margin-top: 10px; }
+        .text-gold { color: var(--gold); }
+    </style>
+</head>
+<body>
+
+    <!-- خلفية القلوب المتحركة -->
+    <canvas id="hearts-canvas"></canvas>
+
+    <!-- 1. Splash Screen -->
+    <div id="splash-screen" class="screen">
+        <div class="splash-card">
+            <h1 class="splash-title">3MR ❤️ Roa</h1>
+            <p class="splash-sub">عالمنا الخاص الفاخر</p>
+        </div>
+    </div>
+
+    <!-- 2. Login Screen -->
+    <div id="login-screen" class="screen hidden">
+        <div class="login-box">
+            <h2>تسجيل الدخول</h2>
+            <p>أدخل اسم المستخدم والكود للعبور</p>
+            <div class="input-group">
+                <label>اسم المستخدم</label>
+                <input type="text" id="login-username" placeholder="مثال: 3MR أو Roa">
+            </div>
+            <div class="input-group">
+                <label>الكود الخفي</label>
+                <input type="password" id="login-code" placeholder="••••••••">
+            </div>
+            <button class="btn btn-gold mt-10" onclick="handleLogin()">دخول للشبكة ❤️</button>
+        </div>
+    </div>
+
+    <!-- 3. Main Application Screen -->
+    <div id="app-screen" class="screen hidden">
+        
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-title" onclick="tryOpenAdmin()">
+                <span>3MR ❤️ Roa</span>
+            </div>
+            <div class="header-actions">
+                <button class="icon-btn" onclick="tryOpenAdmin()" title="لوحة الإدارة">👑</button>
+                <button class="icon-btn" onclick="handleLogout()" title="خروج">🚪</button>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <nav class="app-tabs">
+            <div class="tab-item active" onclick="switchTab('chat-view', this)">
+                💬 المحادثة
+            </div>
+            <div class="tab-item" onclick="switchTab('stories-view', this)">
+                📖 الحالات
+            </div>
+            <div class="tab-item" onclick="switchTab('members-view', this)">
+                👑 الملف الشخصي
+            </div>
+        </nav>
+
+        <!-- Dynamic Views Container -->
+        <main class="app-views">
+            
+            <!-- A. Chat View -->
+            <section id="chat-view" class="view-content active">
+                
+                <div class="chat-messages" id="chat-messages-container">
+                    <!-- Messages will be injected here dynamically -->
+                </div>
+
+                <div class="chat-controls-area">
+                    <div class="typing-indicator-bar" id="typing-indicator"></div>
+                    
+                    <div class="reply-preview-box" id="reply-preview">
+                        <span class="text" id="reply-preview-text">رد على...</span>
+                        <span style="color:var(--bright-red); cursor:pointer; font-weight:bold;" onclick="cancelReply()">✕</span>
+                    </div>
+
+                    <div class="chat-input-row">
+                        <button class="attach-btn" onclick="triggerChatImageUpload()" title="إرسال صورة">📷</button>
+                        <input type="file" id="chat-image-input" accept="image/*" style="display:none;" onchange="handleChatImageUpload(this)">
+                        
+                        <input type="text" id="chat-input-field" placeholder="اكتب رسالتك..." oninput="handleTypingEvent()" onkeydown="if(event.key==='Enter') sendChatMessage()">
+                        
+                        <button class="send-btn" onclick="sendChatMessage()">❤️</button>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- B. Stories View -->
+            <section id="stories-view" class="view-content">
+                <div class="story-actions-bar">
+                    <div class="story-create-btn" onclick="createStory('text')">📝 حالة نصية</div>
+                    <div class="story-create-btn" onclick="createStory('media')">🖼️ صورة / فيديو</div>
+                </div>
+                
+                <h3 style="color:var(--rose-gold); font-size:0.95rem; margin-bottom:12px;">الحالات الحالية</h3>
+                <div class="stories-grid" id="stories-list-container">
+                    <!-- Stories injected dynamically -->
+                </div>
+            </section>
+
+            <!-- C. Profile & Members View -->
+            <section id="members-view" class="view-content">
+                <div class="profile-card">
+                    <div class="profile-avatar-container" onclick="triggerProfileAvatarChange()">
+                        <img id="my-profile-img" src="" class="profile-avatar-img">
+                        <div class="avatar-edit-overlay">📷</div>
+                    </div>
+                    <input type="file" id="profile-avatar-file-input" accept="image/*" style="display:none;" onchange="handleProfileAvatarUpload(this)">
+
+                    <div class="profile-name" id="my-profile-name">
+                        --
+                    </div>
+                    <div id="my-profile-badge-container"></div>
+                    <div class="profile-role" id="my-profile-role">--</div>
+                    <div style="font-size:0.8rem; color:var(--text-sub);" id="my-profile-status">حالة الاتصال: نشط الان</div>
+                </div>
+
+                <h3 style="color:var(--gold); font-size:1rem; margin-bottom:12px;">أعضاء النظام</h3>
+                <div id="users-list-container">
+                    <!-- Users list injected dynamically -->
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Marquee Ticker Footer -->
+        <footer class="marquee-footer">
+            <div class="marquee-content">
+                روءا قلبي اللي بعشقها ❤️ • روءا قلبي اللي بعشقها ❤️ • روءا قلبي اللي بعشقها ❤️ • روءا قلبي اللي بعشقها ❤️
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Story Viewer Modal -->
+    <div id="story-viewer-modal">
+        <div class="story-progress-container" id="story-progress-bars"></div>
+        <div class="story-viewer-header">
+            <div class="story-user-info">
+                <img id="story-view-avatar" src="">
+                <div>
+                    <div id="story-view-username" style="font-weight:bold; font-size:0.9rem;">--</div>
+                    <div id="story-view-time" style="font-size:0.7rem; opacity:0.8;">--</div>
+                </div>
+            </div>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <span id="story-delete-btn" style="color:var(--bright-red); cursor:pointer; display:none; font-size:1.2rem;" onclick="deleteCurrentStory()" title="حذف الستوري">🗑️</span>
+                <span style="font-size:1.8rem; cursor:pointer;" onclick="closeStoryViewer()">✕</span>
+            </div>
+        </div>
+        
+        <div class="story-main-content" id="story-display-area"></div>
+
+        <div class="story-viewer-footer">
+            <div style="font-size:0.8rem; color:var(--rose-gold);" id="story-views-count">👁 0 مشاهدة</div>
+            <div class="story-reactions-row">
+                <span style="cursor:pointer" onclick="reactToStory('❤️')">❤️</span>
+                <span style="cursor:pointer" onclick="reactToStory('😍')">😍</span>
+                <span style="cursor:pointer" onclick="reactToStory('😂')">😂</span>
+                <span style="cursor:pointer" onclick="reactToStory('👍')">👍</span>
+            </div>
+            <div class="story-reply-row">
+                <input type="text" id="story-reply-input" placeholder="رد على الحالة..." style="border-radius:20px;">
+                <button class="btn btn-gold" style="width:auto; padding:0 20px; border-radius:20px;" onclick="sendStoryReply()">إرسال</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="admin-panel-modal">
+        <div class="admin-header">
+            <h2 style="color:var(--gold);">لوحة الإدارة العليا 👑</h2>
+            <span style="font-size:1.5rem; cursor:pointer;" onclick="closeAdminPanel()">✕</span>
+        </div>
+
+        <div class="admin-section">
+            <h3>👤 إدارة التوثيق والرتب</h3>
+            <select id="admin-user-select"></select>
+            <input type="number" id="admin-auth-duration" placeholder="مدة التوثيق بالدقائق" class="mt-10">
+            <div class="flex-row mt-10">
+                <button class="btn btn-gold" onclick="adminGrantAuth()">منح التوثيق</button>
+                <button class="btn" style="background:#555;" onclick="adminRevokeAuth()">سحب التوثيق</button>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h3>📢 الإعلانات العامة</h3>
+            <textarea id="admin-announcement-text" placeholder="اكتب نص الإعلان العام..."></textarea>
+            <button class="btn btn-gold mt-10" onclick="adminSendAnnouncement()">نشر الإعلان</button>
+        </div>
+
+        <div class="admin-section">
+            <h3>⚠️ وضع الصيانة</h3>
+            <textarea id="admin-maintenance-text" placeholder="رسالة الصيانة..."></textarea>
+            <div class="flex-row mt-10">
+                <button class="btn" onclick="adminToggleMaintenance(true)">تفعيل الصيانة</button>
+                <button class="btn btn-gold" onclick="adminToggleMaintenance(false)">إلغاء الصيانة</button>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h3>🗑️ تنظيف البيانات</h3>
+            <div class="flex-row">
+                <button class="btn" onclick="adminClearChat()">مسح المحادثة</button>
+                <button class="btn" onclick="adminClearStories()">حذف كل الستوريات</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Modal -->
+    <div id="global-alert-modal">
+        <div class="modal-box">
+            <h2 style="color:var(--gold); margin-bottom:15px;">📢 إعلان هام</h2>
+            <p id="global-alert-body" style="margin-bottom:20px; color:var(--text-main);"></p>
+            <button class="btn btn-gold" onclick="dismissGlobalAlert()">فهمت</button>
+        </div>
+    </div>
+
+    <!-- Maintenance Modal -->
+    <div id="maintenance-modal">
+        <div class="modal-box">
+            <h2 style="color:var(--bright-red); margin-bottom:15px;">⚠️ النظام في حالة صيانة</h2>
+            <p id="maintenance-body-text" style="color:var(--text-sub);"></p>
+        </div>
+    </div>
+
+    <!-- Application Script Engine -->
+    <script>
+        // --- 1. Firebase Initialization ---
+        const firebaseConfig = {
+            databaseURL: "https://rewaa2lby-default-rtdb.firebaseio.com/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // --- 2. State & Variables ---
+        let currentUser = JSON.parse(localStorage.getItem('3mr_roa_session')) || null;
+        let selectedReplyMsg = null;
+        let typingTimeout = null;
+        let activeStoriesList = [];
+        let currentStoryIndex = 0;
+        let storyTimerInterval = null;
+
+        // Base Avatars
+        const DEFAULT_AVATARS = {
+            '3MR': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
+            'Roa': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80'
+        };
+
+        // --- 3. Background Hearts Animation ---
+        function initHeartsCanvas() {
+            const canvas = document.getElementById('hearts-canvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            const hearts = Array.from({ length: 25 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 12 + 8,
+                speedY: Math.random() * 0.8 + 0.3,
+                opacity: Math.random() * 0.5 + 0.2
+            }));
+
+            function drawHeart(x, y, size, color) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.translate(x, y);
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-size / 2, -size / 2, -size, size / 3, 0, size);
+                ctx.bezierCurveTo(size, size / 3, size / 2, -size / 2, 0, 0);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                hearts.forEach(h => {
+                    h.y -= h.speedY;
+                    if (h.y < -20) h.y = height + 20;
+                    drawHeart(h.x, h.y, h.size, `rgba(212, 175, 55, ${h.opacity})`);
+                });
+                requestAnimationFrame(animate);
+            }
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            animate();
+        }
+
+        // --- 4. Boot Logic ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initHeartsCanvas();
+            
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('hidden');
+                if (currentUser) {
+                    launchMainApp();
+                } else {
+                    document.getElementById('login-screen').classList.remove('hidden');
+                }
+            }, 2500);
+        });
+
+        // --- 5. Authentication ---
+        function handleLogin() {
+            const u = document.getElementById('login-username').value.trim();
+            const c = document.getElementById('login-code').value.trim();
+
+            if (!u || !c) {
+                alert('الرجاء إدخال اسم المستخدم والكود!');
+                return;
+            }
+
+            if (u === '3MR' && c === '772009') {
+                currentUser = { username: '3MR', role: ' القائد 👑', isMaster: true };
+            } else if (u === 'Roa' && c === '15102009') {
+                currentUser = { username: 'Roa', role: 'قلب القائد ❤️', isMaster: true };
+            } else {
+                alert('بيانات الدخول غير صحيحة!');
+                return;
+            }
+
+            localStorage.setItem('3mr_roa_session', JSON.stringify(currentUser));
+            document.getElementById('login-screen').classList.add('hidden');
+            launchMainApp();
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('3mr_roa_session');
+            location.reload();
+        }
+
+        // --- 6. Core Application Setup ---
+        function launchMainApp() {
+            document.getElementById('app-screen').classList.remove('hidden');
+            
+            // Sync user data to DB
+            db.ref(`users/${currentUser.username}`).update({
+                username: currentUser.username,
+                role: currentUser.role,
+                lastSeen: firebase.database.ServerValue.TIMESTAMP,
+                status: 'online'
+            });
+
+            // Setup Online Heartbeat
+            db.ref(`users/${currentUser.username}/status`).onDisconnect().set('offline');
+            db.ref(`users/${currentUser.username}/lastSeen`).onDisconnect().set(firebase.database.ServerValue.TIMESTAMP);
+
+            // Fetch User Profile Picture
+            db.ref(`users/${currentUser.username}/avatar`).on('value', snap => {
+                const url = snap.val() || DEFAULT_AVATARS[currentUser.username] || DEFAULT_AVATARS['3MR'];
+                currentUser.avatar = url;
+                document.getElementById('my-profile-img').src = url;
+            });
+
+            setupProfileView();
+            initDatabaseListeners();
+        }
+
+        function setupProfileView() {
+            document.getElementById('my-profile-name').innerText = currentUser.username;
+            document.getElementById('my-profile-role').innerText = currentUser.role;
+
+            const badgeContainer = document.getElementById('my-profile-badge-container');
+            badgeContainer.innerHTML = `<div class="golden-crown-badge">👑 توثيق ملكي ممتاز</div>`;
+        }
+
+        // --- 7. Realtime Sync & Data Listeners ---
+        function initDatabaseListeners() {
+            // Maintenance Check
+            db.ref('settings/maintenance').on('value', snap => {
+                const val = snap.val();
+                const modal = document.getElementById('maintenance-modal');
+                if (val && val.enabled && !currentUser.isMaster) {
+                    document.getElementById('maintenance-body-text').innerText = val.message || 'جاري تحديث السيرفر...';
+                    modal.style.display = 'flex';
+                } else {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Global Alerts Check
+            db.ref('settings/alert').on('value', snap => {
+                const val = snap.val();
+                if (val && localStorage.getItem('read_alert_' + val.id) !== 'true') {
+                    document.getElementById('global-alert-body').innerText = val.text;
+                    document.getElementById('global-alert-modal').style.display = 'flex';
+                    window.currentAlertId = val.id;
+                }
+            });
+
+            // Typing Indicators Sync
+            db.ref('typing').on('value', snap => {
+                const data = snap.val() || {};
+                const indicator = document.getElementById('typing-indicator');
+                let typingText = '';
+
+                Object.keys(data).forEach(user => {
+                    if (user !== currentUser.username && (Date.now() - data[user].timestamp < 3500)) {
+                        typingText = `${user} يكتب الآن... ❤️`;
+                    }
+                });
+                indicator.innerText = typingText;
+            });
+
+            // Chat Messages Realtime Stream
+            db.ref('messages').limitToLast(60).on('value', snap => {
+                const container = document.getElementById('chat-messages-container');
+                container.innerHTML = '';
+                const msgs = snap.val() || {};
+
+                Object.keys(msgs).forEach(key => {
+                    const m = msgs[key];
+                    m.key = key;
+                    renderMessageBubble(m, container);
+                });
+
+                container.scrollTop = container.scrollHeight;
+            });
+
+            // Stories Realtime Stream
+            db.ref('stories').on('value', snap => {
+                const container = document.getElementById('stories-list-container');
+                container.innerHTML = '';
+                const storiesData = snap.val() || {};
+                
+                const grouped = {};
+                Object.keys(storiesData).forEach(id => {
+                    const s = storiesData[id];
+                    s.id = id;
+                    if (Date.now() - s.timestamp < 86400000) { // 24 Hours filter
+                        if (!grouped[s.username]) grouped[s.username] = [];
+                        grouped[s.username].push(s);
+                    }
+                });
+
+                Object.keys(grouped).forEach(user => {
+                    const userStories = grouped[user];
+                    const thumb = userStories[0].userAvatar || DEFAULT_AVATARS[user];
+
+                    const el = document.createElement('div');
+                    el.className = 'story-circle-item';
+                    el.onclick = () => openStoryViewer(userStories);
+                    el.innerHTML = `
+                        <div class="story-avatar-ring">
+                            <img src="${thumb}">
+                        </div>
+                        <span class="story-username">${user}</span>
+                    `;
+                    container.appendChild(el);
+                });
+            });
+
+            // Users List Sync
+            db.ref('users').on('value', snap => {
+                const container = document.getElementById('users-list-container');
+                const adminSelect = document.getElementById('admin-user-select');
+                container.innerHTML = '';
+                if(adminSelect) adminSelect.innerHTML = '';
+
+                const users = snap.val() || {};
+                Object.keys(users).forEach(u => {
+                    const usr = users[u];
+                    const isOnline = usr.status === 'online';
+                    const isV = true; // Both 3MR and Roa are always verified
+
+                    const card = document.createElement('div');
+                    card.className = 'user-card-item';
+                    card.innerHTML = `
+                        <div class="flex-row">
+                            <img src="${usr.avatar || DEFAULT_AVATARS[u]}" style="width:40px; height:40px; border-radius:50%; border:1px solid var(--gold);">
+                            <div>
+                                <div style="font-weight:bold;">${usr.username} ${isV ? '👑' : ''}</div>
+                                <div style="font-size:0.75rem; color:var(--rose-gold);">${usr.role || ''}</div>
+                            </div>
+                        </div>
+                        <div class="flex-row">
+                            <span class="${isOnline ? 'online-dot' : 'offline-dot'}"></span>
+                            <span style="font-size:0.75rem; color:var(--text-sub);">${isOnline ? 'متصل' : 'غير متصل'}</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+
+                    if(adminSelect) {
+                        adminSelect.innerHTML += `<option value="${usr.username}">${usr.username}</option>`;
+                    }
+                });
+            });
+        }
+
+        // --- 8. Chat Engine & Features ---
+        function handleTypingEvent() {
+            db.ref(`typing/${currentUser.username}`).set({
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            clearTimeout(typingTimeout);
+            typingTimeout = setTimeout(() => {
+                db.ref(`typing/${currentUser.username}`).remove();
+            }, 3000);
+        }
+
+        function sendChatMessage(imageUrl = null) {
+            const input = document.getElementById('chat-input-field');
+            const text = input.value.trim();
+
+            if (!text && !imageUrl) return;
+
+            const msgObj = {
+                sender: currentUser.username,
+                avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username],
+                text: text || '',
+                image: imageUrl || null,
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                edited: false
+            };
+
+            if (selectedReplyMsg) {
+                msgObj.replyTo = {
+                    sender: selectedReplyMsg.sender,
+                    text: selectedReplyMsg.text || 'صورة'
+                };
+            }
+
+            db.ref('messages').push(msgObj);
+
+            input.value = '';
+            cancelReply();
+            db.ref(`typing/${currentUser.username}`).remove();
+        }
+
+        function renderMessageBubble(m, container) {
+            const isMe = m.sender === currentUser.username;
+            const timeStr = new Date(m.timestamp || Date.now()).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+            const dateStr = new Date(m.timestamp || Date.now()).toLocaleDateString('ar-EG', { month: '2-digit', day: '2-digit' });
+
+            const wrapper = document.createElement('div');
+            wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
+
+            let quoteHtml = '';
+            if (m.replyTo) {
+                quoteHtml = `<div class="msg-quote"><b>الرد على ${m.replyTo.sender}:</b> "${m.replyTo.text}"</div>`;
+            }
+
+            let imgHtml = m.image ? `<img src="${m.image}" class="msg-img" onclick="window.open('${m.image}')">` : '';
+
+            let reactionsHtml = '';
+            if (m.reactions) {
+                const rx = Object.values(m.reactions).join(' ');
+                reactionsHtml = `<div class="msg-reactions">${rx}</div>`;
+            }
+
+            wrapper.innerHTML = `
+                <div class="msg-header">
+                    <img src="${m.avatar}" class="msg-avatar">
+                    <span>${m.sender}</span>
+                </div>
+                <div class="msg-bubble" onclick="setReplyTarget('${m.sender}', '${escapeQuotes(m.text || 'صورة')}')">
+                    <div class="msg-actions-menu">
+                        <span class="action-icon" onclick="reactToMessage('${m.key}', '❤️')">❤️</span>
+                        <span class="action-icon" onclick="reactToMessage('${m.key}', '😍')">😍</span>
+                        <span class="action-icon" onclick="reactToMessage('${m.key}', '😂')">😂</span>
+                        ${isMe ? `<span class="action-icon" onclick="deleteMessage('${m.key}')">🗑️</span>` : ''}
+                    </div>
+                    ${quoteHtml}
+                    <div>${m.text || ''}</div>
+                    ${imgHtml}
+                    ${reactionsHtml}
+                </div>
+                <div class="msg-footer">
+                    ${m.edited ? '<span>تم التعديل •</span>' : ''}
+                    <span>${dateStr} • ${timeStr}</span>
+                </div>
+            `;
+
+            container.appendChild(wrapper);
+        }
+
+        function setReplyTarget(sender, text) {
+            selectedReplyMsg = { sender, text };
+            document.getElementById('reply-preview-text').innerText = `الرد على ${sender}: "${text}"`;
+            document.getElementById('reply-preview').style.display = 'flex';
+        }
+
+        function cancelReply() {
+            selectedReplyMsg = null;
+            document.getElementById('reply-preview').style.display = 'none';
+        }
+
+        function reactToMessage(msgKey, emoji) {
+            db.ref(`messages/${msgKey}/reactions/${currentUser.username}`).set(emoji);
+        }
+
+        function deleteMessage(msgKey) {
+            if (confirm('هل تريد حذف هذه الرسالة؟')) {
+                db.ref(`messages/${msgKey}`).remove();
+            }
+        }
+
+        function triggerChatImageUpload() {
+            document.getElementById('chat-image-input').click();
+        }
+
+        function handleChatImageUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    sendChatMessage(e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- 9. Stories Engine ---
+        function createStory(type) {
+            if (type === 'text') {
+                const txt = prompt('اكتب نص الحالة الخاص بك:');
+                if (!txt) return;
+                
+                db.ref('stories').push({
+                    username: currentUser.username,
+                    userAvatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username],
+                    type: 'text',
+                    content: txt,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+            } else {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*,video/*';
+                input.onchange = e => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const isVideo = file.type.startsWith('video/');
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        db.ref('stories').push({
+                            username: currentUser.username,
+                            userAvatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username],
+                            type: isVideo ? 'video' : 'image',
+                            content: evt.target.result,
+                            timestamp: firebase.database.ServerValue.TIMESTAMP
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                };
+                input.click();
+            }
+        }
+
+        function openStoryViewer(stories) {
+            activeStoriesList = stories;
+            currentStoryIndex = 0;
+            document.getElementById('story-viewer-modal').style.display = 'flex';
+            renderCurrentStory();
+        }
+
+        function renderCurrentStory() {
+            const story = activeStoriesList[currentStoryIndex];
+            if (!story) return;
+
+            // Register View
+            db.ref(`stories/${story.id}/views/${currentUser.username}`).set(true);
+
+            // Set Header
+            document.getElementById('story-view-avatar').src = story.userAvatar || DEFAULT_AVATARS[story.username];
+            document.getElementById('story-view-username').innerText = story.username;
+            document.getElementById('story-view-time').innerText = new Date(story.timestamp).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+
+            // Show Delete Button if Owner or Admin
+            const deleteBtn = document.getElementById('story-delete-btn');
+            if (story.username === currentUser.username || currentUser.username === '3MR') {
+                deleteBtn.style.display = 'inline-block';
+            } else {
+                deleteBtn.style.display = 'none';
+            }
+
+            // Display Content
+            const area = document.getElementById('story-display-area');
+            area.innerHTML = '';
+            if (story.type === 'text') {
+                area.innerHTML = `<div class="story-text-display">${story.content}</div>`;
+            } else if (story.type === 'video') {
+                area.innerHTML = `<video src="${story.content}" autoplay playsinline controls></video>`;
+            } else {
+                area.innerHTML = `<img src="${story.content}">`;
+            }
+
+            // Views Count
+            const viewsCount = story.views ? Object.keys(story.views).length : 1;
+            document.getElementById('story-views-count').innerText = `👁 ${viewsCount} مشاهدة`;
+
+            // Progress Bar Engine
+            const barsContainer = document.getElementById('story-progress-bars');
+            barsContainer.innerHTML = '';
+            activeStoriesList.forEach((_, idx) => {
+                barsContainer.innerHTML += `<div class="story-progress-bar"><div class="story-progress-fill" id="p-fill-${idx}"></div></div>`;
+            });
+
+            for (let i = 0; i < currentStoryIndex; i++) {
+                document.getElementById(`p-fill-${i}`).style.width = '100%';
+            }
+
+            let fillWidth = 0;
+            clearInterval(storyTimerInterval);
+            storyTimerInterval = setInterval(() => {
+                fillWidth += 2;
+                const activeFill = document.getElementById(`p-fill-${currentStoryIndex}`);
+                if (activeFill) activeFill.style.width = fillWidth + '%';
+
+                if (fillWidth >= 100) {
+                    clearInterval(storyTimerInterval);
+                    if (currentStoryIndex < activeStoriesList.length - 1) {
+                        currentStoryIndex++;
+                        renderCurrentStory();
+                    } else {
+                        closeStoryViewer();
+                    }
+                }
+            }, 100);
+        }
+
+        function closeStoryViewer() {
+            clearInterval(storyTimerInterval);
+            document.getElementById('story-viewer-modal').style.display = 'none';
+        }
+
+        function deleteCurrentStory() {
+            const story = activeStoriesList[currentStoryIndex];
+            if (story && confirm('هل تريد حذف هذه الحالة؟')) {
+                db.ref(`stories/${story.id}`).remove();
+                closeStoryViewer();
+            }
+        }
+
+        function reactToStory(emoji) {
+            const story = activeStoriesList[currentStoryIndex];
+            if (!story) return;
+
+            db.ref('messages').push({
+                sender: currentUser.username,
+                avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username],
+                text: `تفاعل ${emoji} على الحالة`,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+            alert('تم إرسال التفاعل!');
+        }
+
+        function sendStoryReply() {
+            const input = document.getElementById('story-reply-input');
+            const txt = input.value.trim();
+            const story = activeStoriesList[currentStoryIndex];
+
+            if (!txt || !story) return;
+
+            db.ref('messages').push({
+                sender: currentUser.username,
+                avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username],
+                text: txt,
+                replyTo: {
+                    sender: story.username,
+                    text: `حالة: ${story.type === 'text' ? story.content : 'وسائط'}`
+                },
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            input.value = '';
+            alert('تم إرسال الرد في المحادثة ❤️');
+        }
+
+        // --- 10. Profile Avatar Auto-Uploader ---
+        function triggerProfileAvatarChange() {
+            document.getElementById('profile-avatar-file-input').click();
+        }
+
+        function handleProfileAvatarUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const dataUrl = e.target.result;
+                    currentUser.avatar = dataUrl;
+                    document.getElementById('my-profile-img').src = dataUrl;
+                    
+                    db.ref(`users/${currentUser.username}/avatar`).set(dataUrl);
+                    localStorage.setItem('3mr_roa_session', JSON.stringify(currentUser));
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // --- 11. Admin Panel Engine ---
+        function tryOpenAdmin() {
+            if (currentUser.username === '3MR') {
+                document.getElementById('admin-panel-modal').style.display = 'flex';
+            } else {
+                const pass = prompt('أدخل كلمة مرور لوحة الإدارة العليا:');
+                if (pass === '15102009') {
+                    document.getElementById('admin-panel-modal').style.display = 'flex';
+                } else if (pass) {
+                    alert('كلمة المرور غير صحيحة!');
+                }
+            }
+        }
+
+        function closeAdminPanel() {
+            document.getElementById('admin-panel-modal').style.display = 'none';
+        }
+
+        function adminGrantAuth() {
+            const user = document.getElementById('admin-user-select').value;
+            const dur = document.getElementById('admin-auth-duration').value || 60;
+            alert(`تم منح التوثيق والتمييز لـ ${user} لمدة ${dur} دقيقة`);
+        }
+
+        function adminRevokeAuth() {
+            const user = document.getElementById('admin-user-select').value;
+            if (user === '3MR' || user === 'Roa') {
+                alert('عذراً! لا يمكن سحب التوثيق الملكي من الحسابات الأساسية نهائياً.');
+                return;
+            }
+            alert(`تم سحب التوثيق من ${user}`);
+        }
+
+        function adminSendAnnouncement() {
+            const text = document.getElementById('admin-announcement-text').value.trim();
+            if (!text) return;
+
+            db.ref('settings/alert').set({
+                text: text,
+                id: Date.now()
+            });
+            alert('تم نشر الإعلان بنجاح!');
+        }
+
+        function adminToggleMaintenance(status) {
+            const msg = document.getElementById('admin-maintenance-text').value.trim();
+            db.ref('settings/maintenance').set({
+                enabled: status,
+                message: msg || 'السيرفر تحت الصيانة الآن'
+            });
+            alert(status ? 'تم تفعيل وضع الصيانة!' : 'تم إلغاء وضع الصيانة!');
+        }
+
+        function adminClearChat() {
+            if (confirm('هل أنت متأكد من حذف كامل محادثات الشات؟')) {
+                db.ref('messages').remove();
+            }
+        }
+
+        function adminClearStories() {
+            if (confirm('هل أنت متأكد من مسح جميع الستوريات؟')) {
+                db.ref('stories').remove();
+            }
+        }
+
+        function dismissGlobalAlert() {
+            localStorage.setItem('read_alert_' + window.currentAlertId, 'true');
+            document.getElementById('global-alert-modal').style.display = 'none';
+        }
+
+        // --- 12. Helpers & Navigation ---
+        function switchTab(viewId, tabEl) {
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+
+            tabEl.classList.add('active');
+            document.getElementById(viewId).classList.add('active');
+        }
+
+        function escapeQuotes(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+    </script>
+</body>
+</html>
