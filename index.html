@@ -73,9 +73,7 @@
             background: radial-gradient(circle at center, rgba(40, 10, 20, 0.8) 0%, var(--bg-deep) 100%);
         }
 
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         /* Splash Screen */
         #splash-screen {
@@ -266,9 +264,7 @@
             overflow: hidden;
         }
 
-        .view-content.active {
-            display: flex !important;
-        }
+        .view-content.active { display: flex !important; }
 
         /* Chat View */
         #chat-view {
@@ -469,6 +465,7 @@
             border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
             padding: 12px;
+            position: relative;
         }
 
         .story-header {
@@ -510,7 +507,18 @@
             margin-top: 8px;
         }
 
-        /* Admin / Profile View */
+        .delete-btn {
+            background: rgba(214, 40, 40, 0.2);
+            border: 1px solid var(--bright-red);
+            color: #ff8888;
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        /* Profile View */
         #members-view {
             padding: 12px;
             overflow-y: auto;
@@ -754,7 +762,7 @@
             let width = canvas.width = window.innerWidth;
             let height = canvas.height = window.innerHeight;
 
-            const hearts = Array.from({ length: 12 }, () => ({
+            const hearts = Array.from({ length: 10 }, () => ({
                 x: Math.random() * width,
                 y: Math.random() * height,
                 size: Math.random() * 8 + 4,
@@ -790,7 +798,7 @@
                 } else {
                     document.getElementById('login-screen').classList.remove('hidden');
                 }
-            }, 1000);
+            }, 600);
         });
 
         function handleLogin() {
@@ -841,8 +849,8 @@
             if (currentUser.isAdmin) {
                 document.getElementById('admin-panel-container').innerHTML = `
                     <div class="admin-box">
-                        <h4>⚙️ لوحة أدمن التطبيق</h4>
-                        <button class="btn btn-gold" onclick="clearAllChatMessages()">مسح كل الشات 🗑️</button>
+                        <h4>⚙️ لوحة تحكم الأدمن</h4>
+                        <button class="btn btn-gold" onclick="clearAllChatMessages()">مسح كل المحادثات 🗑️</button>
                     </div>
                 `;
             }
@@ -864,52 +872,57 @@
                 indicator.innerText = txt;
             });
 
-            // Chat Messages (سريعة جداً - آخر 30 رسالة فقط)
-            db.ref('messages').limitToLast(30).on('value', snap => {
-                const container = document.getElementById('chat-messages-container');
-                container.innerHTML = '';
-                const msgs = snap.val() || {};
+            // INSTANT MESSAGING MECHANISM (child_added)
+            const chatContainer = document.getElementById('chat-messages-container');
+            
+            db.ref('messages').limitToLast(50).on('child_added', snap => {
+                const m = snap.val();
+                const key = snap.key;
+                if (!m) return;
 
-                Object.keys(msgs).forEach(key => {
-                    const m = msgs[key];
-                    const isMe = m.sender === currentUser.username;
-                    const timeStr = new Date(m.timestamp || Date.now()).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+                const isMe = m.sender === currentUser.username;
+                const timeStr = new Date(m.timestamp || Date.now()).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
 
-                    const wrapper = document.createElement('div');
-                    wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
+                const wrapper = document.createElement('div');
+                wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
+                wrapper.id = `msg-${key}`;
 
-                    let quoteHtml = m.replyTo ? `<div class="msg-quote"><b>${m.replyTo.sender}:</b> ${m.replyTo.text}</div>` : '';
-                    let imgHtml = m.image ? `<img src="${m.image}" class="msg-img">` : '';
+                let quoteHtml = m.replyTo ? `<div class="msg-quote"><b>${m.replyTo.sender}:</b> ${m.replyTo.text}</div>` : '';
+                let imgHtml = m.image ? `<img src="${m.image}" class="msg-img">` : '';
 
-                    wrapper.innerHTML = `
-                        <div class="msg-header">
-                            <img src="${m.avatar}" class="msg-avatar">
-                            <span>${m.sender}</span>
-                        </div>
-                        <div class="msg-bubble" onclick="setReplyTarget('${m.sender}', '${m.text || 'صورة'}')">
-                            ${quoteHtml}
-                            <div>${m.text || ''}</div>
-                            ${imgHtml}
-                        </div>
-                        <div class="msg-footer">
-                            <span>${timeStr}</span>
-                        </div>
-                    `;
-                    container.appendChild(wrapper);
-                });
+                wrapper.innerHTML = `
+                    <div class="msg-header">
+                        <img src="${m.avatar}" class="msg-avatar">
+                        <span>${m.sender}</span>
+                    </div>
+                    <div class="msg-bubble" onclick="setReplyTarget('${m.sender}', '${m.text || 'صورة'}')">
+                        ${quoteHtml}
+                        <div>${m.text || ''}</div>
+                        ${imgHtml}
+                    </div>
+                    <div class="msg-footer">
+                        <span>${timeStr}</span>
+                    </div>
+                `;
+                chatContainer.appendChild(wrapper);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            });
 
-                container.scrollTop = container.scrollHeight;
+            // Handle Chat Cleared Event
+            db.ref('messages').on('child_removed', snap => {
+                const el = document.getElementById(`msg-${snap.key}`);
+                if (el) el.remove();
             });
 
             // Stories Listener
-            db.ref('stories').limitToLast(20).on('value', snap => {
+            db.ref('stories').on('value', snap => {
                 const container = document.getElementById('stories-list-container');
                 container.innerHTML = '';
                 const stories = snap.val() || {};
 
                 const keys = Object.keys(stories).reverse();
                 if (keys.length === 0) {
-                    container.innerHTML = '<div style="text-align:center; color:var(--text-sub); font-size:0.85rem;">لا توجد حالات حالياً. كن أول من ينشر!</div>';
+                    container.innerHTML = '<div style="text-align:center; color:var(--text-sub); font-size:0.85rem; padding: 20px;">لا توجد حالات حالياً.</div>';
                     return;
                 }
 
@@ -921,11 +934,13 @@
                     card.className = 'story-card';
 
                     let mediaHtml = s.image ? `<img src="${s.image}" class="story-media">` : '';
+                    let deleteBtn = (currentUser.isAdmin || currentUser.username === s.username) ? `<button class="delete-btn" onclick="deleteStory('${key}')">حذف</button>` : '';
 
                     card.innerHTML = `
                         <div class="story-header">
                             <img src="${s.avatar || DEFAULT_AVATARS[s.username]}" class="story-avatar">
                             <span class="story-author">${s.username}</span>
+                            ${deleteBtn}
                             <span class="story-time">${timeStr}</span>
                         </div>
                         <div class="story-body">${s.text || ''}</div>
@@ -935,7 +950,7 @@
                 });
             });
 
-            // Users Status Listener
+            // Users Status
             db.ref('users').on('value', snap => {
                 const container = document.getElementById('users-list-container');
                 container.innerHTML = '';
@@ -965,7 +980,7 @@
         function handleTypingEvent() {
             db.ref(`typing/${currentUser.username}`).set({ timestamp: firebase.database.ServerValue.TIMESTAMP });
             clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => { db.ref(`typing/${currentUser.username}`).remove(); }, 2000);
+            typingTimeout = setTimeout(() => { db.ref(`typing/${currentUser.username}`).remove(); }, 1500);
         }
 
         function sendChatMessage(imageUrl = null) {
@@ -986,10 +1001,12 @@
                 msgObj.replyTo = { sender: selectedReplyMsg.sender, text: selectedReplyMsg.text };
             }
 
-            db.ref('messages').push(msgObj);
             input.value = '';
             cancelReply();
             db.ref(`typing/${currentUser.username}`).remove();
+
+            // Push message instantly
+            db.ref('messages').push(msgObj);
         }
 
         function setReplyTarget(sender, text) {
@@ -1046,7 +1063,13 @@
             }
         }
 
-        /* Image Compression for Instant Speed */
+        function deleteStory(storyId) {
+            if(confirm('هل تريد حذف هذه الحالة؟')) {
+                db.ref(`stories/${storyId}`).remove();
+            }
+        }
+
+        /* Fast Image Compressor */
         function compressAndSendImage(base64Str, callback) {
             const img = new Image();
             img.src = base64Str;
@@ -1054,7 +1077,7 @@
                 const canvas = document.createElement('canvas');
                 let width = img.width;
                 let height = img.height;
-                const maxDim = 600;
+                const maxDim = 500;
 
                 if (width > height && width > maxDim) {
                     height = Math.round((height * maxDim) / width);
@@ -1068,7 +1091,7 @@
                 canvas.height = height;
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
-                callback(canvas.toDataURL('image/jpeg', 0.6));
+                callback(canvas.toDataURL('image/jpeg', 0.5));
             };
         }
 
@@ -1088,6 +1111,7 @@
         function clearAllChatMessages() {
             if (confirm('هل أنت تأكد من مسح جميع الرسائل؟')) {
                 db.ref('messages').remove();
+                document.getElementById('chat-messages-container').innerHTML = '';
             }
         }
 
