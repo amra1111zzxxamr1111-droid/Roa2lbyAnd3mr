@@ -7,7 +7,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Amiri:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
 
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -15,18 +15,19 @@
 
     <style>
         :root {
-            --bg-deep: #0d0008;
-            --card-bg: rgba(28, 6, 20, 0.92);
-            --card-border: rgba(255, 191, 0, 0.35);
-            --accent-red: #7209b7;
-            --rose-gold: #f72585;
-            --bright-red: #ff0054;
-            --gold: #ffb703;
-            --gold-glow: rgba(255, 183, 3, 0.45);
-            --text-main: #ffffff;
-            --text-sub: #ffc6ff;
-            --radius-lg: 22px;
-            --radius-md: 16px;
+            /* ألوان هادئة ومريحة للعين */
+            --bg-deep: #121016;
+            --card-bg: rgba(28, 25, 35, 0.95);
+            --card-border: rgba(220, 185, 195, 0.25);
+            --primary-accent: #b5838d;
+            --rose-soft: #e0b1cb;
+            --soft-pink: #f4acb7;
+            --pastel-peach: #ffcad4;
+            --soft-glow: rgba(244, 172, 183, 0.2);
+            --text-main: #f8f9fa;
+            --text-sub: #d8e2dc;
+            --radius-lg: 20px;
+            --radius-md: 14px;
             --font-main: 'Tajawal', sans-serif;
             --font-title: 'Amiri', serif;
             --sab: env(safe-area-inset-bottom, 0px);
@@ -59,7 +60,7 @@
             height: 100%;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.5;
+            opacity: 0.25;
         }
 
         .screen {
@@ -70,7 +71,7 @@
             display: flex;
             flex-direction: column;
             z-index: 10;
-            background: radial-gradient(circle at center, rgba(50, 5, 35, 0.9) 0%, var(--bg-deep) 100%);
+            background: radial-gradient(circle at center, rgba(35, 30, 42, 0.95) 0%, var(--bg-deep) 100%);
         }
 
         .hidden { display: none !important; }
@@ -89,19 +90,19 @@
             border-radius: var(--radius-lg);
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 30px var(--gold-glow);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 20px var(--soft-glow);
         }
 
         .splash-title {
             font-family: var(--font-title);
-            font-size: 2.8rem;
-            color: var(--gold);
+            font-size: 3rem;
+            color: var(--soft-pink);
             margin-bottom: 8px;
         }
 
         .splash-sub {
-            font-size: 1.1rem;
-            color: var(--rose-gold);
+            font-size: 1.05rem;
+            color: var(--rose-soft);
         }
 
         /* Auth Screen */
@@ -120,12 +121,12 @@
             padding: 25px;
             border-radius: var(--radius-lg);
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .auth-box h2 {
             font-family: var(--font-title);
-            color: var(--gold);
+            color: var(--soft-pink);
             font-size: 1.8rem;
             margin-bottom: 6px;
         }
@@ -144,7 +145,7 @@
         .input-group label {
             display: block;
             font-size: 0.75rem;
-            color: var(--rose-gold);
+            color: var(--rose-soft);
             margin-bottom: 4px;
         }
 
@@ -152,50 +153,36 @@
             width: 100%;
             padding: 10px 12px;
             border-radius: var(--radius-md);
-            border: 1px solid rgba(255, 183, 3, 0.4);
-            background: rgba(15, 2, 10, 0.9);
+            border: 1px solid var(--card-border);
+            background: rgba(18, 16, 22, 0.8);
             color: var(--text-main);
             font-family: var(--font-main);
             font-size: 0.9rem;
             outline: none;
         }
 
-        input:focus { border-color: var(--gold); }
+        input:focus { border-color: var(--soft-pink); }
 
         .btn {
             width: 100%;
             padding: 11px;
             border-radius: var(--radius-md);
             border: none;
-            background: linear-gradient(135deg, var(--accent-red), var(--bright-red));
-            color: #fff;
+            background: linear-gradient(135deg, var(--primary-accent), var(--soft-pink));
+            color: #ffffff;
             font-family: var(--font-main);
             font-weight: 700;
             font-size: 0.95rem;
             cursor: pointer;
         }
 
-        .btn-gold {
-            background: linear-gradient(135deg, #f72585, var(--gold));
-            color: #000;
-            font-weight: bold;
-        }
-
         .btn-danger {
-            background: linear-gradient(135deg, #7209b7, #ff0054);
+            background: linear-gradient(135deg, #a44a4a, #e06d6d);
             color: #fff;
             margin-top: 8px;
         }
 
-        .toggle-auth {
-            margin-top: 12px;
-            font-size: 0.8rem;
-            color: var(--rose-gold);
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
-        /* App Screen */
+        /* App Main Screen */
         #app-screen {
             z-index: 100;
             display: flex;
@@ -207,7 +194,7 @@
 
         .app-header {
             height: 65px;
-            background: rgba(15, 2, 10, 0.96);
+            background: rgba(18, 16, 22, 0.98);
             border-bottom: 1px solid var(--card-border);
             display: flex;
             align-items: center;
@@ -223,13 +210,13 @@
 
         .header-title {
             font-family: var(--font-title);
-            font-size: 1.35rem;
-            color: var(--gold);
+            font-size: 1.4rem;
+            color: var(--soft-pink);
         }
 
         .online-status-indicator {
             font-size: 0.72rem;
-            color: #4cc9f0;
+            color: var(--rose-soft);
             display: flex;
             align-items: center;
             gap: 5px;
@@ -239,18 +226,18 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #4cc9f0;
-            box-shadow: 0 0 8px #4cc9f0;
+            background-color: #82c99b;
+            box-shadow: 0 0 6px #82c99b;
         }
 
         .status-dot.offline {
-            background-color: #888;
+            background-color: #777;
             box-shadow: none;
         }
 
         .icon-btn {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,183,3,0.3);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--card-border);
             color: var(--text-main);
             width: 36px;
             height: 36px;
@@ -259,13 +246,12 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            font-size: 0.9rem;
         }
 
         .app-tabs {
             height: 48px;
-            background: rgba(10, 1, 7, 0.95);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(15, 13, 18, 0.95);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
             display: flex;
             flex-shrink: 0;
         }
@@ -282,9 +268,9 @@
         }
 
         .tab-item.active {
-            color: var(--gold);
-            border-bottom-color: var(--gold);
-            background: rgba(255, 183, 3, 0.08);
+            color: var(--soft-pink);
+            border-bottom-color: var(--soft-pink);
+            background: rgba(244, 172, 183, 0.05);
             font-weight: 700;
         }
 
@@ -325,7 +311,6 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            -webkit-overflow-scrolling: touch;
         }
 
         .msg-wrapper {
@@ -344,7 +329,7 @@
             gap: 5px;
             margin-bottom: 2px;
             font-size: 0.75rem;
-            color: var(--rose-gold);
+            color: var(--rose-soft);
         }
 
         .msg-bubble {
@@ -358,79 +343,49 @@
         }
 
         .msg-wrapper.me .msg-bubble {
-            background: linear-gradient(135deg, #4a0033, #7209b7);
-            border: 1px solid rgba(255, 183, 3, 0.35);
+            background: linear-gradient(135deg, #422d3b, #6b4c5e);
+            border: 1px solid var(--card-border);
             color: #fff;
             border-top-right-radius: 2px;
         }
 
         .msg-wrapper.them .msg-bubble {
-            background: linear-gradient(135deg, #20002c, #3a0ca3);
+            background: linear-gradient(135deg, #232230, #38354a);
             border: 1px solid var(--card-border);
             color: var(--text-main);
             border-top-left-radius: 2px;
         }
 
-        .msg-img, .msg-video {
+        .msg-img {
             max-width: 100%;
             max-height: 220px;
             border-radius: 10px;
             margin-top: 6px;
-            display: block;
         }
 
         .msg-audio {
             width: 220px;
             height: 36px;
             margin-top: 4px;
-            outline: none;
-            border-radius: 18px;
-        }
-
-        .msg-reactions {
-            display: flex;
-            gap: 4px;
-            position: absolute;
-            bottom: -10px;
-            left: 8px;
-            background: rgba(20, 2, 15, 0.95);
-            border: 1px solid var(--gold);
-            border-radius: 12px;
-            padding: 1px 6px;
-            font-size: 0.7rem;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-            z-index: 5;
-        }
-        .msg-wrapper.them .msg-reactions {
-            left: auto;
-            right: 8px;
         }
 
         .reactions-picker {
             position: absolute;
             top: -42px;
-            background: rgba(20, 2, 15, 0.98);
-            border: 1px solid var(--gold);
+            background: rgba(20, 18, 25, 0.98);
+            border: 1px solid var(--card-border);
             border-radius: 20px;
             padding: 4px 10px;
             display: flex;
             gap: 8px;
             z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
         }
-        .msg-wrapper.me .reactions-picker { right: 0; }
-        .msg-wrapper.them .reactions-picker { left: 0; }
 
-        .reactions-picker span {
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: transform 0.1s;
-        }
-        .reactions-picker span:hover { transform: scale(1.3); }
+        .reactions-picker span { cursor: pointer; font-size: 1rem; }
 
         .msg-quote {
-            background: rgba(0,0,0,0.4);
-            border-right: 3px solid var(--gold);
+            background: rgba(0,0,0,0.3);
+            border-right: 3px solid var(--soft-pink);
             padding: 4px 8px;
             border-radius: 4px;
             font-size: 0.75rem;
@@ -442,16 +397,23 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
+            gap: 5px;
             font-size: 0.65rem;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255,255,255,0.5);
             margin-top: 3px;
         }
 
-        .owner-badge { color: var(--gold); font-size: 0.85rem; }
+        .tick-status {
+            font-size: 0.75rem;
+            color: #777;
+        }
+        .tick-status.read {
+            color: var(--soft-pink);
+        }
 
         .chat-controls-area {
             flex-shrink: 0;
-            background: rgba(12, 1, 8, 0.98);
+            background: rgba(18, 16, 22, 0.98);
             border-top: 1px solid var(--card-border);
             padding: 8px 10px calc(8px + var(--sab)) 10px;
         }
@@ -459,14 +421,14 @@
         .typing-indicator-bar {
             height: 16px;
             font-size: 0.75rem;
-            color: var(--rose-gold);
+            color: var(--rose-soft);
             font-style: italic;
         }
 
         .reply-preview-box {
             display: none;
-            background: rgba(40, 5, 30, 0.9);
-            border-right: 3px solid var(--gold);
+            background: rgba(40, 35, 48, 0.9);
+            border-right: 3px solid var(--soft-pink);
             padding: 6px 10px;
             border-radius: 6px;
             margin-bottom: 6px;
@@ -484,8 +446,8 @@
         .chat-input-row input {
             flex: 1;
             margin: 0;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,183,3,0.3);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--card-border);
             padding: 10px 12px;
             border-radius: 20px;
         }
@@ -503,131 +465,49 @@
         }
 
         .attach-btn, .record-btn {
-            background: rgba(255,255,255,0.08);
-            color: var(--rose-gold);
-            border: 1px solid rgba(255,183,3,0.3);
-            font-size: 1rem;
+            background: rgba(255,255,255,0.05);
+            color: var(--rose-soft);
+            border: 1px solid var(--card-border);
         }
 
         .record-btn.recording {
-            background: var(--bright-red);
+            background: #b54a5a;
             color: #fff;
-            animation: pulse-red 1s infinite;
-        }
-
-        @keyframes pulse-red {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 84, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 0, 84, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 84, 0); }
         }
 
         .send-btn {
-            background: linear-gradient(135deg, var(--gold), #f72585);
-            color: #000;
-            font-size: 1rem;
+            background: linear-gradient(135deg, var(--primary-accent), var(--soft-pink));
+            color: #fff;
         }
 
         /* Stories View */
-        #stories-view {
-            padding: 12px;
-            overflow-y: auto;
-        }
-
-        .story-actions-bar {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 15px;
-        }
-
+        #stories-view { padding: 12px; overflow-y: auto; }
+        .story-actions-bar { display: flex; gap: 6px; margin-bottom: 15px; }
         .story-create-btn {
-            flex: 1;
-            padding: 8px 4px;
-            background: rgba(30, 5, 25, 0.9);
-            border: 1px dashed var(--gold);
+            flex: 1; padding: 8px 4px;
+            background: rgba(28, 25, 35, 0.9);
+            border: 1px dashed var(--soft-pink);
             border-radius: var(--radius-md);
-            color: var(--gold);
-            font-size: 0.8rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            cursor: pointer;
+            color: var(--soft-pink);
+            font-size: 0.8rem; font-weight: bold;
+            display: flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer;
         }
-
-        .stories-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
+        .stories-list { display: flex; flex-direction: column; gap: 12px; }
         .story-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
             padding: 12px;
-            position: relative;
         }
+        .story-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .story-avatar { width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--soft-pink); object-fit: cover; }
+        .story-author { font-weight: bold; font-size: 0.85rem; color: var(--soft-pink); }
+        .story-time { font-size: 0.7rem; color: var(--text-sub); margin-right: auto; }
+        .story-body { font-size: 0.95rem; color: var(--text-main); white-space: pre-wrap; }
+        .story-media { max-width: 100%; max-height: 300px; border-radius: 8px; margin-top: 8px; width: 100%; object-fit: contain; }
 
-        .story-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .story-avatar {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            border: 1px solid var(--gold);
-            object-fit: cover;
-        }
-
-        .story-author {
-            font-weight: bold;
-            font-size: 0.85rem;
-            color: var(--gold);
-        }
-
-        .story-time {
-            font-size: 0.7rem;
-            color: var(--text-sub);
-            margin-right: auto;
-        }
-
-        .story-body {
-            font-size: 0.95rem;
-            color: var(--text-main);
-            white-space: pre-wrap;
-        }
-
-        .story-media {
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: 8px;
-            margin-top: 8px;
-            width: 100%;
-            object-fit: contain;
-        }
-
-        .delete-btn {
-            background: rgba(255, 0, 84, 0.2);
-            border: 1px solid var(--bright-red);
-            color: #ff8888;
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            margin-right: 5px;
-        }
-
-        /* Profile & Admin View */
-        #members-view {
-            padding: 12px;
-            overflow-y: auto;
-        }
-
+        /* Members & Profile View */
+        #members-view { padding: 12px; overflow-y: auto; }
         .profile-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -636,42 +516,12 @@
             text-align: center;
             margin-bottom: 15px;
         }
-
-        .profile-avatar-container {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 10px;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .profile-avatar-img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--gold);
-        }
-
-        .profile-avatar-badge {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            background: var(--gold);
-            color: #000;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-        }
-
+        .profile-avatar-container { width: 90px; height: 90px; margin: 0 auto 10px; position: relative; cursor: pointer; }
+        .profile-avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 2px solid var(--soft-pink); }
         .wallpaper-btn {
-            background: rgba(255, 183, 3, 0.15);
-            border: 1px solid var(--gold);
-            color: var(--gold);
+            background: rgba(244, 172, 183, 0.1);
+            border: 1px solid var(--soft-pink);
+            color: var(--soft-pink);
             padding: 8px 12px;
             border-radius: var(--radius-md);
             font-size: 0.8rem;
@@ -680,56 +530,36 @@
             display: inline-block;
         }
 
-        .admin-box {
-            background: rgba(40, 5, 30, 0.95);
-            border: 1px solid var(--gold);
-            border-radius: var(--radius-md);
-            padding: 12px;
-            margin-bottom: 15px;
-        }
-
-        .user-card-item {
-            background: rgba(20, 2, 15, 0.6);
-            border: 1px solid rgba(255,183,3,0.2);
-            border-radius: var(--radius-md);
-            padding: 10px 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-
-        .online-dot { width: 10px; height: 10px; border-radius: 50%; background: #4cc9f0; box-shadow: 0 0 6px #4cc9f0; }
-        .offline-dot { width: 10px; height: 10px; border-radius: 50%; background: #666; }
-
+        /* Continuous Smooth Marquee Footer */
         .marquee-footer {
-            height: 34px;
-            background: linear-gradient(90deg, #3a0ca3, #7209b7, #f72585, #3a0ca3);
-            border-top: 1px solid var(--gold);
+            height: 36px;
+            background: linear-gradient(90deg, #2d2636, #423547, #2d2636);
+            border-top: 1px solid var(--card-border);
             overflow: hidden;
+            position: relative;
             display: flex;
             align-items: center;
             flex-shrink: 0;
         }
 
-        .marquee-content {
-            display: inline-block;
-            white-space: nowrap;
-            padding-right: 100%;
-            animation: marquee 14s linear infinite;
+        .marquee-track {
+            display: flex;
+            width: max-content;
+            animation: marquee-scroll 16s linear infinite;
+        }
+
+        .marquee-text {
             font-family: var(--font-title);
             font-size: 1.05rem;
-            color: #fff;
-            text-shadow: 0 0 6px rgba(0,0,0,0.8);
+            color: var(--pastel-peach);
+            padding-right: 40px;
+            white-space: nowrap;
         }
 
-        @keyframes marquee {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
+        @keyframes marquee-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
-
-        .flex-row { display: flex; gap: 8px; align-items: center; }
-        .mt-10 { margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -747,18 +577,17 @@
     <!-- Auth Screen -->
     <div id="auth-screen" class="screen hidden">
         <div class="auth-box">
-            <h2 id="auth-title">تسجيل الدخول</h2>
-            <p id="auth-desc">أدخل بياناتك للعبور</p>
+            <h2>تسجيل الدخول</h2>
+            <p>أدخل الكود الخاص بك للعبور</p>
             <div class="input-group">
                 <label>اسم المستخدم</label>
-                <input type="text" id="auth-username" placeholder="اسمك">
+                <input type="text" id="auth-username" placeholder="3MR أو Roa">
             </div>
             <div class="input-group">
                 <label>كلمة المرور / الكود</label>
                 <input type="password" id="auth-password" placeholder="••••••••">
             </div>
-            <button class="btn btn-gold mt-10" id="auth-btn" onclick="handleAuth()">دخول ❤️</button>
-            <div class="toggle-auth" onclick="toggleAuthMode()" id="auth-toggle-text">معندكش حساب؟ سجل جديد من هنا</div>
+            <button class="btn mt-10" onclick="handleAuth()">دخول ❤️</button>
         </div>
     </div>
 
@@ -772,15 +601,13 @@
                     <span id="partner-status-text">جاري التحقق...</span>
                 </div>
             </div>
-            <div>
-                <button class="icon-btn" onclick="handleLogout()" title="خروج">🚪</button>
-            </div>
+            <button class="icon-btn" onclick="handleLogout()" title="خروج">🚪</button>
         </header>
 
         <nav class="app-tabs">
             <div class="tab-item active" onclick="switchTab('chat-view', this)">💬 المحادثة</div>
             <div class="tab-item" onclick="switchTab('stories-view', this)">📖 الحالات</div>
-            <div class="tab-item" onclick="switchTab('members-view', this)">👑 الأعضاء والتحكم</div>
+            <div class="tab-item" onclick="switchTab('members-view', this)">👑 الملف الشخصي</div>
         </nav>
 
         <main class="app-views">
@@ -792,8 +619,8 @@
                     <div class="typing-indicator-bar" id="typing-indicator"></div>
                     
                     <div class="reply-preview-box" id="reply-preview">
-                        <span class="text" id="reply-preview-text">رد على...</span>
-                        <span style="color:var(--bright-red); cursor:pointer;" onclick="cancelReply()">✕</span>
+                        <span id="reply-preview-text">رد على...</span>
+                        <span style="color:#e06d6d; cursor:pointer;" onclick="cancelReply()">✕</span>
                     </div>
 
                     <div class="chat-input-row">
@@ -820,32 +647,30 @@
                 <div class="stories-list" id="stories-list-container"></div>
             </section>
 
-            <!-- Members & Profile View -->
+            <!-- Profile View -->
             <section id="members-view" class="view-content">
                 <div class="profile-card">
                     <div class="profile-avatar-container" onclick="triggerProfileAvatarChange()">
                         <img id="my-profile-img" src="" class="profile-avatar-img">
-                        <div class="profile-avatar-badge">📷</div>
                     </div>
                     <input type="file" id="profile-avatar-file-input" accept="image/*" style="display:none;" onchange="handleProfileAvatarUpload(this)">
 
                     <h3 id="my-profile-name">--</h3>
-                    <p id="my-profile-role" style="color:var(--rose-gold); font-size:0.85rem; margin-top:4px;"></p>
+                    <p id="my-profile-role" style="color:var(--rose-soft); font-size:0.85rem; margin-top:4px;"></p>
                     
                     <div class="wallpaper-btn" onclick="triggerWallpaperUpload()">🖼️ تغيير خلفية المحادثة</div>
                     <input type="file" id="wallpaper-file-input" accept="image/*" style="display:none;" onchange="handleWallpaperUpload(this)">
                 </div>
 
                 <div id="admin-panel-container"></div>
-
-                <h3 style="color:var(--gold); font-size:0.9rem; margin-bottom:10px;">قائمة الأعضاء المتواجدين</h3>
-                <div id="users-list-container"></div>
             </section>
         </main>
 
+        <!-- Smooth Marquee Footer -->
         <footer class="marquee-footer">
-            <div class="marquee-content">
-                روءت قلبي اللي بعشقها ❤️ • روءت قلبي اللي بعشقها ❤️ • روءت قلبي اللي بعشقها ❤️
+            <div class="marquee-track">
+                <div class="marquee-text">روءت قلبي اللي بعشقها ❤️ • روءت قلبي اللي بعشقها ❤️ • روءت قلبي اللي بعشقها ❤️ • </div>
+                <div class="marquee-text">روءت قلبي اللي بعشقها ❤️ • روءت قلبي اللي بعشقها ❤️ • روءت قلبي اللي بعشقها ❤️ • </div>
             </div>
         </footer>
     </div>
@@ -858,23 +683,17 @@
         const db = firebase.database();
 
         let currentUser = JSON.parse(localStorage.getItem('3mr_roa_session')) || null;
-        let isRegisterMode = false;
         let selectedReplyMsg = null;
         let typingTimeout = null;
 
         let mediaRecorder = null;
         let audioChunks = [];
         let isRecording = false;
-        let initialLoadDone = false;
 
         const DEFAULT_AVATARS = {
             '3MR': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
             'Roa': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80'
         };
-
-        // أصوات التنبيهات
-        const sendSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
-        const receiveSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
 
         function initHeartsCanvas() {
             const canvas = document.getElementById('hearts-canvas');
@@ -882,12 +701,12 @@
             let width = canvas.width = window.innerWidth;
             let height = canvas.height = window.innerHeight;
 
-            const hearts = Array.from({ length: 14 }, () => ({
+            const hearts = Array.from({ length: 10 }, () => ({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                size: Math.random() * 8 + 4,
-                speedY: Math.random() * 0.5 + 0.2,
-                opacity: Math.random() * 0.4 + 0.2
+                size: Math.random() * 6 + 3,
+                speedY: Math.random() * 0.4 + 0.1,
+                opacity: Math.random() * 0.3 + 0.1
             }));
 
             function drawHeart(x, y, size, color) {
@@ -902,7 +721,7 @@
                 hearts.forEach(h => {
                     h.y -= h.speedY;
                     if (h.y < -20) h.y = height + 20;
-                    drawHeart(h.x, h.y, h.size, `rgba(255, 183, 3, ${h.opacity})`);
+                    drawHeart(h.x, h.y, h.size, `rgba(244, 172, 183, ${h.opacity})`);
                 });
                 requestAnimationFrame(animate);
             }
@@ -919,64 +738,23 @@
                     document.getElementById('auth-screen').classList.remove('hidden');
                 }
             }, 600);
-            
-            document.addEventListener('click', (e) => {
-                if (!e.target.closest('.msg-bubble') && !e.target.closest('.reactions-picker')) {
-                    closeAllReactionPickers();
-                }
-            });
         });
-
-        function toggleAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            document.getElementById('auth-title').innerText = isRegisterMode ? "تسجيل حساب جديد" : "تسجيل الدخول";
-            document.getElementById('auth-desc').innerText = isRegisterMode ? "أنشئ حسابك للانضمام إلينا" : "أدخل بياناتك للعبور";
-            document.getElementById('auth-btn').innerText = isRegisterMode ? "إنشاء حساب ✨" : "دخول ❤️";
-            document.getElementById('auth-toggle-text').innerText = isRegisterMode ? "عندك حساب بالفعل؟ سجل دخول" : "معندكش حساب؟ سجل جديد من هنا";
-        }
 
         function handleAuth() {
             const u = document.getElementById('auth-username').value.trim();
             const p = document.getElementById('auth-password').value.trim();
 
-            if (!u || !p) return alert('أدخل كل البيانات!');
-
             if (u === '3MR' && p === '772009') {
-                saveSession('3MR', true, true, 'المالك والآدمن 👑');
-                return;
+                saveSession('3MR', true, 'المالك 👑');
+            } else if (u === 'Roa' && p === '15102009') {
+                saveSession('Roa', false, 'روءت قلبي ❤️');
+            } else {
+                alert('البيانات غير صحيحة!');
             }
-            if (u === 'Roa' && p === '15102009') {
-                saveSession('Roa', true, false, 'قلب القائد ❤️');
-                return;
-            }
-
-            db.ref(`users/${u}`).once('value', snap => {
-                const userData = snap.val();
-
-                if (isRegisterMode) {
-                    if (userData) return alert('اسم المستخدم موجود بالفعل!');
-                    
-                    const newUser = {
-                        username: u,
-                        password: p,
-                        isVerified: false,
-                        isAdmin: false,
-                        role: 'عضو مميز'
-                    };
-                    db.ref(`users/${u}`).set(newUser, err => {
-                        if (!err) saveSession(u, false, false, 'عضو مميز');
-                    });
-                } else {
-                    if (!userData || userData.password !== p) {
-                        return alert('اسم المستخدم أو كلمة المرور غير صحيحة!');
-                    }
-                    saveSession(u, userData.isVerified || false, userData.isAdmin || false, userData.role || 'عضو مميز');
-                }
-            });
         }
 
-        function saveSession(username, isVerified, isAdmin, role) {
-            currentUser = { username, isVerified, isAdmin, role };
+        function saveSession(username, isAdmin, role) {
+            currentUser = { username, isAdmin, role };
             localStorage.setItem('3mr_roa_session', JSON.stringify(currentUser));
             document.getElementById('auth-screen').classList.add('hidden');
             launchMainApp();
@@ -1001,7 +779,6 @@
             listenToMessages();
             listenToTyping();
             listenToStories();
-            listenToUsers();
             listenToPartnerPresence();
             loadWallpaper();
         }
@@ -1016,7 +793,7 @@
             });
         }
 
-        /* --- Last Seen & Presence Feature --- */
+        /* Partner Status & Last Seen */
         function listenToPartnerPresence() {
             const partnerName = currentUser.username === '3MR' ? 'Roa' : '3MR';
             db.ref(`users/${partnerName}`).on('value', snap => {
@@ -1027,26 +804,19 @@
                 if (data.isOnline) {
                     dot.className = 'status-dot';
                     text.innerText = 'متصل الآن';
+                    markMessagesAsRead();
                 } else {
                     dot.className = 'status-dot offline';
-                    if (data.lastSeen) {
-                        text.innerText = `آخر ظهور: ${formatLastSeen(data.lastSeen)}`;
-                    } else {
-                        text.innerText = 'غير متصل';
-                    }
+                    text.innerText = data.lastSeen ? `آخر ظهور: ${formatLastSeen(data.lastSeen)}` : 'غير متصل';
                 }
             });
         }
 
         function formatLastSeen(timestamp) {
-            const now = Date.now();
-            const diffMin = Math.floor((now - timestamp) / (1000 * 60));
-            
+            const diffMin = Math.floor((Date.now() - timestamp) / (1000 * 60));
             if (diffMin < 1) return 'منذ لحظات';
             if (diffMin < 60) return `منذ ${diffMin} دقيقة`;
-            
-            const date = new Date(timestamp);
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
         function switchTab(tabId, el) {
@@ -1056,7 +826,7 @@
             document.getElementById(tabId).classList.add('active');
         }
 
-        /* --- Audio Recording Logic --- */
+        /* Audio Recording */
         async function toggleAudioRecording() {
             const recordBtn = document.getElementById('record-audio-btn');
             if (!isRecording) {
@@ -1069,64 +839,156 @@
                         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                         const reader = new FileReader();
                         reader.readAsDataURL(audioBlob);
-                        reader.onloadend = () => {
-                            sendChatMessage(null, reader.result, 'audio');
-                        };
+                        reader.onloadend = () => sendChatMessage(null, reader.result, 'audio');
                         stream.getTracks().forEach(track => track.stop());
                     };
                     mediaRecorder.start();
                     isRecording = true;
                     recordBtn.classList.add('recording');
                 } catch (err) {
-                    alert('لم يتم السماح بالوصول للميكروفون!');
+                    alert('يرجى التكرم بالسماح بالميكروفون!');
                 }
             } else {
-                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                    mediaRecorder.stop();
-                }
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
                 isRecording = false;
                 recordBtn.classList.remove('recording');
             }
         }
 
-        /* --- Chat Functions --- */
+        /* Chat Logic */
         function sendChatMessage(textOverride = null, mediaUrl = null, mediaType = null) {
             const input = document.getElementById('chat-input-field');
             const text = textOverride !== null ? textOverride : input.value.trim();
 
             if (!text && !mediaUrl) return;
 
-            const msgData = {
-                sender: currentUser.username,
-                text: text || '',
-                timestamp: firebase.database.ServerValue.TIMESTAMP,
-                replyTo: selectedReplyMsg || null
-            };
+            const partnerName = currentUser.username === '3MR' ? 'Roa' : '3MR';
 
-            if (mediaUrl) {
-                msgData.mediaUrl = mediaUrl;
-                msgData.mediaType = mediaType;
-            }
+            db.ref(`users/${partnerName}`).once('value', snap => {
+                const partnerData = snap.val() || {};
 
-            db.ref('messages').push(msgData, () => {
-                try { sendSound.play(); } catch(e){}
-                if (textOverride === null) input.value = '';
-                cancelReply();
-                stopTyping();
+                const msgData = {
+                    sender: currentUser.username,
+                    text: text || '',
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    replyTo: selectedReplyMsg || null,
+                    read: partnerData.isOnline || false
+                };
+
+                if (mediaUrl) {
+                    msgData.mediaUrl = mediaUrl;
+                    msgData.mediaType = mediaType;
+                }
+
+                db.ref('messages').push(msgData, () => {
+                    if (textOverride === null) input.value = '';
+                    cancelReply();
+                    stopTyping();
+                });
             });
         }
 
-        function triggerChatImageUpload() {
-            document.getElementById('chat-image-input').click();
+        function markMessagesAsRead() {
+            db.ref('messages').once('value', snap => {
+                const messages = snap.val() || {};
+                Object.keys(messages).forEach(key => {
+                    if (messages[key].sender !== currentUser.username && !messages[key].read) {
+                        db.ref(`messages/${key}/read`).set(true);
+                    }
+                });
+            });
         }
 
-        function handleChatImageUpload(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => sendChatMessage(null, e.target.result, 'image');
-            reader.readAsDataURL(file);
-            input.value = '';
+        function listenToMessages() {
+            const container = document.getElementById('chat-messages-container');
+            db.ref('messages').on('value', snap => {
+                container.innerHTML = '';
+                const messages = snap.val() || {};
+
+                Object.keys(messages).forEach(key => {
+                    const msg = messages[key];
+                    const isMe = msg.sender === currentUser.username;
+
+                    if (!isMe && !msg.read) {
+                        db.ref(`messages/${key}/read`).set(true);
+                    }
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
+                    
+                    let quoteHtml = msg.replyTo ? `<div class="msg-quote"><b>${msg.replyTo.sender}:</b> ${msg.replyTo.text || 'ميديا'}</div>` : '';
+                    let mediaHtml = '';
+                    if (msg.mediaUrl) {
+                        if (msg.mediaType === 'image') mediaHtml = `<img src="${msg.mediaUrl}" class="msg-img">`;
+                        else if (msg.mediaType === 'audio') mediaHtml = `<audio src="${msg.mediaUrl}" controls class="msg-audio"></audio>`;
+                    }
+
+                    let tickHtml = isMe ? (msg.read ? '<span class="tick-status read">✔️✔️</span>' : '<span class="tick-status">✔️</span>') : '';
+
+                    wrapper.innerHTML = `
+                        <div class="msg-header">
+                            <span>${msg.sender}</span> ${msg.sender === '3MR' ? '👑' : '❤️'}
+                        </div>
+                        <div class="msg-bubble" onclick="handleBubbleClick(event, '${key}', '${msg.sender}', \`${(msg.text || '').replace(/`/g, '')}\`)">
+                            ${quoteHtml}
+                            <div>${msg.text || ''}</div>
+                            ${mediaHtml}
+                        </div>
+                        <div class="msg-footer">
+                            <span>${msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</span>
+                            ${tickHtml}
+                        </div>
+                    `;
+                    container.appendChild(wrapper);
+                });
+                container.scrollTop = container.scrollHeight;
+            });
+        }
+
+        function handleBubbleClick(e, msgId, sender, text) {
+            e.stopPropagation();
+            closeAllReactionPickers();
+            const wrapper = e.currentTarget.parentElement;
+
+            const picker = document.createElement('div');
+            picker.className = 'reactions-picker';
+            
+            const replyBtn = document.createElement('span');
+            replyBtn.innerText = '💬 رد';
+            replyBtn.onclick = (ev) => {
+                ev.stopPropagation();
+                setReply(sender, text);
+                picker.remove();
+            };
+            picker.appendChild(replyBtn);
+
+            if (sender === currentUser.username || currentUser.isAdmin) {
+                const delBtn = document.createElement('span');
+                delBtn.innerText = '🗑️';
+                delBtn.onclick = (ev) => {
+                    ev.stopPropagation();
+                    db.ref(`messages/${msgId}`).remove();
+                    picker.remove();
+                };
+                picker.appendChild(delBtn);
+            }
+
+            wrapper.appendChild(picker);
+        }
+
+        function closeAllReactionPickers() {
+            document.querySelectorAll('.reactions-picker').forEach(p => p.remove());
+        }
+
+        function setReply(sender, text) {
+            selectedReplyMsg = { sender, text };
+            document.getElementById('reply-preview-text').innerText = `رد على ${sender}: ${text.substring(0, 20)}...`;
+            document.getElementById('reply-preview').style.display = 'flex';
+        }
+
+        function cancelReply() {
+            selectedReplyMsg = null;
+            document.getElementById('reply-preview').style.display = 'none';
         }
 
         function handleTypingEvent() {
@@ -1146,360 +1008,101 @@
                 const data = snap.val() || {};
                 const typers = Object.keys(data).filter(u => u !== currentUser.username);
                 const indicator = document.getElementById('typing-indicator');
-                if (typers.length > 0) {
-                    indicator.innerText = `${typers.join(', ')} يكتب الآن...`;
-                } else {
-                    indicator.innerText = '';
-                }
+                indicator.innerText = typers.length > 0 ? `${typers.join(', ')} يكتب الآن...` : '';
             });
         }
 
-        function listenToMessages() {
-            const container = document.getElementById('chat-messages-container');
-            db.ref('messages').on('value', snap => {
-                container.innerHTML = '';
-                const messages = snap.val() || {};
-                const keys = Object.keys(messages);
-
-                if (initialLoadDone && keys.length > 0) {
-                    const lastKey = keys[keys.length - 1];
-                    if (messages[lastKey].sender !== currentUser.username) {
-                        try { receiveSound.play(); } catch(e){}
-                    }
-                }
-                initialLoadDone = true;
-
-                keys.forEach(key => {
-                    const msg = messages[key];
-                    const isMe = msg.sender === currentUser.username;
-                    
-                    const wrapper = document.createElement('div');
-                    wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
-                    
-                    let quoteHtml = '';
-                    if (msg.replyTo) {
-                        quoteHtml = `<div class="msg-quote"><b>${msg.replyTo.sender}:</b> ${msg.replyTo.text || 'ميديا'}</div>`;
-                    }
-
-                    let mediaHtml = '';
-                    if (msg.mediaUrl) {
-                        if (msg.mediaType === 'image') {
-                            mediaHtml = `<img src="${msg.mediaUrl}" class="msg-img">`;
-                        } else if (msg.mediaType === 'audio') {
-                            mediaHtml = `<audio src="${msg.mediaUrl}" controls class="msg-audio"></audio>`;
-                        }
-                    }
-
-                    const badgeHtml = msg.sender === '3MR' 
-                        ? '<span class="owner-badge">👑</span>' 
-                        : (msg.sender === 'Roa' ? '<span class="owner-badge">❤️</span>' : '');
-
-                    let reactionsHtml = '';
-                    if (msg.reactions) {
-                        let counts = {};
-                        Object.values(msg.reactions).forEach(r => {
-                            counts[r] = (counts[r] || 0) + 1;
-                        });
-                        let reactionsText = Object.entries(counts).map(([r, c]) => `${r} ${c > 1 ? c : ''}`).join(' ');
-                        reactionsHtml = `<div class="msg-reactions">${reactionsText}</div>`;
-                    }
-
-                    wrapper.innerHTML = `
-                        <div class="msg-header">
-                            <span>${msg.sender}</span> ${badgeHtml}
-                        </div>
-                        <div class="msg-bubble" onclick="handleBubbleClick(event, '${key}', '${msg.sender}', \`${(msg.text || '').replace(/`/g, '')}\`)">
-                            ${quoteHtml}
-                            <div>${msg.text || ''}</div>
-                            ${mediaHtml}
-                            ${reactionsHtml}
-                        </div>
-                        <div class="msg-footer">
-                            <span>${msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</span>
-                        </div>
-                    `;
-                    container.appendChild(wrapper);
-                });
-                container.scrollTop = container.scrollHeight;
-            });
+        function triggerChatImageUpload() { document.getElementById('chat-image-input').click(); }
+        function handleChatImageUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => sendChatMessage(null, e.target.result, 'image');
+            reader.readAsDataURL(file);
+            input.value = '';
         }
 
-        /* Message Reactions & Reply Selector */
-        function handleBubbleClick(e, msgId, sender, text) {
-            e.stopPropagation();
-            closeAllReactionPickers();
-            
-            const bubble = e.currentTarget;
-            const wrapper = bubble.parentElement;
-
-            const picker = document.createElement('div');
-            picker.className = 'reactions-picker';
-            picker.id = `picker-${msgId}`;
-            
-            const emojis = ['❤️', '😂', '😮', '😢', '🔥', '👍'];
-            emojis.forEach(emoji => {
-                const span = document.createElement('span');
-                span.innerText = emoji;
-                span.onclick = (ev) => {
-                    ev.stopPropagation();
-                    addReaction(msgId, emoji);
-                    picker.remove();
-                };
-                picker.appendChild(span);
-            });
-
-            const replyBtn = document.createElement('span');
-            replyBtn.innerText = '💬';
-            replyBtn.title = 'رد';
-            replyBtn.onclick = (ev) => {
-                ev.stopPropagation();
-                setReply(sender, text);
-                picker.remove();
-            };
-            picker.appendChild(replyBtn);
-
-            if (sender === currentUser.username || currentUser.isAdmin) {
-                const delBtn = document.createElement('span');
-                delBtn.innerText = '🗑️';
-                delBtn.title = 'حذف الرسالة';
-                delBtn.onclick = (ev) => {
-                    ev.stopPropagation();
-                    deleteSingleMessage(msgId);
-                    picker.remove();
-                };
-                picker.appendChild(delBtn);
-            }
-
-            wrapper.appendChild(picker);
-        }
-
-        function closeAllReactionPickers() {
-            document.querySelectorAll('.reactions-picker').forEach(p => p.remove());
-        }
-
-        function addReaction(msgId, emoji) {
-            if (!currentUser) return;
-            db.ref(`messages/${msgId}/reactions/${currentUser.username}`).set(emoji);
-        }
-
-        function deleteSingleMessage(msgId) {
-            if (confirm('هل تريد حذف هذه الرسالة؟')) {
-                db.ref(`messages/${msgId}`).remove();
-            }
-        }
-
-        function clearAllMessages() {
-            if (confirm('هل أنت تأكد من مسح جميع الرسائل بشكل كامل وسريع؟')) {
-                db.ref('messages').remove();
-            }
-        }
-
-        function clearAllStories() {
-            if (confirm('هل أنت تأكد من مسح جميع الحالات؟')) {
-                db.ref('stories').remove();
-            }
-        }
-
-        function setReply(sender, text) {
-            selectedReplyMsg = { sender, text };
-            document.getElementById('reply-preview-text').innerText = `رد على ${sender}: ${text.substring(0, 20)}...`;
-            document.getElementById('reply-preview').style.display = 'flex';
-        }
-
-        function cancelReply() {
-            selectedReplyMsg = null;
-            document.getElementById('reply-preview').style.display = 'none';
-        }
-
-        /* --- Wallpaper Feature --- */
-        function triggerWallpaperUpload() {
-            document.getElementById('wallpaper-file-input').click();
-        }
-
+        /* Wallpaper & Profile */
+        function triggerWallpaperUpload() { document.getElementById('wallpaper-file-input').click(); }
         function handleWallpaperUpload(input) {
             const file = input.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = e => {
-                const imgUrl = e.target.result;
-                localStorage.setItem('chat_wallpaper', imgUrl);
-                document.getElementById('chat-view').style.backgroundImage = `url(${imgUrl})`;
+                localStorage.setItem('chat_wallpaper', e.target.result);
+                document.getElementById('chat-view').style.backgroundImage = `url(${e.target.result})`;
             };
             reader.readAsDataURL(file);
         }
 
         function loadWallpaper() {
             const savedWp = localStorage.getItem('chat_wallpaper');
-            if (savedWp) {
-                document.getElementById('chat-view').style.backgroundImage = `url(${savedWp})`;
+            if (savedWp) document.getElementById('chat-view').style.backgroundImage = `url(${savedWp})`;
+        }
+
+        function loadProfileView() {
+            document.getElementById('my-profile-name').innerText = currentUser.username;
+            document.getElementById('my-profile-role').innerText = currentUser.role;
+            const avatarImg = document.getElementById('my-profile-img');
+            avatarImg.src = DEFAULT_AVATARS[currentUser.username] || 'https://via.placeholder.com/80';
+            
+            if (currentUser.isAdmin) {
+                document.getElementById('admin-panel-container').innerHTML = `
+                    <button class="btn btn-danger" onclick="db.ref('messages').remove()">🧹 مسح كافة الرسائل</button>
+                `;
             }
         }
 
-        /* --- Stories Logic --- */
+        function triggerProfileAvatarChange() { document.getElementById('profile-avatar-file-input').click(); }
+        function handleProfileAvatarUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('my-profile-img').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        /* Stories */
         function createStoryText() {
             const text = prompt('اكتب حالتك النصية:');
-            if (text) {
-                db.ref('stories').push({
-                    author: currentUser.username,
-                    text: text,
-                    type: 'text',
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-            }
+            if (text) db.ref('stories').push({ author: currentUser.username, text: text, type: 'text', timestamp: firebase.database.ServerValue.TIMESTAMP });
         }
-
         function triggerStoryMediaUpload(acceptType) {
             const input = document.getElementById('story-media-input');
-            input.accept = acceptType;
-            input.click();
+            input.accept = acceptType; input.click();
         }
-
         function handleStoryMediaUpload(input) {
             const file = input.files[0];
             if (!file) return;
             const isVideo = file.type.startsWith('video');
             const reader = new FileReader();
             reader.onload = e => {
-                db.ref('stories').push({
-                    author: currentUser.username,
-                    mediaUrl: e.target.result,
-                    type: isVideo ? 'video' : 'image',
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
+                db.ref('stories').push({ author: currentUser.username, mediaUrl: e.target.result, type: isVideo ? 'video' : 'image', timestamp: firebase.database.ServerValue.TIMESTAMP });
             };
             reader.readAsDataURL(file);
             input.value = '';
         }
-
         function listenToStories() {
             const container = document.getElementById('stories-list-container');
             db.ref('stories').on('value', snap => {
                 container.innerHTML = '';
                 const stories = snap.val() || {};
-                const now = Date.now();
-                
                 Object.keys(stories).reverse().forEach(key => {
                     const story = stories[key];
-                    if (story.timestamp && (now - story.timestamp > 24 * 60 * 60 * 1000)) {
-                        db.ref(`stories/${key}`).remove();
-                        return;
-                    }
-
-                    const isOwnerOrAdmin = story.author === currentUser.username || currentUser.isAdmin;
-                    const deleteBtnHtml = isOwnerOrAdmin ? `<button class="delete-btn" onclick="deleteStory('${key}')">حذف</button>` : '';
-
-                    let mediaContent = '';
-                    if (story.mediaUrl) {
-                        if (story.type === 'video') {
-                            mediaContent = `<video src="${story.mediaUrl}" controls class="story-media"></video>`;
-                        } else {
-                            mediaContent = `<img src="${story.mediaUrl}" class="story-media">`;
-                        }
-                    }
-
-                    const avatarSrc = (currentUser.customAvatar && story.author === currentUser.username) 
-                        ? currentUser.customAvatar 
-                        : (DEFAULT_AVATARS[story.author] || 'https://via.placeholder.com/35');
-
                     const card = document.createElement('div');
                     card.className = 'story-card';
                     card.innerHTML = `
                         <div class="story-header">
-                            <img src="${avatarSrc}" class="story-avatar">
+                            <img src="${DEFAULT_AVATARS[story.author] || ''}" class="story-avatar">
                             <span class="story-author">${story.author}</span>
                             <span class="story-time">${story.timestamp ? new Date(story.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</span>
-                            ${deleteBtnHtml}
                         </div>
                         ${story.text ? `<div class="story-body">${story.text}</div>` : ''}
-                        ${mediaContent}
+                        ${story.mediaUrl ? (story.type === 'video' ? `<video src="${story.mediaUrl}" controls class="story-media"></video>` : `<img src="${story.mediaUrl}" class="story-media">`) : ''}
                     `;
                     container.appendChild(card);
-                });
-            });
-        }
-
-        function deleteStory(storyId) {
-            if (confirm('هل تريد حذف هذه الحالة؟')) {
-                db.ref(`stories/${storyId}`).remove();
-            }
-        }
-
-        /* --- Profile Avatar Upload --- */
-        function triggerProfileAvatarChange() {
-            document.getElementById('profile-avatar-file-input').click();
-        }
-
-        function handleProfileAvatarUpload(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                const imgData = e.target.result;
-                document.getElementById('my-profile-img').src = imgData;
-                currentUser.customAvatar = imgData;
-                localStorage.setItem('3mr_roa_session', JSON.stringify(currentUser));
-                db.ref(`users/${currentUser.username}/avatar`).set(imgData);
-            };
-            reader.readAsDataURL(file);
-        }
-
-        /* --- Members & Admin Logic --- */
-        function loadProfileView() {
-            document.getElementById('my-profile-name').innerText = currentUser.username;
-            document.getElementById('my-profile-role').innerText = currentUser.role;
-            const avatarImg = document.getElementById('my-profile-img');
-            
-            db.ref(`users/${currentUser.username}/avatar`).once('value', snap => {
-                const av = snap.val();
-                if (av) {
-                    avatarImg.src = av;
-                    currentUser.customAvatar = av;
-                } else {
-                    avatarImg.src = DEFAULT_AVATARS[currentUser.username] || 'https://via.placeholder.com/80';
-                }
-            });
-            
-            if (currentUser.isAdmin) {
-                renderAdminPanel();
-            }
-        }
-
-        function renderAdminPanel() {
-            const container = document.getElementById('admin-panel-container');
-            container.innerHTML = `
-                <div class="admin-box">
-                    <h3 style="color:var(--gold); font-size:0.95rem; margin-bottom:8px;">لوحة تحكم الأدمن 👑</h3>
-                    <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:10px;">إدارة وحذف البيانات فورياً:</p>
-                    <button class="btn btn-danger" onclick="clearAllMessages()">🧹 مسح جميع الرسائل</button>
-                    <button class="btn btn-danger" onclick="clearAllStories()">🧹 مسح جميع الاستوريهات</button>
-                </div>
-            `;
-        }
-
-        function listenToUsers() {
-            const container = document.getElementById('users-list-container');
-            db.ref('users').on('value', snap => {
-                container.innerHTML = '';
-                const users = snap.val() || {};
-                
-                const allUsers = { ...users };
-                if (!allUsers['3MR']) allUsers['3MR'] = { username: '3MR', role: 'المالك والآدمن 👑', isOnline: true };
-                if (!allUsers['Roa']) allUsers['Roa'] = { username: 'Roa', role: 'قلب القائد ❤️', isOnline: false };
-
-                Object.keys(allUsers).forEach(uname => {
-                    const u = allUsers[uname];
-                    const item = document.createElement('div');
-                    item.className = 'user-card-item';
-                    item.innerHTML = `
-                        <div class="flex-row">
-                            <span class="${u.isOnline ? 'online-dot' : 'offline-dot'}"></span>
-                            <div>
-                                <div style="font-weight:bold; font-size:0.85rem; color:var(--text-main);">${u.username || uname}</div>
-                                <div style="font-size:0.7rem; color:var(--rose-gold);">${u.role || 'عضو'}</div>
-                            </div>
-                        </div>
-                    `;
-                    container.appendChild(item);
                 });
             });
         }
