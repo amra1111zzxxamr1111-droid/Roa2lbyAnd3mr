@@ -296,6 +296,7 @@
             display: flex;
             flex-direction: column;
             max-width: 85%;
+            position: relative;
         }
 
         .msg-wrapper.me { align-self: flex-start; }
@@ -325,6 +326,7 @@
             line-height: 1.4;
             word-break: break-word;
             position: relative;
+            cursor: pointer;
         }
 
         .msg-wrapper.me .msg-bubble {
@@ -348,6 +350,57 @@
             margin-top: 5px;
             display: block;
         }
+
+        /* Voice Note Styling */
+        .msg-audio {
+            width: 220px;
+            height: 36px;
+            margin-top: 4px;
+            outline: none;
+            border-radius: 18px;
+        }
+
+        /* Message Reactions Styling */
+        .msg-reactions {
+            display: flex;
+            gap: 4px;
+            position: absolute;
+            bottom: -10px;
+            left: 8px;
+            background: rgba(20, 8, 14, 0.9);
+            border: 1px solid var(--gold);
+            border-radius: 12px;
+            padding: 1px 6px;
+            font-size: 0.7rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            z-index: 5;
+        }
+        .msg-wrapper.them .msg-reactions {
+            left: auto;
+            right: 8px;
+        }
+
+        .reactions-picker {
+            position: absolute;
+            top: -38px;
+            background: rgba(20, 8, 14, 0.95);
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            padding: 3px 8px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        }
+        .msg-wrapper.me .reactions-picker { right: 0; }
+        .msg-wrapper.them .reactions-picker { left: 0; }
+
+        .reactions-picker span {
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: transform 0.1s;
+        }
+        .reactions-picker span:hover { transform: scale(1.3); }
 
         .msg-quote {
             background: rgba(0,0,0,0.3);
@@ -412,7 +465,7 @@
             border-radius: 20px;
         }
 
-        .attach-btn, .send-btn {
+        .attach-btn, .send-btn, .record-btn {
             width: 38px;
             height: 38px;
             border-radius: 50%;
@@ -424,11 +477,23 @@
             border: none;
         }
 
-        .attach-btn {
+        .attach-btn, .record-btn {
             background: rgba(255,255,255,0.08);
             color: var(--rose-gold);
             border: 1px solid rgba(212,175,55,0.2);
             font-size: 1rem;
+        }
+
+        .record-btn.recording {
+            background: var(--bright-red);
+            color: #fff;
+            animation: pulse-red 1s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 40, 40, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(214, 40, 40, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 40, 40, 0); }
         }
 
         .send-btn {
@@ -683,6 +748,8 @@
                         <button class="attach-btn" onclick="triggerChatImageUpload()">📷</button>
                         <input type="file" id="chat-image-input" accept="image/*" style="display:none;" onchange="handleChatImageUpload(this)">
                         
+                        <button class="record-btn" id="record-audio-btn" onclick="toggleAudioRecording()">🎙️</button>
+
                         <input type="text" id="chat-input-field" placeholder="اكتب رسالتك..." oninput="handleTypingEvent()" onkeydown="if(event.key==='Enter') sendChatMessage()">
                         
                         <button class="send-btn" onclick="sendChatMessage()">❤️</button>
@@ -738,6 +805,12 @@
         let selectedReplyMsg = null;
         let typingTimeout = null;
 
+        // Recording Audio variables
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+        let activeReactionPickerId = null;
+
         const DEFAULT_AVATARS = {
             '3MR': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
             'Roa': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80'
@@ -786,6 +859,12 @@
                     document.getElementById('auth-screen').classList.remove('hidden');
                 }
             }, 600);
+            
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.msg-bubble') && !e.target.closest('.reactions-picker')) {
+                    closeAllReactionPickers();
+                }
+            });
         });
 
         function toggleAuthMode() {
@@ -802,7 +881,6 @@
 
             if (!u || !p) return alert('أدخل كل البيانات!');
 
-            // الحسابات الأساسية الخاصة بالملاك
             if (u === '3MR' && p === '772009') {
                 saveSession('3MR', true, true, 'المالك والآدمن 👑');
                 return;
@@ -845,225 +923,245 @@
         }
 
         function handleLogout() {
+            if (currentUser) {
+                db.ref(`users/${currentUser.username}/isOnline`).set(false);
+            }
             localStorage.removeItem('3mr_roa_session');
+            currentUser = null;
             location.reload();
         }
 
         function launchMainApp() {
             document.getElementById('app-screen').classList.remove('hidden');
-
-            db.ref(`users/${currentUser.username}`).update({
-                username: currentUser.username,
-                status: 'online'
-            });
-
-            db.ref(`users/${currentUser.username}/status`).onDisconnect().set('offline');
-
-            // مزامنة حالة التوثيق وصورة البروفايل تلقائياً
-            db.ref(`users/${currentUser.username}`).on('value', snap => {
-                const val = snap.val() || {};
-                currentUser.isVerified = (currentUser.username === '3MR' || currentUser.username === 'Roa') ? true : (val.isVerified || false);
-                currentUser.isAdmin = (currentUser.username === '3MR') ? true : (val.isAdmin || false);
-                currentUser.avatar = val.avatar || DEFAULT_AVATARS[currentUser.username] || DEFAULT_AVATARS['3MR'];
-
-                document.getElementById('my-profile-img').src = currentUser.avatar;
-                
-                let badges = '';
-                if (currentUser.isAdmin) badges += '<span class="owner-badge">👑 (مالك)</span> ';
-                if (currentUser.isVerified) badges += '<span class="verified-badge">✔</span>';
-
-                document.getElementById('my-profile-name').innerHTML = `${currentUser.username} ${badges}`;
-                document.getElementById('my-profile-role').innerText = currentUser.role || 'عضو';
-            });
-
-            if (currentUser.isAdmin) {
-                document.getElementById('admin-panel-container').innerHTML = `
-                    <div class="admin-box">
-                        <h4 style="color:var(--gold); margin-bottom:8px;">⚙️ لوحة تحكم الأدمن</h4>
-                        <button class="btn btn-gold" onclick="clearAllChatMessages()">مسح المحادثات بالكامل 🗑️</button>
-                    </div>
-                `;
-            }
-
-            initListeners();
+            setupPresence();
+            loadProfileView();
+            listenToMessages();
+            listenToTyping();
+            listenToStories();
+            listenToUsers();
         }
 
-        function initListeners() {
-            // مؤشر الكتابة
-            db.ref('typing').on('value', snap => {
-                const data = snap.val() || {};
-                const indicator = document.getElementById('typing-indicator');
-                let txt = '';
-                Object.keys(data).forEach(u => {
-                    if (u !== currentUser.username && (Date.now() - data[u].timestamp < 3000)) {
-                        txt = `${u} يكتب الآن... ❤️`;
-                    }
-                });
-                indicator.innerText = txt;
-            });
+        function setupPresence() {
+            if (!currentUser) return;
+            const userRef = db.ref(`users/${currentUser.username}`);
+            userRef.update({ isOnline: true });
+            userRef.onDisconnect().update({ isOnline: false });
+        }
 
-            // الشات السريع المباشر (child_added + limitToLast لأعلى أداء)
-            const chatContainer = document.getElementById('chat-messages-container');
-            
-            db.ref('messages').limitToLast(40).on('child_added', snap => {
-                const m = snap.val();
-                const key = snap.key;
-                if (!m) return;
+        function switchTab(tabId, el) {
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
 
-                const isMe = m.sender === currentUser.username;
-                const timeStr = new Date(m.timestamp || Date.now()).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
-
-                const wrapper = document.createElement('div');
-                wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
-                wrapper.id = `msg-${key}`;
-
-                let badgeHtml = '';
-                if (m.isAdmin) badgeHtml += `<span class="owner-badge">👑</span> `;
-                if (m.isVerified) badgeHtml += `<span class="verified-badge">✔</span>`;
-
-                let quoteHtml = m.replyTo ? `<div class="msg-quote"><b>${m.replyTo.sender}:</b> ${m.replyTo.text}</div>` : '';
-                let imgHtml = m.image ? `<img src="${m.image}" class="msg-img">` : '';
-
-                wrapper.innerHTML = `
-                    <div class="msg-header">
-                        <img src="${m.avatar || DEFAULT_AVATARS['3MR']}" class="msg-avatar">
-                        <span>${m.sender} ${badgeHtml}</span>
-                    </div>
-                    <div class="msg-bubble" onclick="setReplyTarget('${m.sender}', '${m.text || 'صورة'}')">
-                        ${quoteHtml}
-                        <div>${m.text || ''}</div>
-                        ${imgHtml}
-                    </div>
-                    <div class="msg-footer">
-                        <span>${timeStr}</span>
-                    </div>
-                `;
-                chatContainer.appendChild(wrapper);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            });
-
-            db.ref('messages').on('child_removed', snap => {
-                const el = document.getElementById(`msg-${snap.key}`);
-                if (el) el.remove();
-                else chatContainer.innerHTML = '';
-            });
-
-            // استماع للحالات (Stories)
-            db.ref('stories').on('value', snap => {
-                const container = document.getElementById('stories-list-container');
-                container.innerHTML = '';
-                const stories = snap.val() || {};
-
-                const keys = Object.keys(stories).reverse();
-                if (keys.length === 0) {
-                    container.innerHTML = '<div style="text-align:center; color:var(--text-sub); font-size:0.85rem; padding: 20px;">لا توجد حالات حالياً.</div>';
-                    return;
+        /* --- Audio Recording Logic --- */
+        async function toggleAudioRecording() {
+            const recordBtn = document.getElementById('record-audio-btn');
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+                    mediaRecorder.onstop = () => {
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        const reader = new FileReader();
+                        reader.readAsDataURL(audioBlob);
+                        reader.onloadend = () => {
+                            sendChatMessage(null, reader.result, 'audio');
+                        };
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordBtn.classList.add('recording');
+                } catch (err) {
+                    alert('لم يتم السماح بالوصول للميكروفون!');
                 }
+            } else {
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                    mediaRecorder.stop();
+                }
+                isRecording = false;
+                recordBtn.classList.remove('recording');
+            }
+        }
 
-                keys.forEach(key => {
-                    const s = stories[key];
-                    const timeStr = new Date(s.timestamp || Date.now()).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+        /* --- Chat Functions --- */
+        function sendChatMessage(textOverride = null, mediaUrl = null, mediaType = null) {
+            const input = document.getElementById('chat-input-field');
+            const text = textOverride !== null ? textOverride : input.value.trim();
 
-                    const card = document.createElement('div');
-                    card.className = 'story-card';
+            if (!text && !mediaUrl) return;
 
-                    let mediaHtml = s.image ? `<img src="${s.image}" class="story-media">` : '';
-                    let deleteBtn = (currentUser.isAdmin || currentUser.username === s.username) ? `<button class="delete-btn" onclick="deleteStory('${key}')">حذف</button>` : '';
+            const msgData = {
+                sender: currentUser.username,
+                text: text || '',
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                replyTo: selectedReplyMsg || null
+            };
 
-                    card.innerHTML = `
-                        <div class="story-header">
-                            <img src="${s.avatar || DEFAULT_AVATARS['3MR']}" class="story-avatar">
-                            <span class="story-author">${s.username}</span>
-                            ${deleteBtn}
-                            <span class="story-time">${timeStr}</span>
-                        </div>
-                        <div class="story-body">${s.text || ''}</div>
-                        ${mediaHtml}
-                    `;
-                    container.appendChild(card);
-                });
+            if (mediaUrl) {
+                msgData.mediaUrl = mediaUrl;
+                msgData.mediaType = mediaType;
+            }
+
+            db.ref('messages').push(msgData, () => {
+                if (textOverride === null) input.value = '';
+                cancelReply();
+                stopTyping();
             });
+        }
 
-            // قائمة الأعضاء والتحكم بالتوثيق
-            db.ref('users').on('value', snap => {
-                const container = document.getElementById('users-list-container');
-                container.innerHTML = '';
-                const users = snap.val() || {};
+        function triggerChatImageUpload() {
+            document.getElementById('chat-image-input').click();
+        }
 
-                Object.keys(users).forEach(u => {
-                    const usr = users[u];
-                    const isOnline = usr.status === 'online';
-                    const card = document.createElement('div');
-                    card.className = 'user-card-item';
-
-                    let isOwnerUser = (u === '3MR' || u === 'Roa');
-                    let isVerifiedUser = isOwnerUser || usr.isVerified;
-
-                    let actionsHtml = '';
-                    if (currentUser.isAdmin && !isOwnerUser) {
-                        const verifiedText = usr.isVerified ? 'إلغاء التوثيق ✖' : 'توثيق ✔';
-                        actionsHtml = `<button class="badge-btn" style="background:var(--gold); color:#000;" onclick="toggleVerify('${u}', ${!usr.isVerified})">${verifiedText}</button>`;
-                    }
-
-                    card.innerHTML = `
-                        <div class="flex-row">
-                            <img src="${usr.avatar || DEFAULT_AVATARS[u] || DEFAULT_AVATARS['3MR']}" style="width:32px; height:32px; border-radius:50%; border:1px solid var(--gold);">
-                            <div>
-                                <div style="font-weight:bold; font-size:0.85rem;">
-                                    ${usr.username || u} 
-                                    ${isOwnerUser ? '<span class="owner-badge">👑</span>' : ''} 
-                                    ${isVerifiedUser ? '<span class="verified-badge">✔</span>' : ''}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex-row">
-                            ${actionsHtml}
-                            <span class="${isOnline ? 'online-dot' : 'offline-dot'}"></span>
-                            <span style="font-size:0.75rem; color:var(--text-sub);">${isOnline ? 'متصل' : 'غير متصل'}</span>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            });
+        function handleChatImageUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => sendChatMessage(null, e.target.result, 'image');
+            reader.readAsDataURL(file);
+            input.value = '';
         }
 
         function handleTypingEvent() {
-            db.ref(`typing/${currentUser.username}`).set({ timestamp: firebase.database.ServerValue.TIMESTAMP });
+            if (!currentUser) return;
+            db.ref(`typing/${currentUser.username}`).set(true);
             clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => { db.ref(`typing/${currentUser.username}`).remove(); }, 1500);
+            typingTimeout = setTimeout(stopTyping, 2000);
         }
 
-        function sendChatMessage(imageUrl = null) {
-            const input = document.getElementById('chat-input-field');
-            const text = input.value.trim();
-
-            if (!text && !imageUrl) return;
-
-            const msgObj = {
-                sender: currentUser.username,
-                avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username] || DEFAULT_AVATARS['3MR'],
-                text: text || '',
-                image: imageUrl || null,
-                isVerified: currentUser.isVerified || false,
-                isAdmin: currentUser.isAdmin || false,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
-            };
-
-            if (selectedReplyMsg) {
-                msgObj.replyTo = { sender: selectedReplyMsg.sender, text: selectedReplyMsg.text };
-            }
-
-            input.value = '';
-            cancelReply();
+        function stopTyping() {
+            if (!currentUser) return;
             db.ref(`typing/${currentUser.username}`).remove();
-
-            // الدفع السريع المباشر
-            db.ref('messages').push(msgObj);
         }
 
-        function setReplyTarget(sender, text) {
+        function listenToTyping() {
+            db.ref('typing').on('value', snap => {
+                const data = snap.val() || {};
+                const typers = Object.keys(data).filter(u => u !== currentUser.username);
+                const indicator = document.getElementById('typing-indicator');
+                if (typers.length > 0) {
+                    indicator.innerText = `${typers.join(', ')} يكتب الآن...`;
+                } else {
+                    indicator.innerText = '';
+                }
+            });
+        }
+
+        function listenToMessages() {
+            const container = document.getElementById('chat-messages-container');
+            db.ref('messages').on('value', snap => {
+                container.innerHTML = '';
+                const messages = snap.val() || {};
+                Object.keys(messages).forEach(key => {
+                    const msg = messages[key];
+                    const isMe = msg.sender === currentUser.username;
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
+                    
+                    let quoteHtml = '';
+                    if (msg.replyTo) {
+                        quoteHtml = `<div class="msg-quote"><b>${msg.replyTo.sender}:</b> ${msg.replyTo.text || 'ميديا'}</div>`;
+                    }
+
+                    let mediaHtml = '';
+                    if (msg.mediaUrl) {
+                        if (msg.mediaType === 'image') {
+                            mediaHtml = `<img src="${msg.mediaUrl}" class="msg-img">`;
+                        } else if (msg.mediaType === 'audio') {
+                            mediaHtml = `<audio src="${msg.mediaUrl}" controls class="msg-audio"></audio>`;
+                        }
+                    }
+
+                    const badgeHtml = msg.sender === '3MR' 
+                        ? '<span class="owner-badge">👑</span>' 
+                        : (msg.sender === 'Roa' ? '<span class="verified-badge">❤️</span>' : '');
+
+                    let reactionsHtml = '';
+                    if (msg.reactions) {
+                        let counts = {};
+                        Object.values(msg.reactions).forEach(r => {
+                            counts[r] = (counts[r] || 0) + 1;
+                        });
+                        let reactionsText = Object.entries(counts).map(([r, c]) => `${r} ${c > 1 ? c : ''}`).join(' ');
+                        reactionsHtml = `<div class="msg-reactions">${reactionsText}</div>`;
+                    }
+
+                    wrapper.innerHTML = `
+                        <div class="msg-header">
+                            <span>${msg.sender}</span> ${badgeHtml}
+                        </div>
+                        <div class="msg-bubble" onclick="handleBubbleClick(event, '${key}', '${msg.sender}', \`${(msg.text || '').replace(/`/g, '')}\`)">
+                            ${quoteHtml}
+                            <div>${msg.text || ''}</div>
+                            ${mediaHtml}
+                            ${reactionsHtml}
+                        </div>
+                        <div class="msg-footer">
+                            <span>${msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</span>
+                        </div>
+                    `;
+                    container.appendChild(wrapper);
+                });
+                container.scrollTop = container.scrollHeight;
+            });
+        }
+
+        /* Message Reactions & Reply Selector */
+        function handleBubbleClick(e, msgId, sender, text) {
+            e.stopPropagation();
+            closeAllReactionPickers();
+            
+            const bubble = e.currentTarget;
+            const wrapper = bubble.parentElement;
+
+            const picker = document.createElement('div');
+            picker.className = 'reactions-picker';
+            picker.id = `picker-${msgId}`;
+            
+            const emojis = ['❤️', '😂', '😮', '😢', '🔥', '👍'];
+            emojis.forEach(emoji => {
+                const span = document.createElement('span');
+                span.innerText = emoji;
+                span.onclick = (ev) => {
+                    ev.stopPropagation();
+                    addReaction(msgId, emoji);
+                    picker.remove();
+                };
+                picker.appendChild(span);
+            });
+
+            const replyBtn = document.createElement('span');
+            replyBtn.innerText = '💬';
+            replyBtn.title = 'رد';
+            replyBtn.onclick = (ev) => {
+                ev.stopPropagation();
+                setReply(sender, text);
+                picker.remove();
+            };
+            picker.appendChild(replyBtn);
+
+            wrapper.appendChild(picker);
+            activeReactionPickerId = picker.id;
+        }
+
+        function closeAllReactionPickers() {
+            document.querySelectorAll('.reactions-picker').forEach(p => p.remove());
+        }
+
+        function addReaction(msgId, emoji) {
+            if (!currentUser) return;
+            db.ref(`messages/${msgId}/reactions/${currentUser.username}`).set(emoji);
+        }
+
+        function setReply(sender, text) {
             selectedReplyMsg = { sender, text };
-            document.getElementById('reply-preview-text').innerText = `رد على ${sender}: "${text}"`;
+            document.getElementById('reply-preview-text').innerText = `رد على ${sender}: ${text.substring(0, 20)}...`;
             document.getElementById('reply-preview').style.display = 'flex';
         }
 
@@ -1072,110 +1170,141 @@
             document.getElementById('reply-preview').style.display = 'none';
         }
 
-        function toggleVerify(username, status) {
-            db.ref(`users/${username}/isVerified`).set(status);
-        }
-
-        function triggerChatImageUpload() { document.getElementById('chat-image-input').click(); }
-        function handleChatImageUpload(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => compressAndSendImage(e.target.result, url => sendChatMessage(url));
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        /* Stories Functions */
+        /* --- Stories Logic --- */
         function createStoryText() {
-            const txt = prompt('اكتب نص الحالة:');
-            if (txt && txt.trim()) {
+            const text = prompt('اكتب حالتك النصية:');
+            if (text) {
                 db.ref('stories').push({
-                    username: currentUser.username,
-                    avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username] || DEFAULT_AVATARS['3MR'],
-                    text: txt.trim(),
-                    image: null,
+                    author: currentUser.username,
+                    text: text,
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
             }
         }
 
-        function triggerStoryImageUpload() { document.getElementById('story-image-input').click(); }
+        function triggerStoryImageUpload() {
+            document.getElementById('story-image-input').click();
+        }
+
         function handleStoryImageUpload(input) {
-            if (input.files && input.files[0]) {
-                const txt = prompt('اكتب تعليق على الصورة (اختياري):') || '';
-                const reader = new FileReader();
-                reader.onload = e => {
-                    compressAndSendImage(e.target.result, url => {
-                        db.ref('stories').push({
-                            username: currentUser.username,
-                            avatar: currentUser.avatar || DEFAULT_AVATARS[currentUser.username] || DEFAULT_AVATARS['3MR'],
-                            text: txt,
-                            image: url,
-                            timestamp: firebase.database.ServerValue.TIMESTAMP
-                        });
-                    });
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                db.ref('stories').push({
+                    author: currentUser.username,
+                    mediaUrl: e.target.result,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+            };
+            reader.readAsDataURL(file);
+            input.value = '';
+        }
+
+        function listenToStories() {
+            const container = document.getElementById('stories-list-container');
+            db.ref('stories').on('value', snap => {
+                container.innerHTML = '';
+                const stories = snap.val() || {};
+                const now = Date.now();
+                
+                Object.keys(stories).reverse().forEach(key => {
+                    const story = stories[key];
+                    // Delete automatically if older than 24h
+                    if (story.timestamp && (now - story.timestamp > 24 * 60 * 60 * 1000)) {
+                        db.ref(`stories/${key}`).remove();
+                        return;
+                    }
+
+                    const isOwnerOrAdmin = story.author === currentUser.username || currentUser.isAdmin;
+                    const deleteBtnHtml = isOwnerOrAdmin ? `<button class="delete-btn" onclick="deleteStory('${key}')">حذف</button>` : '';
+
+                    const card = document.createElement('div');
+                    card.className = 'story-card';
+                    card.innerHTML = `
+                        <div class="story-header">
+                            <img src="${DEFAULT_AVATARS[story.author] || 'https://via.placeholder.com/35'}" class="story-avatar">
+                            <span class="story-author">${story.author}</span>
+                            <span class="story-time">${story.timestamp ? new Date(story.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</span>
+                            ${deleteBtnHtml}
+                        </div>
+                        ${story.text ? `<div class="story-body">${story.text}</div>` : ''}
+                        ${story.mediaUrl ? `<img src="${story.mediaUrl}" class="story-media">` : ''}
+                    `;
+                    container.appendChild(card);
+                });
+            });
         }
 
         function deleteStory(storyId) {
-            if(confirm('هل تريد حذف هذه الحالة؟')) {
+            if (confirm('هل تريد حذف هذه الحالة؟')) {
                 db.ref(`stories/${storyId}`).remove();
             }
         }
 
-        /* Fast Image Compressor */
-        function compressAndSendImage(base64Str, callback) {
-            const img = new Image();
-            img.src = base64Str;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                let width = img.width;
-                let height = img.height;
-                const maxDim = 500;
-
-                if (width > height && width > maxDim) {
-                    height = Math.round((height * maxDim) / width);
-                    width = maxDim;
-                } else if (height > maxDim) {
-                    width = Math.round((width * maxDim) / height);
-                    height = maxDim;
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                callback(canvas.toDataURL('image/jpeg', 0.5));
-            };
+        /* --- Members & Admin Logic --- */
+        function loadProfileView() {
+            document.getElementById('my-profile-name').innerText = currentUser.username;
+            document.getElementById('my-profile-role').innerText = currentUser.role;
+            const avatarImg = document.getElementById('my-profile-img');
+            avatarImg.src = DEFAULT_AVATARS[currentUser.username] || 'https://via.placeholder.com/80';
+            
+            if (currentUser.isAdmin) {
+                renderAdminPanel();
+            }
         }
 
-        function triggerProfileAvatarChange() { document.getElementById('profile-avatar-file-input').click(); }
+        function triggerProfileAvatarChange() {
+            document.getElementById('profile-avatar-file-input').click();
+        }
+
         function handleProfileAvatarUpload(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    compressAndSendImage(e.target.result, url => {
-                        db.ref(`users/${currentUser.username}/avatar`).set(url);
-                    });
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('my-profile-img').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
-        function clearAllChatMessages() {
-            if (confirm('هل أنت تأكد من مسح جميع الرسائل؟')) {
-                db.ref('messages').remove();
-            }
+        function renderAdminPanel() {
+            const container = document.getElementById('admin-panel-container');
+            container.innerHTML = `
+                <div class="admin-box">
+                    <h3 style="color:var(--gold); font-size:0.95rem; margin-bottom:8px;">لوحة تحكم الأدمن 👑</h3>
+                    <p style="font-size:0.8rem; color:var(--text-sub);">لديك صلاحيات كاملة لإدارة الأعضاء والحالات والمحادثة.</p>
+                </div>
+            `;
         }
 
-        function switchTab(viewId, tabEl) {
-            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+        function listenToUsers() {
+            const container = document.getElementById('users-list-container');
+            db.ref('users').on('value', snap => {
+                container.innerHTML = '';
+                const users = snap.val() || {};
+                
+                // Static Default Users display if database empty
+                const allUsers = { ...users };
+                if (!allUsers['3MR']) allUsers['3MR'] = { username: '3MR', role: 'المالك والآدمن 👑', isOnline: true };
+                if (!allUsers['Roa']) allUsers['Roa'] = { username: 'Roa', role: 'قلب القائد ❤️', isOnline: false };
 
-            tabEl.classList.add('active');
-            document.getElementById(viewId).classList.add('active');
+                Object.keys(allUsers).forEach(uname => {
+                    const u = allUsers[uname];
+                    const item = document.createElement('div');
+                    item.className = 'user-card-item';
+                    item.innerHTML = `
+                        <div class="flex-row">
+                            <span class="${u.isOnline ? 'online-dot' : 'offline-dot'}"></span>
+                            <div>
+                                <div style="font-weight:bold; font-size:0.85rem; color:var(--text-main);">${u.username || uname}</div>
+                                <div style="font-size:0.7rem; color:var(--rose-gold);">${u.role || 'عضو'}</div>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(item);
+                });
+            });
         }
     </script>
 </body>
