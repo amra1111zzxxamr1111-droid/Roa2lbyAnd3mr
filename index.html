@@ -10,7 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Amiri:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
 
     <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">// Performance: chat uses incremental Firebase child events, debounced typing, lazy media and preload=none audio.
+        </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
@@ -64,7 +65,7 @@
             height: 100%;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.5;
+            opacity: 0.32;
         }
 
         .screen {
@@ -904,51 +905,17 @@
             display:inline-block;width:6px;height:6px;border-radius:50%;
             background:currentColor;margin-left:5px;box-shadow:0 0 7px currentColor;
         }
-
-        /* Search + pinned message */
+        /* Search tools */
         .chat-top-tools {
-            flex-shrink:0;
-            display:flex;
-            gap:7px;
-            align-items:center;
-            padding:7px 10px;
-            background:rgba(4,13,20,.88);
+            flex-shrink:0; display:flex; gap:7px; align-items:center;
+            padding:7px 10px; background:rgba(4,13,20,.88);
             border-bottom:1px solid rgba(255,255,255,.05);
         }
-        .chat-search {
-            flex:1;
-            border:1px solid rgba(32,199,255,.16);
-            background:rgba(255,255,255,.035);
-            color:#fff;
-            border-radius:14px;
-            padding:8px 11px;
-            outline:none;
-            font-family:var(--font-main);
-            font-size:.78rem;
-        }
-        .chat-tool-btn {
-            border:1px solid rgba(32,199,255,.16);
-            background:rgba(255,255,255,.04);
-            color:var(--accent);
-            border-radius:12px;
-            padding:8px 10px;
-            cursor:pointer;
-        }
-        .pinned-bar {
-            display:none;
-            padding:7px 11px;
-            background:rgba(9,36,50,.9);
-            border-bottom:1px solid rgba(32,199,255,.14);
-            font-size:.75rem;
-            color:#b7d5df;
-        }
-        .pinned-bar.show { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-        .pinned-bar .pin-text { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+        .chat-search { flex:1; border:1px solid rgba(32,199,255,.16); background:rgba(255,255,255,.035); color:#fff; border-radius:14px; padding:8px 11px; outline:none; font-family:var(--font-main); font-size:.78rem; }
+        .chat-tool-btn { border:1px solid rgba(32,199,255,.16); background:rgba(255,255,255,.04); color:var(--accent); border-radius:12px; padding:8px 10px; cursor:pointer; }
         .message-highlight { animation:messageGlow 1.2s ease; }
-        @keyframes messageGlow {
-            0%,100% { filter:none; transform:scale(1); }
-            35% { filter:drop-shadow(0 0 12px rgba(32,199,255,.65)); transform:scale(1.015); }
-        }
+        @keyframes messageGlow { 0%,100% { filter:none; transform:scale(1); } 35% { filter:drop-shadow(0 0 12px rgba(32,199,255,.65)); transform:scale(1.015); } }
+
 
         /* Image preview modal / fullscreen */
         .modal-backdrop {
@@ -1075,10 +1042,6 @@
                     <input id="chat-search-field" class="chat-search" type="text" placeholder="🔎 ابحث في المحادثة..." oninput="filterMessages(this.value)">
                     <button class="chat-tool-btn" onclick="clearChatSearch()" title="مسح البحث">✕</button>
                 </div>
-                <div id="pinned-message-bar" class="pinned-bar">
-                    <span class="pin-text" id="pinned-message-text"></span>
-                    <button class="chat-tool-btn" onclick="jumpToPinned()">📌</button>
-                </div>
                 <div id="chat-presence-divider" class="chat-presence-divider"><span class="mini-dot"></span> جاري التحقق من الاتصال...</div>
                 <div class="chat-messages" id="chat-messages-container"></div>
 
@@ -1177,8 +1140,7 @@
                 <div class="setting-item"><label>🔔 إشعارات المتصفح <input id="setting-notifications" type="checkbox" onchange="toggleBrowserNotifications(this.checked)"></label></div>
                 <div class="setting-item"><label>🔊 صوت الرسائل <input id="setting-sounds" type="checkbox" checked onchange="localStorage.setItem('3mr_sounds',this.checked?'1':'0')"></label></div>
                 <div class="setting-item"><label>💓 حركة القلوب <input id="setting-hearts" type="checkbox" checked onchange="toggleHearts(this.checked)"></label></div>
-                <div class="setting-item"><label>📌 تثبيت آخر رسالة <input id="setting-auto-pin" type="checkbox" onchange="localStorage.setItem('3mr_auto_pin',this.checked?'1':'0')"></label></div>
-            </div>
+</div>
             <div style="margin-top:13px;color:#a8c2ce;font-size:.78rem;">الثيم</div>
             <div class="theme-row">
                 <span class="theme-dot theme-blue" title="أزرق" onclick="applyTheme('blue')"></span>
@@ -1210,7 +1172,6 @@
         let pendingChatImage = null;
         let recordingStartedAt = 0;
         let recordingTimerInterval = null;
-        let pinnedMessage = null;
         let partnerPresenceData = null;
         let notificationsReady = false;
 
@@ -1293,10 +1254,8 @@
         function initNotificationSettings() {
             const sound = document.getElementById('setting-sounds');
             const hearts = document.getElementById('setting-hearts');
-            const autoPin = document.getElementById('setting-auto-pin');
             if (sound) sound.checked = soundsEnabled();
             if (hearts) hearts.checked = localStorage.getItem('3mr_hearts') !== '0';
-            if (autoPin) autoPin.checked = localStorage.getItem('3mr_auto_pin') === '1';
             updateNotificationSetting();
             // Ask only after a user gesture; browser autoplay/permission policies are respected.
         }
@@ -1307,7 +1266,7 @@
             let width = canvas.width = window.innerWidth;
             let height = canvas.height = window.innerHeight;
 
-            const hearts = Array.from({ length: 14 }, () => ({
+            const hearts = Array.from({ length: 7 }, () => ({
                 x: Math.random() * width,
                 y: Math.random() * height,
                 size: Math.random() * 8 + 4,
@@ -1459,7 +1418,6 @@
             setupPresence();
             loadProfileView();
             initNotificationSettings();
-            loadPinnedMessage();
             listenToMessages();
             listenToTyping();
             listenToStories();
@@ -1471,11 +1429,26 @@
         function setupPresence() {
             if (!currentUser) return;
             const userRef = db.ref(`users/${currentUser.username}`);
-            userRef.update({ isOnline: true, online: true });
+
+            // Firebase onDisconnect handles real browser/tab/network disconnects.
+            userRef.update({
+                isOnline: true,
+                online: true,
+                lastSeen: firebase.database.ServerValue.TIMESTAMP
+            });
+
             userRef.onDisconnect().update({
                 isOnline: false,
                 online: false,
                 lastSeen: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            window.addEventListener('beforeunload', () => {
+                userRef.update({
+                    isOnline: false,
+                    online: false,
+                    lastSeen: firebase.database.ServerValue.TIMESTAMP
+                });
             });
         }
 
@@ -1483,61 +1456,73 @@
         function listenToPartnerPresence() {
             const partnerName = currentUser.username === '3MR' ? 'Roa' : '3MR';
             db.ref(`users/${partnerName}`).on('value', snap => {
-                const data = snap.val() || {};
-                partnerPresenceData = data;
-
-                const dot = document.getElementById('partner-status-dot');
-                const text = document.getElementById('partner-status-text');
-                const divider = document.getElementById('chat-presence-divider');
-
-                if (data.isOnline || data.online) {
-                    dot.className = 'status-dot';
-                    text.innerText = 'متصل الآن';
-                    if (divider) {
-                        divider.className = 'chat-presence-divider online';
-                        divider.innerHTML = '<span class="mini-dot"></span> متصل الآن';
-                    }
-                } else {
-                    dot.className = 'status-dot offline';
-                    const last = data.lastSeen ? formatLastSeen(data.lastSeen) : 'غير متصل';
-                    text.innerText = data.lastSeen ? `آخر ظهور: ${last}` : 'غير متصل';
-                    if (divider) {
-                        divider.className = 'chat-presence-divider';
-                        divider.innerHTML = `آخر ظهور • ${escapeHtml(last)}`;
-                    }
-                }
+                partnerPresenceData = snap.val() || {};
+                refreshPartnerPresence();
             });
+
+            // Relative text needs refreshing even when Firebase data itself has not changed.
+            setInterval(refreshPartnerPresence, 30000);
+        }
+
+        function refreshPartnerPresence() {
+            const data = partnerPresenceData || {};
+            const dot = document.getElementById('partner-status-dot');
+            const text = document.getElementById('partner-status-text');
+            const chatPresence = document.getElementById('chat-presence-divider');
+
+            if (!dot || !text) return;
+
+            if (data.isOnline || data.online) {
+                dot.className = 'status-dot';
+                text.innerText = 'متصل الآن';
+                if (chatPresence) {
+                    chatPresence.classList.add('online');
+                    chatPresence.innerHTML = '<span class="mini-dot"></span> متصل الآن';
+                }
+            } else {
+                dot.className = 'status-dot offline';
+                const seen = data.lastSeen ? formatLastSeen(data.lastSeen) : 'غير متصل';
+                text.innerText = `آخر ظهور: ${seen}`;
+                if (chatPresence) {
+                    chatPresence.classList.remove('online');
+                    chatPresence.innerHTML = `<span class="mini-dot"></span> آخر ظهور: ${seen}`;
+                }
+            }
         }
 
         function formatLastSeen(timestamp) {
-            const diffMs = Math.max(0, Date.now() - Number(timestamp));
-            const diffMin = Math.floor(diffMs / 60000);
             const date = new Date(Number(timestamp));
+            if (Number.isNaN(date.getTime())) return 'غير متصل';
+
             const now = new Date();
+            const diffMs = Math.max(0, now.getTime() - date.getTime());
+            const diffMin = Math.floor(diffMs / 60000);
 
-            if (diffMin < 1) return 'منذ لحظات';
-            if (diffMin < 60) return `منذ ${diffMin} دقيقة`;
-            if (diffMin < 1440) return `منذ ${Math.floor(diffMin / 60)} ساعة`;
-            if (date.toDateString() === now.toDateString()) {
-                return `اليوم ${date.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}`;
+            const time = date.toLocaleTimeString('ar-EG', {
+                hour: 'numeric',
+                minute: '2-digit'
+            });
+
+            if (diffMin < 1) return `منذ لحظات • ${time}`;
+            if (diffMin < 60) return `منذ ${diffMin} دقيقة • ${time}`;
+
+            const sameDay = date.toDateString() === now.toDateString();
+            if (sameDay) {
+                const hours = Math.floor(diffMin / 60);
+                return `منذ ${hours} ${hours === 1 ? 'ساعة' : 'ساعة'} • ${time}`;
             }
+
             const yesterday = new Date(now);
-            yesterday.setDate(now.getDate()-1);
+            yesterday.setDate(now.getDate() - 1);
             if (date.toDateString() === yesterday.toDateString()) {
-                return `أمس ${date.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}`;
+                return `أمس • ${time}`;
             }
-            return date.toLocaleDateString('ar-EG',{day:'2-digit',month:'2-digit',year:'numeric'}) +
-                   ` ${date.toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})}`;
-        }
 
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                closeAllReactionPickers();
-                closeFullscreenImage();
-                cancelChatImage();
-                closeSettingsModal();
-            }
-        });
+            const d = date.toLocaleDateString('ar-EG', {
+                day: '2-digit', month: '2-digit', year: 'numeric'
+            });
+            return `${d} • ${time}`;
+        }
 
         function switchTab(tabId, el) {
             document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
@@ -1622,13 +1607,19 @@
             const input = document.getElementById('chat-input-field');
             const text = textOverride !== null ? textOverride : input.value.trim();
 
-            if (!text && !mediaUrl) return;
+            if (!text && !mediaUrl || !currentUser) return;
 
             const msgData = {
                 sender: currentUser.username,
                 text: text || '',
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
-                replyTo: selectedReplyMsg || null
+                replyTo: selectedReplyMsg
+                    ? {
+                        msgId: selectedReplyMsg.msgId,
+                        sender: selectedReplyMsg.sender,
+                        text: selectedReplyMsg.text || ''
+                    }
+                    : null
             };
 
             if (mediaUrl) {
@@ -1636,26 +1627,16 @@
                 msgData.mediaType = mediaType;
             }
 
-            db.ref('messages').push(msgData, () => {
+            db.ref('messages').push(msgData, (err) => {
+                if (err) {
+                    console.error('Send message error:', err);
+                    return;
+                }
+
                 playSendSound();
                 if (textOverride === null) input.value = '';
                 cancelReply();
                 stopTyping();
-                if (localStorage.getItem('3mr_auto_pin') === '1') {
-                    // Keep the latest sent message pinned without changing the message schema.
-                    db.ref('messages').limitToLast(1).once('value', s => {
-                        const obj = s.val() || {};
-                        const id = Object.keys(obj)[0];
-                        if (id) {
-                            const m = obj[id];
-                            db.ref('settings/pinnedMessage').set({
-                                id, sender:m.sender || currentUser.username, text:m.text || '',
-                                mediaType:m.mediaType || null, pinnedBy:currentUser.username,
-                                timestamp:m.timestamp || firebase.database.ServerValue.TIMESTAMP
-                            });
-                        }
-                    });
-                }
             });
         }
 
@@ -1703,16 +1684,33 @@
             document.getElementById('fullscreen-image-modal').classList.remove('show');
         }
 
+        let typingWriteTimer = null;
+        let typingState = false;
+
         function handleTypingEvent() {
             if (!currentUser) return;
-            db.ref(`typing/${currentUser.username}`).set(true);
+
+            clearTimeout(typingWriteTimer);
             clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(stopTyping, 2000);
+
+            if (!typingState) {
+                typingState = true;
+                db.ref(`typing/${currentUser.username}`).set(true);
+            }
+
+            // Stop quickly after the user pauses, without hammering Firebase.
+            typingTimeout = setTimeout(stopTyping, 1400);
         }
 
         function stopTyping() {
             if (!currentUser) return;
-            db.ref(`typing/${currentUser.username}`).remove();
+            clearTimeout(typingWriteTimer);
+            clearTimeout(typingTimeout);
+
+            if (typingState) {
+                typingState = false;
+                db.ref(`typing/${currentUser.username}`).remove().catch(()=>{});
+            }
         }
 
         function listenToTyping() {
@@ -1755,9 +1753,9 @@
             return '<span style="color:#708995;margin-right:5px;">✓</span>';
         }
 
-        function renderMessages(messages) {
+        function renderMessages(messages, queryOverride = null) {
             const container = document.getElementById('chat-messages-container');
-            const query = (document.getElementById('chat-search-field')?.value || '').trim().toLowerCase();
+            const query = (queryOverride !== null ? queryOverride : (document.getElementById('chat-search-field')?.value || '')).trim().toLowerCase();
             container.innerHTML = '';
 
             const keys = Object.keys(messages || {});
@@ -1799,12 +1797,9 @@
                     reactionsHtml = `<div class="msg-reactions">${escapeHtml(reactionsText)}</div>`;
                 }
 
-                const pinned = pinnedMessage && pinnedMessage.id === key;
-                const pinHtml = pinned ? '<span style="color:var(--accent);font-size:.68rem;">📌</span>' : '';
-
                 wrapper.innerHTML = `
                     <div class="msg-header">
-                        <span>${escapeHtml(msg.sender)}</span> ${badgeHtml} ${pinHtml}
+                        <span>${escapeHtml(msg.sender)}</span> ${badgeHtml}
                     </div>
                     <div class="msg-bubble" onclick="handleBubbleClick(event,'${key}',${JSON.stringify(msg.sender)},${JSON.stringify(msg.text || '')})">
                         ${quoteHtml}
@@ -1826,34 +1821,139 @@
         }
 
         function listenToMessages() {
-            db.ref('messages').on('value', snap => {
-                const messages = snap.val() || {};
-                const keys = Object.keys(messages);
-                const previous = allMessagesCache;
-                allMessagesCache = messages;
+            const container = document.getElementById('chat-messages-container');
+            const messagesRef = db.ref('messages');
 
-                if (initialLoadDone && keys.length) {
-                    const lastKey = keys[keys.length - 1];
-                    const lastMsg = messages[lastKey];
-                    if (lastMsg && lastMsg.sender !== currentUser.username && !previous[lastKey]) {
-                        playReceiveSound();
-                        notifyNewMessage(lastMsg);
-                    }
-                }
+            // One initial read + incremental child events = no full-chat redraw on every message.
+            messagesRef.off();
+            messagesRef.once('value').then(snap => {
+                allMessagesCache = snap.val() || {};
+                renderMessages(allMessagesCache);
                 initialLoadDone = true;
-                renderMessages(messages);
-                updatePinnedBar();
+
+                messagesRef.on('child_added', childSnap => {
+                    const id = childSnap.key;
+                    const msg = childSnap.val() || {};
+
+                    // Initial children are already rendered above.
+                    if (allMessagesCache[id]) return;
+
+                    allMessagesCache[id] = msg;
+                    appendSingleMessage(id, msg);
+
+                    if (msg.sender !== currentUser.username) {
+                        playReceiveSound();
+                        notifyNewMessage(msg);
+                    }
+                    markSingleMessageRead(id, msg);
+                    scrollChatToBottom();
+                });
+
+                messagesRef.on('child_changed', childSnap => {
+                    const id = childSnap.key;
+                    const msg = childSnap.val() || {};
+                    allMessagesCache[id] = msg;
+                    replaceSingleMessage(id, msg);
+                    markSingleMessageRead(id, msg);
+                });
+
+                messagesRef.on('child_removed', childSnap => {
+                    const id = childSnap.key;
+                    delete allMessagesCache[id];
+                    const el = document.querySelector(`[data-msg-id="${CSS.escape(id)}"]`);
+                    if (el) el.remove();
+                });
+            }).catch(err => {
+                console.error('Messages load error:', err);
             });
         }
 
+        function scrollChatToBottom() {
+            const container = document.getElementById('chat-messages-container');
+            if (!container) return;
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function appendSingleMessage(id, msg) {
+            const container = document.getElementById('chat-messages-container');
+            if (!container) return;
+
+            const node = buildMessageElement(id, msg);
+            container.appendChild(node);
+        }
+
+        function replaceSingleMessage(id, msg) {
+            const oldNode = document.querySelector(`[data-msg-id="${CSS.escape(id)}"]`);
+            const newNode = buildMessageElement(id, msg);
+            if (oldNode) oldNode.replaceWith(newNode);
+            else appendSingleMessage(id, msg);
+        }
+
+        function buildMessageElement(key, msg) {
+            const isMe = msg.sender === currentUser.username;
+            const wrapper = document.createElement('div');
+            wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
+            wrapper.dataset.msgId = key;
+
+            let quoteHtml = '';
+            if (msg.replyTo) {
+                quoteHtml = `<div class="msg-quote"><b>${escapeHtml(msg.replyTo.sender)}:</b> ${escapeHtml(msg.replyTo.text || 'ميديا')}</div>`;
+            }
+
+            let mediaHtml = '';
+            if (msg.mediaUrl) {
+                if (msg.mediaType === 'image') {
+                    mediaHtml = `<img src="${escapeHtml(msg.mediaUrl)}" class="msg-img" loading="lazy" decoding="async" onclick="event.stopPropagation();openFullscreenImage(this.src)">`;
+                } else if (msg.mediaType === 'audio') {
+                    mediaHtml = `<audio src="${escapeHtml(msg.mediaUrl)}" controls preload="none" class="msg-audio"></audio>`;
+                }
+            }
+
+            const badgeHtml = msg.sender === '3MR'
+                ? '<span class="owner-badge">👑</span>'
+                : (msg.sender === 'Roa' ? '<span class="owner-badge">❤️</span>' : '');
+
+            let reactionsHtml = '';
+            if (msg.reactions) {
+                const counts = {};
+                Object.values(msg.reactions).forEach(r => counts[r] = (counts[r] || 0) + 1);
+                const reactionsText = Object.entries(counts).map(([r,c]) => `${r} ${c>1?c:''}`).join(' ');
+                reactionsHtml = `<div class="msg-reactions">${escapeHtml(reactionsText)}</div>`;
+            }
+
+            wrapper.innerHTML = `
+                <div class="msg-header">
+                    <span>${escapeHtml(msg.sender)}</span> ${badgeHtml}
+                </div>
+                <div class="msg-bubble" onclick="handleBubbleClick(event,'${key}',${JSON.stringify(msg.sender)},${JSON.stringify(msg.text || '')})">
+                    ${quoteHtml}
+                    <div>${escapeHtml(msg.text || '')}</div>
+                    ${mediaHtml}
+                    ${reactionsHtml}
+                </div>
+                <div class="msg-footer">
+                    <span>${formatMessageTime(msg.timestamp)}</span>
+                    ${messageStatusHtml(msg,isMe)}
+                </div>
+            `;
+            return wrapper;
+        }
+
+        function markSingleMessageRead(id, msg) {
+            if (!currentUser || !msg || msg.sender === currentUser.username) return;
+            db.ref(`messages/${id}/readBy/${currentUser.username}`).set(firebase.database.ServerValue.TIMESTAMP).catch(()=>{});
+        }
+
+
+    
         function filterMessages(value) {
-            renderMessages(allMessagesCache);
+            renderMessages(allMessagesCache, value);
         }
 
         function clearChatSearch() {
             const el = document.getElementById('chat-search-field');
             if (el) el.value = '';
-            renderMessages(allMessagesCache);
+            renderMessages(allMessagesCache, '');
         }
 
         function markPartnerMessagesRead(messages) {
@@ -1865,36 +1965,6 @@
             });
             if (Object.keys(updates).length) db.ref().update(updates).catch(()=>{});
         }
-
-        function loadPinnedMessage() {
-            db.ref('settings/pinnedMessage').on('value', snap => {
-                pinnedMessage = snap.val() || null;
-                updatePinnedBar();
-                renderMessages(allMessagesCache);
-            });
-        }
-
-        function updatePinnedBar() {
-            const bar = document.getElementById('pinned-message-bar');
-            const text = document.getElementById('pinned-message-text');
-            if (!bar || !text) return;
-            if (pinnedMessage) {
-                text.textContent = `📌 ${pinnedMessage.sender}: ${messagePreview(pinnedMessage)}`;
-                bar.classList.add('show');
-            } else {
-                text.textContent = '';
-                bar.classList.remove('show');
-            }
-        }
-
-        function jumpToPinned() {
-            if (!pinnedMessage?.id) return;
-            const el = document.querySelector(`[data-msg-id="${CSS.escape(pinnedMessage.id)}"]`);
-            if (el) {
-                el.scrollIntoView({behavior:'smooth',block:'center'});
-                el.classList.add('message-highlight');
-                setTimeout(()=>el.classList.remove('message-highlight'),1300);
-            }
         }
 
         /* Message Reactions & Reply Selector */
@@ -1926,20 +1996,10 @@
             replyBtn.title = 'رد';
             replyBtn.onclick = (ev) => {
                 ev.stopPropagation();
-                setReply(sender, text);
+                setReply(msgId, sender, text);
                 picker.remove();
             };
             picker.appendChild(replyBtn);
-
-            const pinBtn = document.createElement('span');
-            pinBtn.innerText = '📌';
-            pinBtn.title = 'تثبيت الرسالة';
-            pinBtn.onclick = (ev) => {
-                ev.stopPropagation();
-                pinMessage(msgId, sender, text);
-                picker.remove();
-            };
-            picker.appendChild(pinBtn);
 
             if (sender === currentUser.username || currentUser.isAdmin) {
                 const delBtn = document.createElement('span');
@@ -1965,29 +2025,21 @@
             db.ref(`messages/${msgId}/reactions/${currentUser.username}`).set(emoji);
         }
 
-        function pinMessage(msgId, sender, text) {
-            if (!currentUser) return;
-            db.ref(`messages/${msgId}`).once('value', snap => {
-                const msg = snap.val() || {};
-                db.ref('settings/pinnedMessage').set({
-                    id: msgId,
-                    sender: sender,
-                    text: text || '',
-                    mediaType: msg.mediaType || null,
-                    pinnedBy: currentUser.username,
-                    timestamp: msg.timestamp || firebase.database.ServerValue.TIMESTAMP
-                });
-            });
-        }
-
-        function unpinMessage() {
-            db.ref('settings/pinnedMessage').remove();
-        }
-
         function deleteSingleMessage(msgId) {
-            if (confirm('هل تريد حذف هذه الرسالة؟')) {
-                db.ref(`messages/${msgId}`).remove();
-            }
+            if (!currentUser) return;
+
+            db.ref(`messages/${msgId}`).once('value').then(snap => {
+                const msg = snap.val();
+                if (!msg) return;
+
+                if (msg.sender !== currentUser.username && !currentUser.isAdmin) {
+                    return alert('مش مسموح لك تحذف الرسالة دي.');
+                }
+
+                if (!confirm('هل تريد حذف هذه الرسالة فقط؟')) return;
+                return db.ref(`messages/${msgId}`).remove();
+            }).catch(() => alert('حصل خطأ أثناء حذف الرسالة.'));
+        }
         }
 
         function clearAllMessages() {
@@ -2002,9 +2054,10 @@
             }
         }
 
-        function setReply(sender, text) {
-            selectedReplyMsg = { sender, text };
-            document.getElementById('reply-preview-text').innerText = `رد على ${sender}: ${text.substring(0, 20)}...`;
+        function setReply(msgId, sender, text) {
+            selectedReplyMsg = { msgId, sender, text: text || '' };
+            const preview = text ? text.substring(0, 35) : 'ميديا';
+            document.getElementById('reply-preview-text').innerText = `رد على ${sender}: ${preview}`;
             document.getElementById('reply-preview').style.display = 'flex';
         }
 
@@ -2121,9 +2174,20 @@
         }
 
         function deleteStory(storyId) {
-            if (confirm('هل تريد حذف هذه الحالة؟')) {
-                db.ref(`stories/${storyId}`).remove();
-            }
+            if (!currentUser) return;
+
+            db.ref(`stories/${storyId}`).once('value').then(snap => {
+                const story = snap.val();
+                if (!story) return;
+
+                if (story.author !== currentUser.username && !currentUser.isAdmin) {
+                    return alert('مش مسموح لك تحذف الاستوري دي.');
+                }
+
+                if (!confirm('هل تريد حذف هذه الاستوري فقط؟')) return;
+                return db.ref(`stories/${storyId}`).remove();
+            }).catch(() => alert('حصل خطأ أثناء حذف الاستوري.'));
+        }
         }
 
         /* --- Profile Avatar Upload --- */
