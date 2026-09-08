@@ -15,18 +15,18 @@
 
     <style>
         :root {
-            --bg-deep: #0a0307;
-            --card-bg: rgba(30, 12, 22, 0.88);
-            --card-border: rgba(255, 183, 3, 0.3);
-            --accent-red: #9e0022;
-            --rose-gold: #f4acb7;
-            --bright-red: #e63946;
+            --bg-deep: #0d0008;
+            --card-bg: rgba(28, 6, 20, 0.92);
+            --card-border: rgba(255, 191, 0, 0.35);
+            --accent-red: #7209b7;
+            --rose-gold: #f72585;
+            --bright-red: #ff0054;
             --gold: #ffb703;
-            --gold-glow: rgba(255, 183, 3, 0.4);
+            --gold-glow: rgba(255, 183, 3, 0.45);
             --text-main: #ffffff;
-            --text-sub: #e0aaff;
-            --radius-lg: 20px;
-            --radius-md: 14px;
+            --text-sub: #ffc6ff;
+            --radius-lg: 22px;
+            --radius-md: 16px;
             --font-main: 'Tajawal', sans-serif;
             --font-title: 'Amiri', serif;
             --sab: env(safe-area-inset-bottom, 0px);
@@ -59,7 +59,7 @@
             height: 100%;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.6;
+            opacity: 0.5;
         }
 
         .screen {
@@ -70,7 +70,7 @@
             display: flex;
             flex-direction: column;
             z-index: 10;
-            background: radial-gradient(circle at center, rgba(60, 15, 35, 0.85) 0%, var(--bg-deep) 100%);
+            background: radial-gradient(circle at center, rgba(50, 5, 35, 0.9) 0%, var(--bg-deep) 100%);
         }
 
         .hidden { display: none !important; }
@@ -85,16 +85,16 @@
         }
 
         .splash-card {
-            padding: 35px;
+            padding: 40px 30px;
             border-radius: var(--radius-lg);
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 25px var(--gold-glow);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 30px var(--gold-glow);
         }
 
         .splash-title {
             font-family: var(--font-title);
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: var(--gold);
             margin-bottom: 8px;
         }
@@ -153,7 +153,7 @@
             padding: 10px 12px;
             border-radius: var(--radius-md);
             border: 1px solid rgba(255, 183, 3, 0.4);
-            background: rgba(15, 5, 10, 0.9);
+            background: rgba(15, 2, 10, 0.9);
             color: var(--text-main);
             font-family: var(--font-main);
             font-size: 0.9rem;
@@ -164,7 +164,7 @@
 
         .btn {
             width: 100%;
-            padding: 10px;
+            padding: 11px;
             border-radius: var(--radius-md);
             border: none;
             background: linear-gradient(135deg, var(--accent-red), var(--bright-red));
@@ -176,12 +176,13 @@
         }
 
         .btn-gold {
-            background: linear-gradient(135deg, #d4af37, var(--gold));
+            background: linear-gradient(135deg, #f72585, var(--gold));
             color: #000;
+            font-weight: bold;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #8b0000, #ff2a2a);
+            background: linear-gradient(135deg, #7209b7, #ff0054);
             color: #fff;
             margin-top: 8px;
         }
@@ -205,8 +206,8 @@
         }
 
         .app-header {
-            height: 60px;
-            background: rgba(15, 5, 10, 0.98);
+            height: 65px;
+            background: rgba(15, 2, 10, 0.96);
             border-bottom: 1px solid var(--card-border);
             display: flex;
             align-items: center;
@@ -222,24 +223,29 @@
 
         .header-title {
             font-family: var(--font-title);
-            font-size: 1.3rem;
+            font-size: 1.35rem;
             color: var(--gold);
         }
 
         .online-status-indicator {
-            font-size: 0.75rem;
-            color: #2ec4b6;
+            font-size: 0.72rem;
+            color: #4cc9f0;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #2ec4b6;
-            box-shadow: 0 0 8px #2ec4b6;
+            background-color: #4cc9f0;
+            box-shadow: 0 0 8px #4cc9f0;
+        }
+
+        .status-dot.offline {
+            background-color: #888;
+            box-shadow: none;
         }
 
         .icon-btn {
@@ -258,7 +264,7 @@
 
         .app-tabs {
             height: 48px;
-            background: rgba(10, 3, 7, 0.95);
+            background: rgba(10, 1, 7, 0.95);
             border-bottom: 1px solid rgba(255,255,255,0.08);
             display: flex;
             flex-shrink: 0;
@@ -308,6 +314,8 @@
             flex-direction: column;
             height: 100%;
             width: 100%;
+            background-size: cover;
+            background-position: center;
         }
 
         .chat-messages {
@@ -350,14 +358,14 @@
         }
 
         .msg-wrapper.me .msg-bubble {
-            background: linear-gradient(135deg, #610017, #9e0022);
-            border: 1px solid rgba(255, 183, 3, 0.3);
+            background: linear-gradient(135deg, #4a0033, #7209b7);
+            border: 1px solid rgba(255, 183, 3, 0.35);
             color: #fff;
             border-top-right-radius: 2px;
         }
 
         .msg-wrapper.them .msg-bubble {
-            background: linear-gradient(135deg, #230c1e, #3a1332);
+            background: linear-gradient(135deg, #20002c, #3a0ca3);
             border: 1px solid var(--card-border);
             color: var(--text-main);
             border-top-left-radius: 2px;
@@ -385,7 +393,7 @@
             position: absolute;
             bottom: -10px;
             left: 8px;
-            background: rgba(20, 8, 14, 0.95);
+            background: rgba(20, 2, 15, 0.95);
             border: 1px solid var(--gold);
             border-radius: 12px;
             padding: 1px 6px;
@@ -401,7 +409,7 @@
         .reactions-picker {
             position: absolute;
             top: -42px;
-            background: rgba(20, 8, 14, 0.98);
+            background: rgba(20, 2, 15, 0.98);
             border: 1px solid var(--gold);
             border-radius: 20px;
             padding: 4px 10px;
@@ -421,7 +429,7 @@
         .reactions-picker span:hover { transform: scale(1.3); }
 
         .msg-quote {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
             border-right: 3px solid var(--gold);
             padding: 4px 8px;
             border-radius: 4px;
@@ -439,12 +447,11 @@
             margin-top: 3px;
         }
 
-        .verified-badge { color: #1DA1F2; font-size: 0.85rem; }
         .owner-badge { color: var(--gold); font-size: 0.85rem; }
 
         .chat-controls-area {
             flex-shrink: 0;
-            background: rgba(12, 4, 8, 0.98);
+            background: rgba(12, 1, 8, 0.98);
             border-top: 1px solid var(--card-border);
             padding: 8px 10px calc(8px + var(--sab)) 10px;
         }
@@ -458,14 +465,14 @@
 
         .reply-preview-box {
             display: none;
-            background: rgba(40, 10, 20, 0.8);
+            background: rgba(40, 5, 30, 0.9);
             border-right: 3px solid var(--gold);
-            padding: 4px 8px;
-            border-radius: 4px;
+            padding: 6px 10px;
+            border-radius: 6px;
             margin-bottom: 6px;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.75rem;
+            font-size: 0.78rem;
         }
 
         .chat-input-row {
@@ -509,13 +516,13 @@
         }
 
         @keyframes pulse-red {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(230, 57, 70, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 84, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 0, 84, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 0, 84, 0); }
         }
 
         .send-btn {
-            background: linear-gradient(135deg, var(--gold), #d4af37);
+            background: linear-gradient(135deg, var(--gold), #f72585);
             color: #000;
             font-size: 1rem;
         }
@@ -535,7 +542,7 @@
         .story-create-btn {
             flex: 1;
             padding: 8px 4px;
-            background: rgba(30, 12, 22, 0.9);
+            background: rgba(30, 5, 25, 0.9);
             border: 1px dashed var(--gold);
             border-radius: var(--radius-md);
             color: var(--gold);
@@ -605,7 +612,7 @@
         }
 
         .delete-btn {
-            background: rgba(230, 57, 70, 0.2);
+            background: rgba(255, 0, 84, 0.2);
             border: 1px solid var(--bright-red);
             color: #ff8888;
             padding: 2px 6px;
@@ -661,8 +668,20 @@
             font-size: 0.8rem;
         }
 
+        .wallpaper-btn {
+            background: rgba(255, 183, 3, 0.15);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
         .admin-box {
-            background: rgba(40, 10, 20, 0.95);
+            background: rgba(40, 5, 30, 0.95);
             border: 1px solid var(--gold);
             border-radius: var(--radius-md);
             padding: 12px;
@@ -670,7 +689,7 @@
         }
 
         .user-card-item {
-            background: rgba(20, 8, 14, 0.6);
+            background: rgba(20, 2, 15, 0.6);
             border: 1px solid rgba(255,183,3,0.2);
             border-radius: var(--radius-md);
             padding: 10px 12px;
@@ -680,12 +699,12 @@
             margin-bottom: 8px;
         }
 
-        .online-dot { width: 10px; height: 10px; border-radius: 50%; background: #2ec4b6; box-shadow: 0 0 6px #2ec4b6; }
+        .online-dot { width: 10px; height: 10px; border-radius: 50%; background: #4cc9f0; box-shadow: 0 0 6px #4cc9f0; }
         .offline-dot { width: 10px; height: 10px; border-radius: 50%; background: #666; }
 
         .marquee-footer {
-            height: 32px;
-            background: linear-gradient(90deg, #400010, #800020, #400010);
+            height: 34px;
+            background: linear-gradient(90deg, #3a0ca3, #7209b7, #f72585, #3a0ca3);
             border-top: 1px solid var(--gold);
             overflow: hidden;
             display: flex;
@@ -699,8 +718,9 @@
             padding-right: 100%;
             animation: marquee 14s linear infinite;
             font-family: var(--font-title);
-            font-size: 1rem;
-            color: var(--gold);
+            font-size: 1.05rem;
+            color: #fff;
+            text-shadow: 0 0 6px rgba(0,0,0,0.8);
         }
 
         @keyframes marquee {
@@ -720,7 +740,7 @@
     <div id="splash-screen" class="screen">
         <div class="splash-card">
             <h1 class="splash-title">3MR ❤️ Roa</h1>
-            <p class="splash-sub">عالمنا الخاص الفاخر</p>
+            <p class="splash-sub">روءت قلبي اللي بعشقها</p>
         </div>
     </div>
 
@@ -747,9 +767,9 @@
         <header class="app-header">
             <div class="header-title-box">
                 <span class="header-title">3MR ❤️ Roa</span>
-                <div id="partner-status-bar" class="online-status-indicator hidden">
-                    <span class="status-dot"></span>
-                    <span id="partner-status-text">متصل الآن</span>
+                <div id="partner-status-bar" class="online-status-indicator">
+                    <span id="partner-status-dot" class="status-dot offline"></span>
+                    <span id="partner-status-text">جاري التحقق...</span>
                 </div>
             </div>
             <div>
@@ -811,6 +831,9 @@
 
                     <h3 id="my-profile-name">--</h3>
                     <p id="my-profile-role" style="color:var(--rose-gold); font-size:0.85rem; margin-top:4px;"></p>
+                    
+                    <div class="wallpaper-btn" onclick="triggerWallpaperUpload()">🖼️ تغيير خلفية المحادثة</div>
+                    <input type="file" id="wallpaper-file-input" accept="image/*" style="display:none;" onchange="handleWallpaperUpload(this)">
                 </div>
 
                 <div id="admin-panel-container"></div>
@@ -822,7 +845,7 @@
 
         <footer class="marquee-footer">
             <div class="marquee-content">
-                روءت قلبي بعشقك ❤️ • روءت قلبي بعشقك ❤️ • روءت قلبي بعشقك ❤️
+                روءت قلبي اللي بعشقها ❤️ • روءت قلبي اللي بعشقها ❤️ • روءت قلبي اللي بعشقها ❤️
             </div>
         </footer>
     </div>
@@ -842,12 +865,16 @@
         let mediaRecorder = null;
         let audioChunks = [];
         let isRecording = false;
-        let activeReactionPickerId = null;
+        let initialLoadDone = false;
 
         const DEFAULT_AVATARS = {
             '3MR': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
             'Roa': 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=300&q=80'
         };
+
+        // أصوات التنبيهات
+        const sendSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
+        const receiveSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
 
         function initHeartsCanvas() {
             const canvas = document.getElementById('hearts-canvas');
@@ -855,7 +882,7 @@
             let width = canvas.width = window.innerWidth;
             let height = canvas.height = window.innerHeight;
 
-            const hearts = Array.from({ length: 12 }, () => ({
+            const hearts = Array.from({ length: 14 }, () => ({
                 x: Math.random() * width,
                 y: Math.random() * height,
                 size: Math.random() * 8 + 4,
@@ -957,7 +984,10 @@
 
         function handleLogout() {
             if (currentUser) {
-                db.ref(`users/${currentUser.username}/isOnline`).set(false);
+                db.ref(`users/${currentUser.username}`).update({
+                    isOnline: false,
+                    lastSeen: firebase.database.ServerValue.TIMESTAMP
+                });
             }
             localStorage.removeItem('3mr_roa_session');
             currentUser = null;
@@ -973,26 +1003,50 @@
             listenToStories();
             listenToUsers();
             listenToPartnerPresence();
+            loadWallpaper();
         }
 
         function setupPresence() {
             if (!currentUser) return;
             const userRef = db.ref(`users/${currentUser.username}`);
             userRef.update({ isOnline: true });
-            userRef.onDisconnect().update({ isOnline: false });
+            userRef.onDisconnect().update({
+                isOnline: false,
+                lastSeen: firebase.database.ServerValue.TIMESTAMP
+            });
         }
 
+        /* --- Last Seen & Presence Feature --- */
         function listenToPartnerPresence() {
             const partnerName = currentUser.username === '3MR' ? 'Roa' : '3MR';
-            db.ref(`users/${partnerName}/isOnline`).on('value', snap => {
-                const isOnline = snap.val();
-                const statusBar = document.getElementById('partner-status-bar');
-                if (isOnline) {
-                    statusBar.classList.remove('hidden');
+            db.ref(`users/${partnerName}`).on('value', snap => {
+                const data = snap.val() || {};
+                const dot = document.getElementById('partner-status-dot');
+                const text = document.getElementById('partner-status-text');
+
+                if (data.isOnline) {
+                    dot.className = 'status-dot';
+                    text.innerText = 'متصل الآن';
                 } else {
-                    statusBar.classList.add('hidden');
+                    dot.className = 'status-dot offline';
+                    if (data.lastSeen) {
+                        text.innerText = `آخر ظهور: ${formatLastSeen(data.lastSeen)}`;
+                    } else {
+                        text.innerText = 'غير متصل';
+                    }
                 }
             });
+        }
+
+        function formatLastSeen(timestamp) {
+            const now = Date.now();
+            const diffMin = Math.floor((now - timestamp) / (1000 * 60));
+            
+            if (diffMin < 1) return 'منذ لحظات';
+            if (diffMin < 60) return `منذ ${diffMin} دقيقة`;
+            
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
         function switchTab(tabId, el) {
@@ -1055,6 +1109,7 @@
             }
 
             db.ref('messages').push(msgData, () => {
+                try { sendSound.play(); } catch(e){}
                 if (textOverride === null) input.value = '';
                 cancelReply();
                 stopTyping();
@@ -1104,7 +1159,17 @@
             db.ref('messages').on('value', snap => {
                 container.innerHTML = '';
                 const messages = snap.val() || {};
-                Object.keys(messages).forEach(key => {
+                const keys = Object.keys(messages);
+
+                if (initialLoadDone && keys.length > 0) {
+                    const lastKey = keys[keys.length - 1];
+                    if (messages[lastKey].sender !== currentUser.username) {
+                        try { receiveSound.play(); } catch(e){}
+                    }
+                }
+                initialLoadDone = true;
+
+                keys.forEach(key => {
                     const msg = messages[key];
                     const isMe = msg.sender === currentUser.username;
                     
@@ -1127,7 +1192,7 @@
 
                     const badgeHtml = msg.sender === '3MR' 
                         ? '<span class="owner-badge">👑</span>' 
-                        : (msg.sender === 'Roa' ? '<span class="verified-badge">❤️</span>' : '');
+                        : (msg.sender === 'Roa' ? '<span class="owner-badge">❤️</span>' : '');
 
                     let reactionsHtml = '';
                     if (msg.reactions) {
@@ -1193,7 +1258,6 @@
             };
             picker.appendChild(replyBtn);
 
-            // خيار حذف الرسالة لو الرسالة للي أرسلها أو لو أدمن
             if (sender === currentUser.username || currentUser.isAdmin) {
                 const delBtn = document.createElement('span');
                 delBtn.innerText = '🗑️';
@@ -1207,7 +1271,6 @@
             }
 
             wrapper.appendChild(picker);
-            activeReactionPickerId = picker.id;
         }
 
         function closeAllReactionPickers() {
@@ -1246,6 +1309,30 @@
         function cancelReply() {
             selectedReplyMsg = null;
             document.getElementById('reply-preview').style.display = 'none';
+        }
+
+        /* --- Wallpaper Feature --- */
+        function triggerWallpaperUpload() {
+            document.getElementById('wallpaper-file-input').click();
+        }
+
+        function handleWallpaperUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const imgUrl = e.target.result;
+                localStorage.setItem('chat_wallpaper', imgUrl);
+                document.getElementById('chat-view').style.backgroundImage = `url(${imgUrl})`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadWallpaper() {
+            const savedWp = localStorage.getItem('chat_wallpaper');
+            if (savedWp) {
+                document.getElementById('chat-view').style.backgroundImage = `url(${savedWp})`;
+            }
         }
 
         /* --- Stories Logic --- */
