@@ -5,30 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>3MR ❤️ Roa</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Amiri:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
 
     <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">// Performance: chat uses incremental Firebase child events, debounced typing, lazy media and preload=none audio.
-        </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <style>
         :root {
-            --bg-deep: #071018;
-            --bg-deeper: #04080d;
-            --card-bg: rgba(10, 22, 32, 0.94);
-            --card-bg-2: rgba(14, 31, 44, 0.94);
-            --card-border: rgba(70, 220, 255, 0.22);
-            --accent: #20c7ff;
-            --accent-2: #0b8cff;
-            --accent-soft: rgba(32, 199, 255, 0.14);
-            --success: #35e0a1;
-            --danger: #ff5f73;
-            --warning: #ffd166;
-            --text-main: #f4fbff;
-            --text-sub: #9db6c6;
-            --muted: #718b9b;
-            --shadow: rgba(0, 0, 0, 0.58);
+            --bg-deep: #0d0008;
+            --card-bg: rgba(28, 6, 20, 0.92);
+            --card-border: rgba(255, 191, 0, 0.35);
+            --accent-red: #7209b7;
+            --rose-gold: #f72585;
+            --bright-red: #ff0054;
+            --gold: #ffb703;
+            --gold-glow: rgba(255, 183, 3, 0.45);
+            --text-main: #ffffff;
+            --text-sub: #ffc6ff;
             --radius-lg: 22px;
             --radius-md: 16px;
             --font-main: 'Tajawal', sans-serif;
@@ -56,12 +52,15 @@
             inset: 0;
         }
 
-        .light-hearts { position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden; opacity:.22; }
-        .light-hearts span { position:absolute; font-size:14px; animation:floatHeart 8s linear infinite; }
-        .light-hearts span:nth-child(1){left:18%;bottom:-20px;animation-delay:0s;}
-        .light-hearts span:nth-child(2){left:57%;bottom:-20px;animation-delay:2.5s;}
-        .light-hearts span:nth-child(3){left:82%;bottom:-20px;animation-delay:5s;}
-        @keyframes floatHeart { from{transform:translateY(0);opacity:0} 15%{opacity:.7} to{transform:translateY(-105vh);opacity:0} }
+        #hearts-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.5;
+        }
 
         .screen {
             position: absolute;
@@ -177,13 +176,13 @@
         }
 
         .btn-gold {
-            background: linear-gradient(135deg, #20c7ff, var(--gold));
+            background: linear-gradient(135deg, #f72585, var(--gold));
             color: #000;
             font-weight: bold;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #0b8cff, #ff5f73);
+            background: linear-gradient(135deg, #7209b7, #ff0054);
             color: #fff;
             margin-top: 8px;
         }
@@ -230,7 +229,7 @@
 
         .online-status-indicator {
             font-size: 0.72rem;
-            color: #35e0a1;
+            color: #4cc9f0;
             display: flex;
             align-items: center;
             gap: 5px;
@@ -240,8 +239,8 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #35e0a1;
-            box-shadow: 0 0 8px #35e0a1;
+            background-color: #4cc9f0;
+            box-shadow: 0 0 8px #4cc9f0;
         }
 
         .status-dot.offline {
@@ -330,7 +329,6 @@
         }
 
         .msg-wrapper {
-            contain: layout paint style;
             display: flex;
             flex-direction: column;
             max-width: 85%;
@@ -360,14 +358,14 @@
         }
 
         .msg-wrapper.me .msg-bubble {
-            background: linear-gradient(135deg, #06324a, #0b8cff);
+            background: linear-gradient(135deg, #4a0033, #7209b7);
             border: 1px solid rgba(255, 183, 3, 0.35);
             color: #fff;
             border-top-right-radius: 2px;
         }
 
         .msg-wrapper.them .msg-bubble {
-            background: linear-gradient(135deg, #0a2437, #0756a5);
+            background: linear-gradient(135deg, #20002c, #3a0ca3);
             border: 1px solid var(--card-border);
             color: var(--text-main);
             border-top-left-radius: 2px;
@@ -524,7 +522,7 @@
         }
 
         .send-btn {
-            background: linear-gradient(135deg, var(--gold), #20c7ff);
+            background: linear-gradient(135deg, var(--gold), #f72585);
             color: #000;
             font-size: 1rem;
         }
@@ -564,7 +562,6 @@
         }
 
         .story-card {
-            contain: content;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
@@ -671,6 +668,18 @@
             font-size: 0.8rem;
         }
 
+        .wallpaper-btn {
+            background: rgba(255, 183, 3, 0.15);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
         .admin-box {
             background: rgba(40, 5, 30, 0.95);
             border: 1px solid var(--gold);
@@ -690,12 +699,12 @@
             margin-bottom: 8px;
         }
 
-        .online-dot { width: 10px; height: 10px; border-radius: 50%; background: #35e0a1; box-shadow: 0 0 6px #35e0a1; }
+        .online-dot { width: 10px; height: 10px; border-radius: 50%; background: #4cc9f0; box-shadow: 0 0 6px #4cc9f0; }
         .offline-dot { width: 10px; height: 10px; border-radius: 50%; background: #666; }
 
         .marquee-footer {
             height: 34px;
-            background: linear-gradient(90deg, #0756a5, #0b8cff, #20c7ff, #0756a5);
+            background: linear-gradient(90deg, #3a0ca3, #7209b7, #f72585, #3a0ca3);
             border-top: 1px solid var(--gold);
             overflow: hidden;
             display: flex;
@@ -721,254 +730,11 @@
 
         .flex-row { display: flex; gap: 8px; align-items: center; }
         .mt-10 { margin-top: 10px; }
-
-        /* ===== 3MR ❤️ Roa — Modern Blue/Cyan Theme ===== */
-        body::before {
-            content:"";
-            position:fixed;
-            inset:0;
-            pointer-events:none;
-            z-index:1;
-            background:
-                radial-gradient(circle at 15% 10%, rgba(32,199,255,.10), transparent 28%),
-                radial-gradient(circle at 85% 85%, rgba(11,140,255,.10), transparent 30%);
-        }
-
-        .screen { background:radial-gradient(circle at 50% 35%, rgba(10,48,72,.72), var(--bg-deep) 70%); }
-        #app-screen { background:linear-gradient(180deg,rgba(4,12,18,.96),rgba(5,15,22,.97)); }
-        .app-header {
-            height:76px;
-            background:rgba(4,12,18,.94);
-            border-bottom:1px solid rgba(32,199,255,.18);
-            backdrop-filter:blur(18px);
-            -webkit-backdrop-filter:blur(18px);
-        }
-        .header-title-box { align-items:flex-start; }
-        .header-title { color:#e9fbff; letter-spacing:.2px; }
-        .header-title::after {
-            content:" • خاص";
-            color:var(--accent);
-            font-family:var(--font-main);
-            font-size:.58rem;
-            vertical-align:middle;
-            opacity:.9;
-        }
-        .online-status-indicator { color:var(--success); min-height:20px; }
-        .status-dot { background:var(--success); box-shadow:0 0 10px rgba(53,224,161,.65); }
-        .status-dot.offline { background:#607584; box-shadow:none; }
-
-        .app-tabs {
-            background:rgba(5,14,21,.92);
-            border-bottom:1px solid rgba(255,255,255,.06);
-        }
-        .tab-item { color:#7893a3; transition:.2s ease; }
-        .tab-item.active {
-            color:var(--accent);
-            border-bottom-color:var(--accent);
-            background:linear-gradient(180deg,rgba(32,199,255,.11),transparent);
-        }
-
-        .chat-messages {
-            padding:18px 13px 14px;
-            gap:14px;
-            background:
-                linear-gradient(rgba(3,11,17,.58),rgba(3,11,17,.76)),
-                radial-gradient(circle at 50% 0%,rgba(32,199,255,.06),transparent 45%);
-        }
-        .msg-wrapper {
-            contain: layout paint style; max-width:min(86%,560px); }
-        .msg-header { color:#7fc8dd; }
-        .msg-bubble {
-            box-shadow:0 7px 20px rgba(0,0,0,.18);
-            border-radius:18px;
-            backdrop-filter:blur(8px);
-        }
-        .msg-wrapper.me .msg-bubble {
-            background:linear-gradient(135deg,#07314a,#075e8d);
-            border:1px solid rgba(32,199,255,.28);
-            border-top-right-radius:4px;
-        }
-        .msg-wrapper.them .msg-bubble {
-            background:linear-gradient(135deg,#0b202f,#102f44);
-            border:1px solid rgba(124,181,204,.16);
-            border-top-left-radius:4px;
-        }
-        .msg-footer { color:#7791a0; }
-        .msg-quote { border-right-color:var(--accent); color:#a9c9d6; background:rgba(0,0,0,.22); }
-        .msg-reactions,.reactions-picker {
-            background:rgba(5,17,25,.98);
-            border-color:rgba(32,199,255,.48);
-        }
-
-        .chat-controls-area {
-            background:rgba(4,13,20,.96);
-            border-top:1px solid rgba(32,199,255,.16);
-            backdrop-filter:blur(16px);
-        }
-        .typing-indicator-bar { color:var(--accent); }
-        .reply-preview-box { background:rgba(7,31,45,.92); border-right-color:var(--accent); }
-        .chat-input-row input {
-            background:rgba(255,255,255,.045);
-            border-color:rgba(32,199,255,.18);
-            color:#fff;
-        }
-        .chat-input-row input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(32,199,255,.08); }
-        .attach-btn,.record-btn {
-            color:var(--accent);
-            border-color:rgba(32,199,255,.2);
-            background:rgba(255,255,255,.045);
-        }
-        .send-btn {
-            background:linear-gradient(135deg,var(--accent),var(--accent-2));
-            color:#001018;
-            box-shadow:0 5px 18px rgba(32,199,255,.22);
-        }
-        .record-btn.recording { background:var(--danger); }
-
-        .story-card,.profile-card,.admin-box,.user-card-item {
-            background:linear-gradient(145deg,rgba(12,29,42,.95),rgba(7,18,27,.94));
-            border-color:rgba(32,199,255,.17);
-            box-shadow:0 10px 28px rgba(0,0,0,.18);
-        }
-        .story-avatar,.profile-avatar-img { border-color:var(--accent); }
-        .story-author,.profile-card h3,.admin-box h3 { color:var(--accent) !important; }
-        .story-time,.profile-card p,.user-card-item div[style*="rose-gold"] { color:#8eacbb !important; }
-        .story-create-btn {
-            background:rgba(10,31,44,.82);
-            border-color:rgba(32,199,255,.5);
-            color:var(--accent);
-        }
-        .delete-btn { background:rgba(255,95,115,.09); border-color:var(--danger); color:#ff9baa; }
-        .online-dot { background:var(--success); box-shadow:0 0 8px rgba(53,224,161,.6); }
-        .offline-dot { background:#586e7b; }
-
-        .marquee-footer {
-            height:38px;
-            background:linear-gradient(90deg,#06354e,#075e8d,#0b8cff,#075e8d,#06354e);
-            border-top:1px solid rgba(32,199,255,.42);
-        }
-        .marquee-content {
-            animation:marquee 17s linear infinite;
-            color:#eaffff;
-            text-shadow:0 0 10px rgba(32,199,255,.35);
-        }
-
-        .btn { background:linear-gradient(135deg,var(--accent-2),var(--accent)); color:#001018; }
-        .btn-gold { background:linear-gradient(135deg,var(--accent),#79e7ff); color:#001018; }
-        .btn-danger { background:linear-gradient(135deg,#a52c48,#ff5f73); color:#fff; }
-        .input-group label,.toggle-auth { color:var(--accent); }
-        input[type="text"],input[type="password"] {
-            border-color:rgba(32,199,255,.2);
-            background:rgba(3,12,18,.92);
-        }
-        input:focus { border-color:var(--accent); }
-
-        .splash-title,.auth-box h2 { color:#dffaff; text-shadow:0 0 18px rgba(32,199,255,.24); }
-        .splash-sub { color:var(--accent); }
-
-        /* Centered presence line inside the chat */
-        .chat-presence-divider {
-            align-self:center;
-            width:fit-content;
-            max-width:92%;
-            margin:2px auto 3px;
-            padding:5px 12px;
-            border:1px solid rgba(32,199,255,.14);
-            border-radius:999px;
-            background:rgba(8,25,36,.68);
-            color:#86a8b7;
-            font-size:.68rem;
-            text-align:center;
-            box-shadow:0 4px 16px rgba(0,0,0,.15);
-        }
-        .chat-presence-divider.online { color:var(--success); border-color:rgba(53,224,161,.2); }
-        .chat-presence-divider .mini-dot {
-            display:inline-block;width:6px;height:6px;border-radius:50%;
-            background:currentColor;margin-left:5px;box-shadow:0 0 7px currentColor;
-        }
-        /* Search tools */
-        .chat-top-tools {
-            flex-shrink:0; display:flex; gap:7px; align-items:center;
-            padding:7px 10px; background:rgba(4,13,20,.88);
-            border-bottom:1px solid rgba(255,255,255,.05);
-        }
-        .chat-search { flex:1; border:1px solid rgba(32,199,255,.16); background:rgba(255,255,255,.035); color:#fff; border-radius:14px; padding:8px 11px; outline:none; font-family:var(--font-main); font-size:.78rem; }
-        .chat-tool-btn { border:1px solid rgba(32,199,255,.16); background:rgba(255,255,255,.04); color:var(--accent); border-radius:12px; padding:8px 10px; cursor:pointer; }
-        .message-highlight { animation:messageGlow 1.2s ease; }
-        @keyframes messageGlow { 0%,100% { filter:none; transform:scale(1); } 35% { filter:drop-shadow(0 0 12px rgba(32,199,255,.65)); transform:scale(1.015); } }
-
-
-        /* Image preview modal / fullscreen */
-        .modal-backdrop {
-            position:fixed; inset:0; z-index:10000;
-            display:none; align-items:center; justify-content:center;
-            padding:18px; background:rgba(0,5,9,.82);
-            backdrop-filter:blur(10px);
-        }
-        .modal-backdrop.show { display:flex; }
-        .modal-card {
-            width:min(94vw,520px); max-height:88vh; overflow:auto;
-            background:#07131d; border:1px solid rgba(32,199,255,.25);
-            border-radius:20px; padding:14px; box-shadow:0 20px 70px rgba(0,0,0,.55);
-        }
-        .modal-card img,.fullscreen-image { max-width:100%; max-height:70vh; object-fit:contain; border-radius:14px; display:block; margin:auto; }
-        .modal-actions { display:flex; gap:8px; margin-top:12px; }
-        .modal-actions button { flex:1; }
-        .fullscreen-wrap { width:100%; height:100%; display:flex; align-items:center; justify-content:center; position:relative; }
-        .modal-close {
-            position:absolute; top:10px; left:10px; z-index:2;
-            width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.15);
-            background:rgba(0,0,0,.45);color:#fff;cursor:pointer;font-size:18px;
-        }
-
-        /* Voice recording HUD */
-        .recording-hud {
-            display:none; align-items:center; justify-content:space-between; gap:10px;
-            margin-bottom:7px; padding:8px 11px; border-radius:13px;
-            background:rgba(67,19,28,.72); border:1px solid rgba(255,95,115,.25);
-            color:#ffb5bf; font-size:.78rem;
-        }
-        .recording-hud.show { display:flex; }
-        .recording-dot { width:8px;height:8px;border-radius:50%;background:var(--danger);box-shadow:0 0 9px var(--danger);animation:blink 1s infinite; }
-        @keyframes blink { 50%{opacity:.35;} }
-
-        /* Settings */
-        .settings-grid { display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px; }
-        .setting-item {
-            padding:10px;border:1px solid rgba(32,199,255,.12);border-radius:13px;
-            background:rgba(255,255,255,.025);font-size:.75rem;
-        }
-        .setting-item label { display:flex;align-items:center;justify-content:space-between;gap:8px;color:#b4ccd7; }
-        .setting-item input[type="checkbox"] { accent-color:var(--accent); }
-        .theme-row { display:flex;gap:6px;flex-wrap:wrap;margin-top:8px; }
-        .theme-dot { width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.25);cursor:pointer; }
-        .theme-blue { background:linear-gradient(135deg,#20c7ff,#0b8cff); }
-        .theme-emerald { background:linear-gradient(135deg,#35e0a1,#087f66); }
-        .theme-violet { background:linear-gradient(135deg,#a78bfa,#6d28d9); }
-        .theme-rose { background:linear-gradient(135deg,#ff7aa8,#d63384); }
-
-        @media (max-width:600px) {
-            .app-header { height:72px; }
-            .header-title { font-size:1.2rem; }
-            .msg-wrapper {
-            contain: layout paint style; max-width:90%; }
-            .settings-grid { grid-template-columns:1fr; }
-        }
-
-
-        :root {
-            --accent-red: var(--accent-2);
-            --rose-gold: var(--accent);
-            --bright-red: var(--danger);
-            --gold: var(--warning);
-            --gold-glow: rgba(32,199,255,.25);
-        }
-
     </style>
 </head>
 <body>
 
-    <div class="light-hearts" aria-hidden="true"><span>❤</span><span>❤</span><span>❤</span></div>
+    <canvas id="hearts-canvas"></canvas>
 
     <!-- Splash Screen -->
     <div id="splash-screen" class="screen">
@@ -1020,11 +786,6 @@
         <main class="app-views">
             <!-- Chat View -->
             <section id="chat-view" class="view-content active">
-                <div class="chat-top-tools">
-                    <input id="chat-search-field" class="chat-search" type="text" placeholder="🔎 ابحث في المحادثة..." oninput="filterMessages(this.value)">
-                    <button class="chat-tool-btn" onclick="clearChatSearch()" title="مسح البحث">✕</button>
-                </div>
-                <div id="chat-presence-divider" class="chat-presence-divider"><span class="mini-dot"></span> جاري التحقق من الاتصال...</div>
                 <div class="chat-messages" id="chat-messages-container"></div>
 
                 <div class="chat-controls-area">
@@ -1071,7 +832,8 @@
                     <h3 id="my-profile-name">--</h3>
                     <p id="my-profile-role" style="color:var(--rose-gold); font-size:0.85rem; margin-top:4px;"></p>
                     
-                    <button class="wallpaper-btn" onclick="openSettingsModal()">⚙️ إعدادات الواجهة</button>
+                    <div class="wallpaper-btn" onclick="triggerWallpaperUpload()">🖼️ تغيير خلفية المحادثة</div>
+                    <input type="file" id="wallpaper-file-input" accept="image/*" style="display:none;" onchange="handleWallpaperUpload(this)">
                 </div>
 
                 <div id="admin-panel-container"></div>
@@ -1086,50 +848,6 @@
                 روءت قلبي اللي بعشقها ❤️ • روءت قلبي اللي بعشقها ❤️ • روءت قلبي اللي بعشقها ❤️
             </div>
         </footer>
-    </div>
-
-
-    <!-- Image Preview Modal -->
-    <div id="image-preview-modal" class="modal-backdrop">
-        <div class="modal-card">
-            <h3 style="color:var(--accent);margin-bottom:8px;">معاينة الصورة</h3>
-            <img id="image-preview-img" src="" alt="preview">
-            <div class="modal-actions">
-                <button class="btn" onclick="confirmChatImage()">إرسال الصورة</button>
-                <button class="btn btn-danger" onclick="cancelChatImage()">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Fullscreen Image Modal -->
-    <div id="fullscreen-image-modal" class="modal-backdrop" onclick="closeFullscreenImage()">
-        <div class="fullscreen-wrap">
-            <button class="modal-close" onclick="closeFullscreenImage()">✕</button>
-            <img id="fullscreen-image" class="fullscreen-image" src="" alt="image" onclick="event.stopPropagation()">
-        </div>
-    </div>
-
-    <!-- Settings Modal -->
-    <div id="settings-modal" class="modal-backdrop">
-        <div class="modal-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-                <h3 style="color:var(--accent);">⚙️ إعدادات الواجهة</h3>
-                <button class="modal-close" style="position:static;" onclick="closeSettingsModal()">✕</button>
-            </div>
-            <div class="settings-grid">
-                <div class="setting-item"><label>🔔 إشعارات المتصفح <input id="setting-notifications" type="checkbox" onchange="toggleBrowserNotifications(this.checked)"></label></div>
-                <div class="setting-item"><label>🔊 صوت الرسائل <input id="setting-sounds" type="checkbox" checked onchange="localStorage.setItem('3mr_sounds',this.checked?'1':'0')"></label></div>
-                <div class="setting-item"><label>💓 حركة القلوب <input id="setting-hearts" type="checkbox" checked onchange="toggleHearts(this.checked)"></label></div>
-</div>
-            <div style="margin-top:13px;color:#a8c2ce;font-size:.78rem;">الثيم</div>
-            <div class="theme-row">
-                <span class="theme-dot theme-blue" title="أزرق" onclick="applyTheme('blue')"></span>
-                <span class="theme-dot theme-emerald" title="زمردي" onclick="applyTheme('emerald')"></span>
-                <span class="theme-dot theme-violet" title="بنفسجي" onclick="applyTheme('violet')"></span>
-                <span class="theme-dot theme-rose" title="وردي" onclick="applyTheme('rose')"></span>
-            </div>
-            <button class="btn mt-10" onclick="requestBrowserNotifications()">🔔 تفعيل إشعارات المتصفح</button>
-        </div>
     </div>
 
     <script>
@@ -1148,12 +866,6 @@
         let audioChunks = [];
         let isRecording = false;
         let initialLoadDone = false;
-        let allMessagesCache = {};
-        let pendingChatImage = null;
-        let recordingStartedAt = 0;
-        let recordingTimerInterval = null;
-        let partnerPresenceData = null;
-        let notificationsReady = false;
 
         const DEFAULT_AVATARS = {
             '3MR': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80',
@@ -1164,83 +876,41 @@
         const sendSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3');
         const receiveSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3');
 
+        function initHeartsCanvas() {
+            const canvas = document.getElementById('hearts-canvas');
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
 
-        /* ===== Notifications / sounds ===== */
-        function soundsEnabled() {
-            return localStorage.getItem('3mr_sounds') !== '0';
-        }
+            const hearts = Array.from({ length: 14 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 8 + 4,
+                speedY: Math.random() * 0.5 + 0.2,
+                opacity: Math.random() * 0.4 + 0.2
+            }));
 
-        function playReceiveSound() {
-            if (!soundsEnabled()) return;
-            try {
-                receiveSound.currentTime = 0;
-                receiveSound.play().catch(()=>{});
-            } catch(e){}
-        }
-
-        function playSendSound() {
-            if (!soundsEnabled()) return;
-            try {
-                sendSound.currentTime = 0;
-                sendSound.play().catch(()=>{});
-            } catch(e){}
-        }
-
-        async function requestBrowserNotifications() {
-            if (!('Notification' in window)) {
-                alert('المتصفح الحالي لا يدعم إشعارات سطح المكتب.');
-                return;
+            function drawHeart(x, y, size, color) {
+                ctx.save(); ctx.beginPath(); ctx.translate(x, y); ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(-size / 2, -size / 2, -size, size / 3, 0, size);
+                ctx.bezierCurveTo(size, size / 3, size / 2, -size / 2, 0, 0);
+                ctx.fillStyle = color; ctx.fill(); ctx.restore();
             }
-            try {
-                const permission = await Notification.requestPermission();
-                notificationsReady = permission === 'granted';
-                updateNotificationSetting();
-                if (permission === 'granted') {
-                    new Notification('3MR ❤️ Roa', { body:'تم تفعيل إشعارات الرسائل بنجاح 🔔' });
-                } else {
-                    alert('تم رفض الإشعارات. يمكنك السماح بها من إعدادات الموقع في المتصفح.');
-                }
-            } catch(e) {
-                alert('تعذر تفعيل الإشعارات من هذا المتصفح.');
-            }
-        }
 
-        async function toggleBrowserNotifications(enabled) {
-            if (enabled) await requestBrowserNotifications();
-        }
-
-        function updateNotificationSetting() {
-            const el = document.getElementById('setting-notifications');
-            if (el && 'Notification' in window) el.checked = Notification.permission === 'granted';
-        }
-
-        function notifyNewMessage(msg) {
-            if (!msg || msg.sender === currentUser.username) return;
-            const pageHidden = document.hidden;
-            if (!pageHidden) return;
-            if (!('Notification' in window) || Notification.permission !== 'granted') return;
-
-            const body = msg.text ? msg.text.slice(0,100) : (msg.mediaType === 'image' ? '📷 أرسل صورة' : '🎙️ أرسل رسالة صوتية');
-            try {
-                const n = new Notification(`رسالة من ${msg.sender}`, {
-                    body,
-                    icon: DEFAULT_AVATARS[msg.sender] || '',
-                    tag: '3mr-roa-message'
+            function animate() {
+                ctx.clearRect(0, 0, width, height);
+                hearts.forEach(h => {
+                    h.y -= h.speedY;
+                    if (h.y < -20) h.y = height + 20;
+                    drawHeart(h.x, h.y, h.size, `rgba(255, 183, 3, ${h.opacity})`);
                 });
-                n.onclick = () => { window.focus(); n.close(); };
-            } catch(e){}
+                requestAnimationFrame(animate);
+            }
+            animate();
         }
 
-        function initNotificationSettings() {
-            const sound = document.getElementById('setting-sounds');
-            const hearts = document.getElementById('setting-hearts');
-            if (sound) sound.checked = soundsEnabled();
-            if (hearts) hearts.checked = localStorage.getItem('3mr_hearts') !== '0';
-            updateNotificationSetting();
-            // Ask only after a user gesture; browser autoplay/permission policies are respected.
-        }
         window.addEventListener('DOMContentLoaded', () => {
-            loadSavedTheme();
+            initHeartsCanvas();
             setTimeout(() => {
                 document.getElementById('splash-screen').classList.add('hidden');
                 if (currentUser) {
@@ -1316,7 +986,6 @@
             if (currentUser) {
                 db.ref(`users/${currentUser.username}`).update({
                     isOnline: false,
-                    online: false,
                     lastSeen: firebase.database.ServerValue.TIMESTAMP
                 });
             }
@@ -1329,37 +998,21 @@
             document.getElementById('app-screen').classList.remove('hidden');
             setupPresence();
             loadProfileView();
-            initNotificationSettings();
             listenToMessages();
             listenToTyping();
             listenToStories();
             listenToUsers();
             listenToPartnerPresence();
+            loadWallpaper();
         }
 
         function setupPresence() {
             if (!currentUser) return;
             const userRef = db.ref(`users/${currentUser.username}`);
-
-            // Firebase onDisconnect handles real browser/tab/network disconnects.
-            userRef.update({
-                isOnline: true,
-                online: true,
-                lastSeen: firebase.database.ServerValue.TIMESTAMP
-            });
-
+            userRef.update({ isOnline: true });
             userRef.onDisconnect().update({
                 isOnline: false,
-                online: false,
                 lastSeen: firebase.database.ServerValue.TIMESTAMP
-            });
-
-            window.addEventListener('beforeunload', () => {
-                userRef.update({
-                    isOnline: false,
-                    online: false,
-                    lastSeen: firebase.database.ServerValue.TIMESTAMP
-                });
             });
         }
 
@@ -1367,72 +1020,33 @@
         function listenToPartnerPresence() {
             const partnerName = currentUser.username === '3MR' ? 'Roa' : '3MR';
             db.ref(`users/${partnerName}`).on('value', snap => {
-                partnerPresenceData = snap.val() || {};
-                refreshPartnerPresence();
+                const data = snap.val() || {};
+                const dot = document.getElementById('partner-status-dot');
+                const text = document.getElementById('partner-status-text');
+
+                if (data.isOnline) {
+                    dot.className = 'status-dot';
+                    text.innerText = 'متصل الآن';
+                } else {
+                    dot.className = 'status-dot offline';
+                    if (data.lastSeen) {
+                        text.innerText = `آخر ظهور: ${formatLastSeen(data.lastSeen)}`;
+                    } else {
+                        text.innerText = 'غير متصل';
+                    }
+                }
             });
-
-            // Relative text needs refreshing even when Firebase data itself has not changed.
-            setInterval(refreshPartnerPresence, 30000);
-        }
-
-        function refreshPartnerPresence() {
-            const data = partnerPresenceData || {};
-            const dot = document.getElementById('partner-status-dot');
-            const text = document.getElementById('partner-status-text');
-            const chatPresence = document.getElementById('chat-presence-divider');
-
-            if (!dot || !text) return;
-
-            if (data.isOnline || data.online) {
-                dot.className = 'status-dot';
-                text.innerText = 'متصل الآن';
-                if (chatPresence) {
-                    chatPresence.classList.add('online');
-                    chatPresence.innerHTML = '<span class="mini-dot"></span> متصل الآن';
-                }
-            } else {
-                dot.className = 'status-dot offline';
-                const seen = data.lastSeen ? formatLastSeen(data.lastSeen) : 'غير متصل';
-                text.innerText = `آخر ظهور: ${seen}`;
-                if (chatPresence) {
-                    chatPresence.classList.remove('online');
-                    chatPresence.innerHTML = `<span class="mini-dot"></span> آخر ظهور: ${seen}`;
-                }
-            }
         }
 
         function formatLastSeen(timestamp) {
-            const date = new Date(Number(timestamp));
-            if (Number.isNaN(date.getTime())) return 'غير متصل';
-
-            const now = new Date();
-            const diffMs = Math.max(0, now.getTime() - date.getTime());
-            const diffMin = Math.floor(diffMs / 60000);
-
-            const time = date.toLocaleTimeString('ar-EG', {
-                hour: 'numeric',
-                minute: '2-digit'
-            });
-
-            if (diffMin < 1) return `منذ لحظات • ${time}`;
-            if (diffMin < 60) return `منذ ${diffMin} دقيقة • ${time}`;
-
-            const sameDay = date.toDateString() === now.toDateString();
-            if (sameDay) {
-                const hours = Math.floor(diffMin / 60);
-                return `منذ ${hours} ${hours === 1 ? 'ساعة' : 'ساعة'} • ${time}`;
-            }
-
-            const yesterday = new Date(now);
-            yesterday.setDate(now.getDate() - 1);
-            if (date.toDateString() === yesterday.toDateString()) {
-                return `أمس • ${time}`;
-            }
-
-            const d = date.toLocaleDateString('ar-EG', {
-                day: '2-digit', month: '2-digit', year: 'numeric'
-            });
-            return `${d} • ${time}`;
+            const now = Date.now();
+            const diffMin = Math.floor((now - timestamp) / (1000 * 60));
+            
+            if (diffMin < 1) return 'منذ لحظات';
+            if (diffMin < 60) return `منذ ${diffMin} دقيقة`;
+            
+            const date = new Date(timestamp);
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
         function switchTab(tabId, el) {
@@ -1447,70 +1061,32 @@
             const recordBtn = document.getElementById('record-audio-btn');
             if (!isRecording) {
                 try {
-                    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-                        alert('تسجيل الصوت يحتاج متصفحاً يدعم الميكروفون ويفضل HTTPS.');
-                        return;
-                    }
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks = [];
-                    recordingStartedAt = Date.now();
-                    mediaRecorder.ondataavailable = e => { if (e.data && e.data.size) audioChunks.push(e.data); };
+                    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
                     mediaRecorder.onstop = () => {
-                        clearInterval(recordingTimerInterval);
                         const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
                         const reader = new FileReader();
-                        reader.onloadend = () => {
-                            if (audioBlob.size > 0) sendChatMessage(null, reader.result, 'audio');
-                        };
                         reader.readAsDataURL(audioBlob);
+                        reader.onloadend = () => {
+                            sendChatMessage(null, reader.result, 'audio');
+                        };
                         stream.getTracks().forEach(track => track.stop());
                     };
                     mediaRecorder.start();
                     isRecording = true;
                     recordBtn.classList.add('recording');
-                    document.getElementById('recording-hud').classList.add('show');
-                    updateRecordingTimer();
-                    recordingTimerInterval = setInterval(updateRecordingTimer, 1000);
                 } catch (err) {
                     alert('لم يتم السماح بالوصول للميكروفون!');
                 }
             } else {
-                stopAudioRecordingAndSend();
-            }
-        }
-
-        function updateRecordingTimer() {
-            const el = document.getElementById('recording-timer');
-            if (!el || !recordingStartedAt) return;
-            const sec = Math.floor((Date.now() - recordingStartedAt) / 1000);
-            el.innerText = `${String(Math.floor(sec/60)).padStart(2,'0')}:${String(sec%60).padStart(2,'0')}`;
-        }
-
-        function stopAudioRecordingAndSend() {
-            if (!mediaRecorder || mediaRecorder.state === 'inactive') return;
-            mediaRecorder.stop();
-            isRecording = false;
-            document.getElementById('record-audio-btn').classList.remove('recording');
-            document.getElementById('recording-hud').classList.remove('show');
-            clearInterval(recordingTimerInterval);
-        }
-
-        function cancelAudioRecording() {
-            if (!isRecording) return;
-            try {
-                if (mediaRecorder) {
-                    mediaRecorder.onstop = () => {
-                        mediaRecorder.stream?.getTracks?.().forEach(track => track.stop());
-                    };
+                if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                     mediaRecorder.stop();
                 }
-            } catch(e){}
-            audioChunks = [];
-            isRecording = false;
-            document.getElementById('record-audio-btn').classList.remove('recording');
-            document.getElementById('recording-hud').classList.remove('show');
-            clearInterval(recordingTimerInterval);
+                isRecording = false;
+                recordBtn.classList.remove('recording');
+            }
         }
 
         /* --- Chat Functions --- */
@@ -1518,19 +1094,13 @@
             const input = document.getElementById('chat-input-field');
             const text = textOverride !== null ? textOverride : input.value.trim();
 
-            if (!text && !mediaUrl || !currentUser) return;
+            if (!text && !mediaUrl) return;
 
             const msgData = {
                 sender: currentUser.username,
                 text: text || '',
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
-                replyTo: selectedReplyMsg
-                    ? {
-                        msgId: selectedReplyMsg.msgId,
-                        sender: selectedReplyMsg.sender,
-                        text: selectedReplyMsg.text || ''
-                    }
-                    : null
+                replyTo: selectedReplyMsg || null
             };
 
             if (mediaUrl) {
@@ -1538,13 +1108,8 @@
                 msgData.mediaType = mediaType;
             }
 
-            db.ref('messages').push(msgData, (err) => {
-                if (err) {
-                    console.error('Send message error:', err);
-                    return;
-                }
-
-                playSendSound();
+            db.ref('messages').push(msgData, () => {
+                try { sendSound.play(); } catch(e){}
                 if (textOverride === null) input.value = '';
                 cancelReply();
                 stopTyping();
@@ -1558,70 +1123,22 @@
         function handleChatImageUpload(input) {
             const file = input.files[0];
             if (!file) return;
-            if (!file.type.startsWith('image/')) {
-                alert('اختار صورة فقط.');
-                input.value = '';
-                return;
-            }
             const reader = new FileReader();
-            reader.onload = e => {
-                pendingChatImage = e.target.result;
-                document.getElementById('image-preview-img').src = pendingChatImage;
-                document.getElementById('image-preview-modal').classList.add('show');
-            };
+            reader.onload = e => sendChatMessage(null, e.target.result, 'image');
             reader.readAsDataURL(file);
             input.value = '';
         }
 
-        function confirmChatImage() {
-            if (!pendingChatImage) return;
-            sendChatMessage(null, pendingChatImage, 'image');
-            pendingChatImage = null;
-            document.getElementById('image-preview-modal').classList.remove('show');
-        }
-
-        function cancelChatImage() {
-            pendingChatImage = null;
-            document.getElementById('image-preview-modal').classList.remove('show');
-        }
-
-        function openFullscreenImage(src) {
-            const modal = document.getElementById('fullscreen-image-modal');
-            document.getElementById('fullscreen-image').src = src;
-            modal.classList.add('show');
-        }
-
-        function closeFullscreenImage() {
-            document.getElementById('fullscreen-image-modal').classList.remove('show');
-        }
-
-        let typingWriteTimer = null;
-        let typingState = false;
-
         function handleTypingEvent() {
             if (!currentUser) return;
-
-            clearTimeout(typingWriteTimer);
+            db.ref(`typing/${currentUser.username}`).set(true);
             clearTimeout(typingTimeout);
-
-            if (!typingState) {
-                typingState = true;
-                db.ref(`typing/${currentUser.username}`).set(true);
-            }
-
-            // Stop quickly after the user pauses, without hammering Firebase.
-            typingTimeout = setTimeout(stopTyping, 1400);
+            typingTimeout = setTimeout(stopTyping, 2000);
         }
 
         function stopTyping() {
             if (!currentUser) return;
-            clearTimeout(typingWriteTimer);
-            clearTimeout(typingTimeout);
-
-            if (typingState) {
-                typingState = false;
-                db.ref(`typing/${currentUser.username}`).remove().catch(()=>{});
-            }
+            db.ref(`typing/${currentUser.username}`).remove();
         }
 
         function listenToTyping() {
@@ -1637,305 +1154,74 @@
             });
         }
 
-        function escapeHtml(value) {
-            return String(value ?? '')
-                .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-                .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
-                .replace(/'/g,'&#039;');
-        }
-
-        function formatMessageTime(timestamp) {
-            return timestamp ? new Date(Number(timestamp)).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'}) : '';
-        }
-
-        function messagePreview(msg) {
-            if (!msg) return '';
-            if (msg.text) return msg.text;
-            if (msg.mediaType === 'image') return '📷 صورة';
-            if (msg.mediaType === 'audio') return '🎙️ رسالة صوتية';
-            return 'رسالة';
-        }
-
-        function messageStatusHtml(msg, isMe) {
-            if (!isMe) return '';
-            const reads = msg.readBy ? Object.keys(msg.readBy).filter(u => u !== currentUser.username) : [];
-            if (reads.length) return '<span style="color:var(--accent);margin-right:5px;">✓✓</span>';
-            if (msg.deliveredTo) return '<span style="color:#86a8b7;margin-right:5px;">✓✓</span>';
-            return '<span style="color:#708995;margin-right:5px;">✓</span>';
-        }
-
-        function renderMessages(messages, queryOverride = null) {
+        function listenToMessages() {
             const container = document.getElementById('chat-messages-container');
-            const query = (queryOverride !== null ? queryOverride : (document.getElementById('chat-search-field')?.value || '')).trim().toLowerCase();
-            container.innerHTML = '';
+            db.ref('messages').on('value', snap => {
+                container.innerHTML = '';
+                const messages = snap.val() || {};
+                const keys = Object.keys(messages);
 
-            const keys = Object.keys(messages || {});
-            let shown = 0;
-
-            keys.forEach(key => {
-                const msg = messages[key] || {};
-                const searchable = `${msg.sender||''} ${msg.text||''}`.toLowerCase();
-                if (query && !searchable.includes(query)) return;
-
-                const isMe = msg.sender === currentUser.username;
-                const wrapper = document.createElement('div');
-                wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
-                wrapper.dataset.msgId = key;
-
-                let quoteHtml = '';
-                if (msg.replyTo) {
-                    quoteHtml = `<div class="msg-quote"><b>${escapeHtml(msg.replyTo.sender)}:</b> ${escapeHtml(msg.replyTo.text || 'ميديا')}</div>`;
-                }
-
-                let mediaHtml = '';
-                if (msg.mediaUrl) {
-                    if (msg.mediaType === 'image') {
-                        mediaHtml = `<img src="${escapeHtml(msg.mediaUrl)}" class="msg-img" loading="lazy" onclick="event.stopPropagation();openFullscreenImage(this.src)">`;
-                    } else if (msg.mediaType === 'audio') {
-                        mediaHtml = `<audio src="${escapeHtml(msg.mediaUrl)}" controls class="msg-audio"></audio>`;
+                if (initialLoadDone && keys.length > 0) {
+                    const lastKey = keys[keys.length - 1];
+                    if (messages[lastKey].sender !== currentUser.username) {
+                        try { receiveSound.play(); } catch(e){}
                     }
                 }
-
-                const badgeHtml = msg.sender === '3MR'
-                    ? '<span class="owner-badge">👑</span>'
-                    : (msg.sender === 'Roa' ? '<span class="owner-badge">❤️</span>' : '');
-
-                let reactionsHtml = '';
-                if (msg.reactions) {
-                    const counts = {};
-                    Object.values(msg.reactions).forEach(r => counts[r] = (counts[r] || 0) + 1);
-                    const reactionsText = Object.entries(counts).map(([r,c]) => `${r} ${c>1?c:''}`).join(' ');
-                    reactionsHtml = `<div class="msg-reactions">${escapeHtml(reactionsText)}</div>`;
-                }
-
-                wrapper.innerHTML = `
-                    <div class="msg-header">
-                        <span>${escapeHtml(msg.sender)}</span> ${badgeHtml}
-                    </div>
-                    <div class="msg-bubble" onclick="handleBubbleClick(event,'${key}',${JSON.stringify(msg.sender)},${JSON.stringify(msg.text || '')})">
-                        ${quoteHtml}
-                        <div>${escapeHtml(msg.text || '')}</div>
-                        ${mediaHtml}
-                        ${reactionsHtml}
-                    </div>
-                    <div class="msg-footer">
-                        <span>${formatMessageTime(msg.timestamp)}</span>
-                        ${messageStatusHtml(msg,isMe)}
-                    </div>
-                `;
-                container.appendChild(wrapper);
-                shown++;
-            });
-
-            if (!query) container.scrollTop = container.scrollHeight;
-            if (!query && keys.length && shown) markPartnerMessagesRead(messages);
-        }
-
-        const MESSAGE_PAGE_SIZE = 60;
-        let oldestMessageKey = null;
-        let loadingOlderMessages = false;
-        let hasOlderMessages = true;
-        let messageSearchTimer = null;
-        let liveMessagesRef = null;
-
-        function listenToMessages() {
-            const messagesRef = db.ref('messages');
-            allMessagesCache = {};
-            oldestMessageKey = null;
-            hasOlderMessages = true;
-
-            // Load only the latest page at startup. This prevents huge chats/media from freezing the tab.
-            messagesRef.orderByKey().limitToLast(MESSAGE_PAGE_SIZE).once('value').then(snap => {
-                const data = snap.val() || {};
-                allMessagesCache = data;
-                const keys = Object.keys(data);
-                oldestMessageKey = keys.length ? keys[0] : null;
-                hasOlderMessages = keys.length >= MESSAGE_PAGE_SIZE;
-                renderMessages(data);
                 initialLoadDone = true;
 
-                // Listen only to the newest item for additions; do not replay the entire database.
-                liveMessagesRef = messagesRef.limitToLast(1);
-                liveMessagesRef.on('child_added', childSnap => {
-                    const id = childSnap.key;
-                    const msg = childSnap.val() || {};
-                    if (allMessagesCache[id]) return;
-                    allMessagesCache[id] = msg;
-                    appendSingleMessage(id, msg);
-                    if (msg.sender !== currentUser.username) {
-                        playReceiveSound();
-                        notifyNewMessage(msg);
+                keys.forEach(key => {
+                    const msg = messages[key];
+                    const isMe = msg.sender === currentUser.username;
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
+                    
+                    let quoteHtml = '';
+                    if (msg.replyTo) {
+                        quoteHtml = `<div class="msg-quote"><b>${msg.replyTo.sender}:</b> ${msg.replyTo.text || 'ميديا'}</div>`;
                     }
-                    markSingleMessageRead(id, msg);
-                    scrollChatToBottom();
-                });
 
-                // Changes/deletions are lightweight and only replace/remove the affected DOM node.
-                messagesRef.on('child_changed', childSnap => {
-                    const id = childSnap.key;
-                    const msg = childSnap.val() || {};
-                    if (allMessagesCache[id] || document.querySelector(`[data-msg-id="${CSS.escape(id)}"]`)) {
-                        allMessagesCache[id] = msg;
-                        replaceSingleMessage(id, msg);
+                    let mediaHtml = '';
+                    if (msg.mediaUrl) {
+                        if (msg.mediaType === 'image') {
+                            mediaHtml = `<img src="${msg.mediaUrl}" class="msg-img">`;
+                        } else if (msg.mediaType === 'audio') {
+                            mediaHtml = `<audio src="${msg.mediaUrl}" controls class="msg-audio"></audio>`;
+                        }
                     }
+
+                    const badgeHtml = msg.sender === '3MR' 
+                        ? '<span class="owner-badge">👑</span>' 
+                        : (msg.sender === 'Roa' ? '<span class="owner-badge">❤️</span>' : '');
+
+                    let reactionsHtml = '';
+                    if (msg.reactions) {
+                        let counts = {};
+                        Object.values(msg.reactions).forEach(r => {
+                            counts[r] = (counts[r] || 0) + 1;
+                        });
+                        let reactionsText = Object.entries(counts).map(([r, c]) => `${r} ${c > 1 ? c : ''}`).join(' ');
+                        reactionsHtml = `<div class="msg-reactions">${reactionsText}</div>`;
+                    }
+
+                    wrapper.innerHTML = `
+                        <div class="msg-header">
+                            <span>${msg.sender}</span> ${badgeHtml}
+                        </div>
+                        <div class="msg-bubble" onclick="handleBubbleClick(event, '${key}', '${msg.sender}', \`${(msg.text || '').replace(/`/g, '')}\`)">
+                            ${quoteHtml}
+                            <div>${msg.text || ''}</div>
+                            ${mediaHtml}
+                            ${reactionsHtml}
+                        </div>
+                        <div class="msg-footer">
+                            <span>${msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</span>
+                        </div>
+                    `;
+                    container.appendChild(wrapper);
                 });
-
-                messagesRef.on('child_removed', childSnap => {
-                    const id = childSnap.key;
-                    delete allMessagesCache[id];
-                    const el = document.querySelector(`[data-msg-id="${CSS.escape(id)}"]`);
-                    if (el) el.remove();
-                });
-
-                const container = document.getElementById('chat-messages-container');
-                container.addEventListener('scroll', handleChatScroll, {passive:true});
-            }).catch(err => console.error('Messages load error:', err));
-        }
-
-        async function loadOlderMessages() {
-            if (loadingOlderMessages || !oldestMessageKey || !hasOlderMessages) return;
-            loadingOlderMessages = true;
-            const container = document.getElementById('chat-messages-container');
-            const oldHeight = container.scrollHeight;
-            const oldTop = container.scrollTop;
-
-            try {
-                const snap = await db.ref('messages').orderByKey().endAt(oldestMessageKey).limitToLast(MESSAGE_PAGE_SIZE + 1).once('value');
-                const data = snap.val() || {};
-                const keys = Object.keys(data);
-                keys.pop(); // remove the current oldest duplicate
-                if (!keys.length) { hasOlderMessages = false; return; }
-
-                const fragment = document.createDocumentFragment();
-                keys.forEach(id => {
-                    if (allMessagesCache[id]) return;
-                    const msg = data[id] || {};
-                    allMessagesCache[id] = msg;
-                    fragment.appendChild(buildMessageElement(id, msg));
-                });
-                container.insertBefore(fragment, container.firstChild);
-                oldestMessageKey = keys[0] || oldestMessageKey;
-                hasOlderMessages = keys.length >= MESSAGE_PAGE_SIZE;
-                container.scrollTop = container.scrollHeight - oldHeight + oldTop;
-            } catch (e) {
-                console.error('Older messages error:', e);
-            } finally {
-                loadingOlderMessages = false;
-            }
-        }
-
-        function handleChatScroll(e) {
-            if (e.target.scrollTop < 120) loadOlderMessages();
-        }
-
-        function scrollChatToBottom() {
-            const container = document.getElementById('chat-messages-container');
-            if (!container) return;
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function appendSingleMessage(id, msg) {
-            const container = document.getElementById('chat-messages-container');
-            if (!container) return;
-
-            const node = buildMessageElement(id, msg);
-            container.appendChild(node);
-        }
-
-        function replaceSingleMessage(id, msg) {
-            const oldNode = document.querySelector(`[data-msg-id="${CSS.escape(id)}"]`);
-            const newNode = buildMessageElement(id, msg);
-            if (oldNode) oldNode.replaceWith(newNode);
-            else appendSingleMessage(id, msg);
-        }
-
-        function buildMessageElement(key, msg) {
-            const isMe = msg.sender === currentUser.username;
-            const wrapper = document.createElement('div');
-            wrapper.className = `msg-wrapper ${isMe ? 'me' : 'them'}`;
-            wrapper.dataset.msgId = key;
-
-            let quoteHtml = '';
-            if (msg.replyTo) {
-                quoteHtml = `<div class="msg-quote"><b>${escapeHtml(msg.replyTo.sender)}:</b> ${escapeHtml(msg.replyTo.text || 'ميديا')}</div>`;
-            }
-
-            let mediaHtml = '';
-            if (msg.mediaUrl) {
-                if (msg.mediaType === 'image') {
-                    mediaHtml = `<img src="${escapeHtml(msg.mediaUrl)}" class="msg-img" loading="lazy" decoding="async" onclick="event.stopPropagation();openFullscreenImage(this.src)">`;
-                } else if (msg.mediaType === 'audio') {
-                    mediaHtml = `<audio src="${escapeHtml(msg.mediaUrl)}" controls preload="none" class="msg-audio"></audio>`;
-                }
-            }
-
-            const badgeHtml = msg.sender === '3MR'
-                ? '<span class="owner-badge">👑</span>'
-                : (msg.sender === 'Roa' ? '<span class="owner-badge">❤️</span>' : '');
-
-            let reactionsHtml = '';
-            if (msg.reactions) {
-                const counts = {};
-                Object.values(msg.reactions).forEach(r => counts[r] = (counts[r] || 0) + 1);
-                const reactionsText = Object.entries(counts).map(([r,c]) => `${r} ${c>1?c:''}`).join(' ');
-                reactionsHtml = `<div class="msg-reactions">${escapeHtml(reactionsText)}</div>`;
-            }
-
-            wrapper.innerHTML = `
-                <div class="msg-header">
-                    <span>${escapeHtml(msg.sender)}</span> ${badgeHtml}
-                </div>
-                <div class="msg-bubble" onclick="handleBubbleClick(event,'${key}',${JSON.stringify(msg.sender)},${JSON.stringify(msg.text || '')})">
-                    ${quoteHtml}
-                    <div>${escapeHtml(msg.text || '')}</div>
-                    ${mediaHtml}
-                    ${reactionsHtml}
-                </div>
-                <div class="msg-footer">
-                    <span>${formatMessageTime(msg.timestamp)}</span>
-                    ${messageStatusHtml(msg,isMe)}
-                </div>
-            `;
-            return wrapper;
-        }
-
-        function markSingleMessageRead(id, msg) {
-            if (!currentUser || !msg || msg.sender === currentUser.username) return;
-            db.ref(`messages/${id}/readBy/${currentUser.username}`).set(firebase.database.ServerValue.TIMESTAMP).catch(()=>{});
-        }
-
-
-    
-        function filterMessages(value) {
-            clearTimeout(messageSearchTimer);
-            const q = String(value || '').trim().toLowerCase();
-            if (!q) { renderMessages(allMessagesCache, ''); return; }
-
-            messageSearchTimer = setTimeout(async () => {
-                try {
-                    const snap = await db.ref('messages').once('value');
-                    const data = snap.val() || {};
-                    renderMessages(data, q);
-                } catch (e) {
-                    renderMessages(allMessagesCache, q);
-                }
-            }, 220);
-        }
-
-        function clearChatSearch() {
-            const el = document.getElementById('chat-search-field');
-            if (el) el.value = '';
-            renderMessages(allMessagesCache, '');
-        }
-
-        function markPartnerMessagesRead(messages) {
-            const updates = {};
-            Object.entries(messages || {}).forEach(([id,msg]) => {
-                if (msg && msg.sender && msg.sender !== currentUser.username) {
-                    updates[`messages/${id}/readBy/${currentUser.username}`] = firebase.database.ServerValue.TIMESTAMP;
-                }
+                container.scrollTop = container.scrollHeight;
             });
-            if (Object.keys(updates).length) db.ref().update(updates).catch(()=>{});
         }
 
         /* Message Reactions & Reply Selector */
@@ -1967,7 +1253,7 @@
             replyBtn.title = 'رد';
             replyBtn.onclick = (ev) => {
                 ev.stopPropagation();
-                setReply(msgId, sender, text);
+                setReply(sender, text);
                 picker.remove();
             };
             picker.appendChild(replyBtn);
@@ -1997,19 +1283,9 @@
         }
 
         function deleteSingleMessage(msgId) {
-            if (!currentUser) return;
-
-            db.ref(`messages/${msgId}`).once('value').then(snap => {
-                const msg = snap.val();
-                if (!msg) return;
-
-                if (msg.sender !== currentUser.username && !currentUser.isAdmin) {
-                    return alert('مش مسموح لك تحذف الرسالة دي.');
-                }
-
-                if (!confirm('هل تريد حذف هذه الرسالة فقط؟')) return;
-                return db.ref(`messages/${msgId}`).remove();
-            }).catch(() => alert('حصل خطأ أثناء حذف الرسالة.'));
+            if (confirm('هل تريد حذف هذه الرسالة؟')) {
+                db.ref(`messages/${msgId}`).remove();
+            }
         }
 
         function clearAllMessages() {
@@ -2024,16 +1300,39 @@
             }
         }
 
-        function setReply(msgId, sender, text) {
-            selectedReplyMsg = { msgId, sender, text: text || '' };
-            const preview = text ? text.substring(0, 35) : 'ميديا';
-            document.getElementById('reply-preview-text').innerText = `رد على ${sender}: ${preview}`;
+        function setReply(sender, text) {
+            selectedReplyMsg = { sender, text };
+            document.getElementById('reply-preview-text').innerText = `رد على ${sender}: ${text.substring(0, 20)}...`;
             document.getElementById('reply-preview').style.display = 'flex';
         }
 
         function cancelReply() {
             selectedReplyMsg = null;
             document.getElementById('reply-preview').style.display = 'none';
+        }
+
+        /* --- Wallpaper Feature --- */
+        function triggerWallpaperUpload() {
+            document.getElementById('wallpaper-file-input').click();
+        }
+
+        function handleWallpaperUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const imgUrl = e.target.result;
+                localStorage.setItem('chat_wallpaper', imgUrl);
+                document.getElementById('chat-view').style.backgroundImage = `url(${imgUrl})`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadWallpaper() {
+            const savedWp = localStorage.getItem('chat_wallpaper');
+            if (savedWp) {
+                document.getElementById('chat-view').style.backgroundImage = `url(${savedWp})`;
+            }
         }
 
         /* --- Stories Logic --- */
@@ -2074,67 +1373,55 @@
 
         function listenToStories() {
             const container = document.getElementById('stories-list-container');
-            const storiesRef = db.ref('stories');
-            container.innerHTML = '';
+            db.ref('stories').on('value', snap => {
+                container.innerHTML = '';
+                const stories = snap.val() || {};
+                const now = Date.now();
+                
+                Object.keys(stories).reverse().forEach(key => {
+                    const story = stories[key];
+                    if (story.timestamp && (now - story.timestamp > 24 * 60 * 60 * 1000)) {
+                        db.ref(`stories/${key}`).remove();
+                        return;
+                    }
 
-            storiesRef.on('child_added', snap => {
-                const story = snap.val() || {};
-                if (story.timestamp && (Date.now() - story.timestamp > 24*60*60*1000)) {
-                    storiesRef.child(snap.key).remove();
-                    return;
-                }
-                const card = buildStoryCard(snap.key, story);
-                container.insertBefore(card, container.firstChild);
-            });
-            storiesRef.on('child_changed', snap => {
-                const old = container.querySelector(`[data-story-id="${CSS.escape(snap.key)}"]`);
-                const card = buildStoryCard(snap.key, snap.val() || {});
-                if (old) old.replaceWith(card); else container.insertBefore(card, container.firstChild);
-            });
-            storiesRef.on('child_removed', snap => {
-                const old = container.querySelector(`[data-story-id="${CSS.escape(snap.key)}"]`);
-                if (old) old.remove();
-            });
-        }
+                    const isOwnerOrAdmin = story.author === currentUser.username || currentUser.isAdmin;
+                    const deleteBtnHtml = isOwnerOrAdmin ? `<button class="delete-btn" onclick="deleteStory('${key}')">حذف</button>` : '';
 
-        function buildStoryCard(key, story) {
-            const isOwnerOrAdmin = story.author === currentUser.username || currentUser.isAdmin;
-            const card = document.createElement('div');
-            card.className = 'story-card';
-            card.dataset.storyId = key;
-            const avatarSrc = (currentUser.customAvatar && story.author === currentUser.username) ? currentUser.customAvatar : (DEFAULT_AVATARS[story.author] || 'https://via.placeholder.com/35');
-            let mediaContent = '';
-            if (story.mediaUrl) {
-                mediaContent = story.type === 'video'
-                    ? `<video src="${escapeHtml(story.mediaUrl)}" controls preload="metadata" class="story-media"></video>`
-                    : `<img src="${escapeHtml(story.mediaUrl)}" class="story-media" loading="lazy" decoding="async">`;
-            }
-            card.innerHTML = `
-                <div class="story-header">
-                    <img src="${escapeHtml(avatarSrc)}" class="story-avatar" loading="lazy">
-                    <span class="story-author">${escapeHtml(story.author)}</span>
-                    <span class="story-time">${story.timestamp ? formatMessageTime(story.timestamp) : ''}</span>
-                    ${isOwnerOrAdmin ? `<button class="delete-btn" onclick="deleteStory('${key}')">حذف</button>` : ''}
-                </div>
-                ${story.text ? `<div class="story-body">${escapeHtml(story.text)}</div>` : ''}
-                ${mediaContent}`;
-            return card;
+                    let mediaContent = '';
+                    if (story.mediaUrl) {
+                        if (story.type === 'video') {
+                            mediaContent = `<video src="${story.mediaUrl}" controls class="story-media"></video>`;
+                        } else {
+                            mediaContent = `<img src="${story.mediaUrl}" class="story-media">`;
+                        }
+                    }
+
+                    const avatarSrc = (currentUser.customAvatar && story.author === currentUser.username) 
+                        ? currentUser.customAvatar 
+                        : (DEFAULT_AVATARS[story.author] || 'https://via.placeholder.com/35');
+
+                    const card = document.createElement('div');
+                    card.className = 'story-card';
+                    card.innerHTML = `
+                        <div class="story-header">
+                            <img src="${avatarSrc}" class="story-avatar">
+                            <span class="story-author">${story.author}</span>
+                            <span class="story-time">${story.timestamp ? new Date(story.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</span>
+                            ${deleteBtnHtml}
+                        </div>
+                        ${story.text ? `<div class="story-body">${story.text}</div>` : ''}
+                        ${mediaContent}
+                    `;
+                    container.appendChild(card);
+                });
+            });
         }
 
         function deleteStory(storyId) {
-            if (!currentUser) return;
-
-            db.ref(`stories/${storyId}`).once('value').then(snap => {
-                const story = snap.val();
-                if (!story) return;
-
-                if (story.author !== currentUser.username && !currentUser.isAdmin) {
-                    return alert('مش مسموح لك تحذف الاستوري دي.');
-                }
-
-                if (!confirm('هل تريد حذف هذه الاستوري فقط؟')) return;
-                return db.ref(`stories/${storyId}`).remove();
-            }).catch(() => alert('حصل خطأ أثناء حذف الاستوري.'));
+            if (confirm('هل تريد حذف هذه الحالة؟')) {
+                db.ref(`stories/${storyId}`).remove();
+            }
         }
 
         /* --- Profile Avatar Upload --- */
@@ -2195,10 +1482,9 @@
                 container.innerHTML = '';
                 const users = snap.val() || {};
                 
-                const allUsers = {
-                    '3MR': users['3MR'] || { username:'3MR', role:'المالك والآدمن 👑', isOnline:false },
-                    'Roa': users['Roa'] || { username:'Roa', role:'قلب القائد ❤️', isOnline:false }
-                };
+                const allUsers = { ...users };
+                if (!allUsers['3MR']) allUsers['3MR'] = { username: '3MR', role: 'المالك والآدمن 👑', isOnline: true };
+                if (!allUsers['Roa']) allUsers['Roa'] = { username: 'Roa', role: 'قلب القائد ❤️', isOnline: false };
 
                 Object.keys(allUsers).forEach(uname => {
                     const u = allUsers[uname];
@@ -2208,7 +1494,7 @@
                         <div class="flex-row">
                             <span class="${u.isOnline ? 'online-dot' : 'offline-dot'}"></span>
                             <div>
-                                <div style="font-weight:bold; font-size:0.85rem; color:var(--text-main);">${escapeHtml(u.username || uname)}</div>
+                                <div style="font-weight:bold; font-size:0.85rem; color:var(--text-main);">${u.username || uname}</div>
                                 <div style="font-size:0.7rem; color:var(--rose-gold);">${u.role || 'عضو'}</div>
                             </div>
                         </div>
