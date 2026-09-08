@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>3MR ❤️ Roa</title>
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&family=Amiri:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
 
     <!-- Firebase SDKs -->
@@ -58,15 +56,12 @@
             inset: 0;
         }
 
-        #hearts-canvas {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.32;
-        }
+        .light-hearts { position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden; opacity:.22; }
+        .light-hearts span { position:absolute; font-size:14px; animation:floatHeart 8s linear infinite; }
+        .light-hearts span:nth-child(1){left:18%;bottom:-20px;animation-delay:0s;}
+        .light-hearts span:nth-child(2){left:57%;bottom:-20px;animation-delay:2.5s;}
+        .light-hearts span:nth-child(3){left:82%;bottom:-20px;animation-delay:5s;}
+        @keyframes floatHeart { from{transform:translateY(0);opacity:0} 15%{opacity:.7} to{transform:translateY(-105vh);opacity:0} }
 
         .screen {
             position: absolute;
@@ -335,6 +330,7 @@
         }
 
         .msg-wrapper {
+            contain: layout paint style;
             display: flex;
             flex-direction: column;
             max-width: 85%;
@@ -568,6 +564,7 @@
         }
 
         .story-card {
+            contain: content;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: var(--radius-md);
@@ -674,18 +671,6 @@
             font-size: 0.8rem;
         }
 
-        .wallpaper-btn {
-            background: rgba(255, 183, 3, 0.15);
-            border: 1px solid var(--gold);
-            color: var(--gold);
-            padding: 8px 12px;
-            border-radius: var(--radius-md);
-            font-size: 0.8rem;
-            cursor: pointer;
-            margin-top: 10px;
-            display: inline-block;
-        }
-
         .admin-box {
             background: rgba(40, 5, 30, 0.95);
             border: 1px solid var(--gold);
@@ -790,7 +775,8 @@
                 linear-gradient(rgba(3,11,17,.58),rgba(3,11,17,.76)),
                 radial-gradient(circle at 50% 0%,rgba(32,199,255,.06),transparent 45%);
         }
-        .msg-wrapper { max-width:min(86%,560px); }
+        .msg-wrapper {
+            contain: layout paint style; max-width:min(86%,560px); }
         .msg-header { color:#7fc8dd; }
         .msg-bubble {
             box-shadow:0 7px 20px rgba(0,0,0,.18);
@@ -850,11 +836,6 @@
         .story-create-btn {
             background:rgba(10,31,44,.82);
             border-color:rgba(32,199,255,.5);
-            color:var(--accent);
-        }
-        .wallpaper-btn {
-            background:rgba(32,199,255,.09);
-            border-color:rgba(32,199,255,.42);
             color:var(--accent);
         }
         .delete-btn { background:rgba(255,95,115,.09); border-color:var(--danger); color:#ff9baa; }
@@ -969,7 +950,8 @@
         @media (max-width:600px) {
             .app-header { height:72px; }
             .header-title { font-size:1.2rem; }
-            .msg-wrapper { max-width:90%; }
+            .msg-wrapper {
+            contain: layout paint style; max-width:90%; }
             .settings-grid { grid-template-columns:1fr; }
         }
 
@@ -986,7 +968,7 @@
 </head>
 <body>
 
-    <canvas id="hearts-canvas"></canvas>
+    <div class="light-hearts" aria-hidden="true"><span>❤</span><span>❤</span><span>❤</span></div>
 
     <!-- Splash Screen -->
     <div id="splash-screen" class="screen">
@@ -1089,8 +1071,6 @@
                     <h3 id="my-profile-name">--</h3>
                     <p id="my-profile-role" style="color:var(--rose-gold); font-size:0.85rem; margin-top:4px;"></p>
                     
-                    <div class="wallpaper-btn" onclick="triggerWallpaperUpload()">🖼️ تغيير خلفية المحادثة</div>
-                    <input type="file" id="wallpaper-file-input" accept="image/*" style="display:none;" onchange="handleWallpaperUpload(this)">
                     <button class="wallpaper-btn" onclick="openSettingsModal()">⚙️ إعدادات الواجهة</button>
                 </div>
 
@@ -1259,76 +1239,8 @@
             updateNotificationSetting();
             // Ask only after a user gesture; browser autoplay/permission policies are respected.
         }
-
-        function initHeartsCanvas() {
-            const canvas = document.getElementById('hearts-canvas');
-            const ctx = canvas.getContext('2d');
-            let width = canvas.width = window.innerWidth;
-            let height = canvas.height = window.innerHeight;
-
-            const hearts = Array.from({ length: 7 }, () => ({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                size: Math.random() * 8 + 4,
-                speedY: Math.random() * 0.5 + 0.2,
-                opacity: Math.random() * 0.4 + 0.2
-            }));
-
-            function drawHeart(x, y, size, color) {
-                ctx.save(); ctx.beginPath(); ctx.translate(x, y); ctx.moveTo(0, 0);
-                ctx.bezierCurveTo(-size / 2, -size / 2, -size, size / 3, 0, size);
-                ctx.bezierCurveTo(size, size / 3, size / 2, -size / 2, 0, 0);
-                ctx.fillStyle = color; ctx.fill(); ctx.restore();
-            }
-
-            function animate() {
-                ctx.clearRect(0, 0, width, height);
-                hearts.forEach(h => {
-                    h.y -= h.speedY;
-                    if (h.y < -20) h.y = height + 20;
-                    drawHeart(h.x, h.y, h.size, `rgba(32, 199, 255, ${h.opacity})`);
-                });
-                requestAnimationFrame(animate);
-            }
-            animate();
-        }
-
-        function toggleHearts(enabled) {
-            localStorage.setItem('3mr_hearts', enabled ? '1' : '0');
-            const canvas = document.getElementById('hearts-canvas');
-            if (canvas) canvas.style.display = enabled ? 'block' : 'none';
-        }
-
-        function applyTheme(theme) {
-            const root = document.documentElement;
-            const themes = {
-                blue: {a:'#20c7ff', b:'#0b8cff'},
-                emerald: {a:'#35e0a1', b:'#087f66'},
-                violet: {a:'#a78bfa', b:'#6d28d9'},
-                rose: {a:'#ff7aa8', b:'#d63384'}
-            };
-            const t = themes[theme] || themes.blue;
-            root.style.setProperty('--accent', t.a);
-            root.style.setProperty('--accent-2', t.b);
-            localStorage.setItem('3mr_theme', theme);
-        }
-
-        function loadSavedTheme() {
-            applyTheme(localStorage.getItem('3mr_theme') || 'blue');
-            toggleHearts(localStorage.getItem('3mr_hearts') !== '0');
-        }
-
-        function openSettingsModal() {
-            initNotificationSettings();
-            document.getElementById('settings-modal').classList.add('show');
-        }
-        function closeSettingsModal() {
-            document.getElementById('settings-modal').classList.remove('show');
-        }
-
         window.addEventListener('DOMContentLoaded', () => {
             loadSavedTheme();
-            initHeartsCanvas();
             setTimeout(() => {
                 document.getElementById('splash-screen').classList.add('hidden');
                 if (currentUser) {
@@ -1423,7 +1335,6 @@
             listenToStories();
             listenToUsers();
             listenToPartnerPresence();
-            loadWallpaper();
         }
 
         function setupPresence() {
@@ -1820,27 +1731,37 @@
             if (!query && keys.length && shown) markPartnerMessagesRead(messages);
         }
 
-        function listenToMessages() {
-            const container = document.getElementById('chat-messages-container');
-            const messagesRef = db.ref('messages');
+        const MESSAGE_PAGE_SIZE = 60;
+        let oldestMessageKey = null;
+        let loadingOlderMessages = false;
+        let hasOlderMessages = true;
+        let messageSearchTimer = null;
+        let liveMessagesRef = null;
 
-            // One initial read + incremental child events = no full-chat redraw on every message.
-            messagesRef.off();
-            messagesRef.once('value').then(snap => {
-                allMessagesCache = snap.val() || {};
-                renderMessages(allMessagesCache);
+        function listenToMessages() {
+            const messagesRef = db.ref('messages');
+            allMessagesCache = {};
+            oldestMessageKey = null;
+            hasOlderMessages = true;
+
+            // Load only the latest page at startup. This prevents huge chats/media from freezing the tab.
+            messagesRef.orderByKey().limitToLast(MESSAGE_PAGE_SIZE).once('value').then(snap => {
+                const data = snap.val() || {};
+                allMessagesCache = data;
+                const keys = Object.keys(data);
+                oldestMessageKey = keys.length ? keys[0] : null;
+                hasOlderMessages = keys.length >= MESSAGE_PAGE_SIZE;
+                renderMessages(data);
                 initialLoadDone = true;
 
-                messagesRef.on('child_added', childSnap => {
+                // Listen only to the newest item for additions; do not replay the entire database.
+                liveMessagesRef = messagesRef.limitToLast(1);
+                liveMessagesRef.on('child_added', childSnap => {
                     const id = childSnap.key;
                     const msg = childSnap.val() || {};
-
-                    // Initial children are already rendered above.
                     if (allMessagesCache[id]) return;
-
                     allMessagesCache[id] = msg;
                     appendSingleMessage(id, msg);
-
                     if (msg.sender !== currentUser.username) {
                         playReceiveSound();
                         notifyNewMessage(msg);
@@ -1849,12 +1770,14 @@
                     scrollChatToBottom();
                 });
 
+                // Changes/deletions are lightweight and only replace/remove the affected DOM node.
                 messagesRef.on('child_changed', childSnap => {
                     const id = childSnap.key;
                     const msg = childSnap.val() || {};
-                    allMessagesCache[id] = msg;
-                    replaceSingleMessage(id, msg);
-                    markSingleMessageRead(id, msg);
+                    if (allMessagesCache[id] || document.querySelector(`[data-msg-id="${CSS.escape(id)}"]`)) {
+                        allMessagesCache[id] = msg;
+                        replaceSingleMessage(id, msg);
+                    }
                 });
 
                 messagesRef.on('child_removed', childSnap => {
@@ -1863,9 +1786,46 @@
                     const el = document.querySelector(`[data-msg-id="${CSS.escape(id)}"]`);
                     if (el) el.remove();
                 });
-            }).catch(err => {
-                console.error('Messages load error:', err);
-            });
+
+                const container = document.getElementById('chat-messages-container');
+                container.addEventListener('scroll', handleChatScroll, {passive:true});
+            }).catch(err => console.error('Messages load error:', err));
+        }
+
+        async function loadOlderMessages() {
+            if (loadingOlderMessages || !oldestMessageKey || !hasOlderMessages) return;
+            loadingOlderMessages = true;
+            const container = document.getElementById('chat-messages-container');
+            const oldHeight = container.scrollHeight;
+            const oldTop = container.scrollTop;
+
+            try {
+                const snap = await db.ref('messages').orderByKey().endAt(oldestMessageKey).limitToLast(MESSAGE_PAGE_SIZE + 1).once('value');
+                const data = snap.val() || {};
+                const keys = Object.keys(data);
+                keys.pop(); // remove the current oldest duplicate
+                if (!keys.length) { hasOlderMessages = false; return; }
+
+                const fragment = document.createDocumentFragment();
+                keys.forEach(id => {
+                    if (allMessagesCache[id]) return;
+                    const msg = data[id] || {};
+                    allMessagesCache[id] = msg;
+                    fragment.appendChild(buildMessageElement(id, msg));
+                });
+                container.insertBefore(fragment, container.firstChild);
+                oldestMessageKey = keys[0] || oldestMessageKey;
+                hasOlderMessages = keys.length >= MESSAGE_PAGE_SIZE;
+                container.scrollTop = container.scrollHeight - oldHeight + oldTop;
+            } catch (e) {
+                console.error('Older messages error:', e);
+            } finally {
+                loadingOlderMessages = false;
+            }
+        }
+
+        function handleChatScroll(e) {
+            if (e.target.scrollTop < 120) loadOlderMessages();
         }
 
         function scrollChatToBottom() {
@@ -1947,7 +1907,19 @@
 
     
         function filterMessages(value) {
-            renderMessages(allMessagesCache, value);
+            clearTimeout(messageSearchTimer);
+            const q = String(value || '').trim().toLowerCase();
+            if (!q) { renderMessages(allMessagesCache, ''); return; }
+
+            messageSearchTimer = setTimeout(async () => {
+                try {
+                    const snap = await db.ref('messages').once('value');
+                    const data = snap.val() || {};
+                    renderMessages(data, q);
+                } catch (e) {
+                    renderMessages(allMessagesCache, q);
+                }
+            }, 220);
         }
 
         function clearChatSearch() {
@@ -1964,7 +1936,6 @@
                 }
             });
             if (Object.keys(updates).length) db.ref().update(updates).catch(()=>{});
-        }
         }
 
         /* Message Reactions & Reply Selector */
@@ -2040,7 +2011,6 @@
                 return db.ref(`messages/${msgId}`).remove();
             }).catch(() => alert('حصل خطأ أثناء حذف الرسالة.'));
         }
-        }
 
         function clearAllMessages() {
             if (confirm('هل أنت تأكد من مسح جميع الرسائل بشكل كامل وسريع؟')) {
@@ -2064,30 +2034,6 @@
         function cancelReply() {
             selectedReplyMsg = null;
             document.getElementById('reply-preview').style.display = 'none';
-        }
-
-        /* --- Wallpaper Feature --- */
-        function triggerWallpaperUpload() {
-            document.getElementById('wallpaper-file-input').click();
-        }
-
-        function handleWallpaperUpload(input) {
-            const file = input.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                const imgUrl = e.target.result;
-                localStorage.setItem('chat_wallpaper', imgUrl);
-                document.getElementById('chat-view').style.backgroundImage = `url(${imgUrl})`;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        function loadWallpaper() {
-            const savedWp = localStorage.getItem('chat_wallpaper');
-            if (savedWp) {
-                document.getElementById('chat-view').style.backgroundImage = `url(${savedWp})`;
-            }
         }
 
         /* --- Stories Logic --- */
@@ -2128,49 +2074,51 @@
 
         function listenToStories() {
             const container = document.getElementById('stories-list-container');
-            db.ref('stories').on('value', snap => {
-                container.innerHTML = '';
-                const stories = snap.val() || {};
-                const now = Date.now();
-                
-                Object.keys(stories).reverse().forEach(key => {
-                    const story = stories[key];
-                    if (story.timestamp && (now - story.timestamp > 24 * 60 * 60 * 1000)) {
-                        db.ref(`stories/${key}`).remove();
-                        return;
-                    }
+            const storiesRef = db.ref('stories');
+            container.innerHTML = '';
 
-                    const isOwnerOrAdmin = story.author === currentUser.username || currentUser.isAdmin;
-                    const deleteBtnHtml = isOwnerOrAdmin ? `<button class="delete-btn" onclick="deleteStory('${key}')">حذف</button>` : '';
-
-                    let mediaContent = '';
-                    if (story.mediaUrl) {
-                        if (story.type === 'video') {
-                            mediaContent = `<video src="${story.mediaUrl}" controls class="story-media"></video>`;
-                        } else {
-                            mediaContent = `<img src="${story.mediaUrl}" class="story-media">`;
-                        }
-                    }
-
-                    const avatarSrc = (currentUser.customAvatar && story.author === currentUser.username) 
-                        ? currentUser.customAvatar 
-                        : (DEFAULT_AVATARS[story.author] || 'https://via.placeholder.com/35');
-
-                    const card = document.createElement('div');
-                    card.className = 'story-card';
-                    card.innerHTML = `
-                        <div class="story-header">
-                            <img src="${avatarSrc}" class="story-avatar">
-                            <span class="story-author">${escapeHtml(story.author)}</span>
-                            <span class="story-time">${story.timestamp ? new Date(story.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</span>
-                            ${deleteBtnHtml}
-                        </div>
-                        ${story.text ? `<div class="story-body">${escapeHtml(story.text)}</div>` : ''}
-                        ${mediaContent}
-                    `;
-                    container.appendChild(card);
-                });
+            storiesRef.on('child_added', snap => {
+                const story = snap.val() || {};
+                if (story.timestamp && (Date.now() - story.timestamp > 24*60*60*1000)) {
+                    storiesRef.child(snap.key).remove();
+                    return;
+                }
+                const card = buildStoryCard(snap.key, story);
+                container.insertBefore(card, container.firstChild);
             });
+            storiesRef.on('child_changed', snap => {
+                const old = container.querySelector(`[data-story-id="${CSS.escape(snap.key)}"]`);
+                const card = buildStoryCard(snap.key, snap.val() || {});
+                if (old) old.replaceWith(card); else container.insertBefore(card, container.firstChild);
+            });
+            storiesRef.on('child_removed', snap => {
+                const old = container.querySelector(`[data-story-id="${CSS.escape(snap.key)}"]`);
+                if (old) old.remove();
+            });
+        }
+
+        function buildStoryCard(key, story) {
+            const isOwnerOrAdmin = story.author === currentUser.username || currentUser.isAdmin;
+            const card = document.createElement('div');
+            card.className = 'story-card';
+            card.dataset.storyId = key;
+            const avatarSrc = (currentUser.customAvatar && story.author === currentUser.username) ? currentUser.customAvatar : (DEFAULT_AVATARS[story.author] || 'https://via.placeholder.com/35');
+            let mediaContent = '';
+            if (story.mediaUrl) {
+                mediaContent = story.type === 'video'
+                    ? `<video src="${escapeHtml(story.mediaUrl)}" controls preload="metadata" class="story-media"></video>`
+                    : `<img src="${escapeHtml(story.mediaUrl)}" class="story-media" loading="lazy" decoding="async">`;
+            }
+            card.innerHTML = `
+                <div class="story-header">
+                    <img src="${escapeHtml(avatarSrc)}" class="story-avatar" loading="lazy">
+                    <span class="story-author">${escapeHtml(story.author)}</span>
+                    <span class="story-time">${story.timestamp ? formatMessageTime(story.timestamp) : ''}</span>
+                    ${isOwnerOrAdmin ? `<button class="delete-btn" onclick="deleteStory('${key}')">حذف</button>` : ''}
+                </div>
+                ${story.text ? `<div class="story-body">${escapeHtml(story.text)}</div>` : ''}
+                ${mediaContent}`;
+            return card;
         }
 
         function deleteStory(storyId) {
@@ -2187,7 +2135,6 @@
                 if (!confirm('هل تريد حذف هذه الاستوري فقط؟')) return;
                 return db.ref(`stories/${storyId}`).remove();
             }).catch(() => alert('حصل خطأ أثناء حذف الاستوري.'));
-        }
         }
 
         /* --- Profile Avatar Upload --- */
