@@ -1246,6 +1246,11 @@
         window.addEventListener('focus', keepNotificationStateSynced);
         document.addEventListener('visibilitychange', keepNotificationStateSynced);
 
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('settings-modal');
+            if (modal && e.target === modal) closeSettingsModal();
+        });
+
         function notifyNewMessage(msg) {
             if (!msg || msg.sender === currentUser.username) return;
             const pageHidden = document.hidden;
@@ -1271,6 +1276,47 @@
             updateNotificationSetting();
             // Ask only after a user gesture; browser autoplay/permission policies are respected.
         }
+
+        /* ===== واجهة الإعدادات: تعمل بدون إعادة تحميل الصفحة ===== */
+        function toggleHearts(enabled) {
+            localStorage.setItem('3mr_hearts', enabled ? '1' : '0');
+            const hearts = document.querySelector('.light-hearts');
+            if (hearts) hearts.style.display = enabled ? 'block' : 'none';
+        }
+
+        function applyTheme(theme) {
+            const themes = {
+                blue:    { a:'#20c7ff', b:'#0b8cff' },
+                emerald: { a:'#35e0a1', b:'#087f66' },
+                violet:  { a:'#a78bfa', b:'#6d28d9' },
+                rose:    { a:'#ff7aa8', b:'#d63384' }
+            };
+            const selected = themes[theme] || themes.blue;
+            document.documentElement.style.setProperty('--accent', selected.a);
+            document.documentElement.style.setProperty('--accent-2', selected.b);
+            localStorage.setItem('3mr_theme', themes[theme] ? theme : 'blue');
+        }
+
+        function loadSavedTheme() {
+            let savedTheme = 'blue';
+            try { savedTheme = localStorage.getItem('3mr_theme') || 'blue'; } catch(e) {}
+            applyTheme(savedTheme);
+            let heartsEnabled = true;
+            try { heartsEnabled = localStorage.getItem('3mr_hearts') !== '0'; } catch(e) {}
+            toggleHearts(heartsEnabled);
+        }
+
+        function openSettingsModal() {
+            initNotificationSettings();
+            const modal = document.getElementById('settings-modal');
+            if (modal) modal.classList.add('show');
+        }
+
+        function closeSettingsModal() {
+            const modal = document.getElementById('settings-modal');
+            if (modal) modal.classList.remove('show');
+        }
+
         function bootAppFast() {
             try { loadSavedTheme(); } catch(e) {}
             var splash = document.getElementById('splash-screen');
@@ -1576,6 +1622,13 @@
             lastSentAt = now;
             sendLock = true;
             if (sendBtn) sendBtn.disabled = true;
+            // Safety release for a stalled network request; Firebase callback normally clears it earlier.
+            const sendSafetyTimer = setTimeout(function(){
+                if (sendLock) {
+                    sendLock = false;
+                    if (sendBtn) sendBtn.disabled = false;
+                }
+            }, 10000);
 
             const msgData = {
                 sender: currentUser.username,
@@ -1596,6 +1649,7 @@
             }
 
             db.ref('messages').push(msgData, (err) => {
+                clearTimeout(sendSafetyTimer);
                 sendLock = false;
                 if (sendBtn) sendBtn.disabled = false;
                 if (err) {
