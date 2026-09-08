@@ -15,18 +15,18 @@
 
     <style>
         :root {
-            --bg-deep: #0f0508;
-            --card-bg: rgba(26, 10, 16, 0.85);
-            --card-border: rgba(212, 175, 55, 0.25);
-            --accent-red: #8B0000;
-            --rose-gold: #e8a598;
-            --bright-red: #d62828;
-            --gold: #D4AF37;
-            --gold-glow: rgba(212, 175, 55, 0.4);
-            --text-main: #fff5f5;
-            --text-sub: #d1b8c0;
-            --radius-lg: 18px;
-            --radius-md: 12px;
+            --bg-deep: #0a0307;
+            --card-bg: rgba(30, 12, 22, 0.88);
+            --card-border: rgba(255, 183, 3, 0.3);
+            --accent-red: #9e0022;
+            --rose-gold: #f4acb7;
+            --bright-red: #e63946;
+            --gold: #ffb703;
+            --gold-glow: rgba(255, 183, 3, 0.4);
+            --text-main: #ffffff;
+            --text-sub: #e0aaff;
+            --radius-lg: 20px;
+            --radius-md: 14px;
             --font-main: 'Tajawal', sans-serif;
             --font-title: 'Amiri', serif;
             --sab: env(safe-area-inset-bottom, 0px);
@@ -59,7 +59,7 @@
             height: 100%;
             z-index: 0;
             pointer-events: none;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         .screen {
@@ -70,7 +70,7 @@
             display: flex;
             flex-direction: column;
             z-index: 10;
-            background: radial-gradient(circle at center, rgba(40, 10, 20, 0.8) 0%, var(--bg-deep) 100%);
+            background: radial-gradient(circle at center, rgba(60, 15, 35, 0.85) 0%, var(--bg-deep) 100%);
         }
 
         .hidden { display: none !important; }
@@ -85,22 +85,22 @@
         }
 
         .splash-card {
-            padding: 30px;
+            padding: 35px;
             border-radius: var(--radius-lg);
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 20px var(--gold-glow);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 25px var(--gold-glow);
         }
 
         .splash-title {
             font-family: var(--font-title);
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             color: var(--gold);
             margin-bottom: 8px;
         }
 
         .splash-sub {
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: var(--rose-gold);
         }
 
@@ -120,6 +120,7 @@
             padding: 25px;
             border-radius: var(--radius-lg);
             text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
         }
 
         .auth-box h2 {
@@ -151,8 +152,8 @@
             width: 100%;
             padding: 10px 12px;
             border-radius: var(--radius-md);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            background: rgba(10, 3, 6, 0.8);
+            border: 1px solid rgba(255, 183, 3, 0.4);
+            background: rgba(15, 5, 10, 0.9);
             color: var(--text-main);
             font-family: var(--font-main);
             font-size: 0.9rem;
@@ -175,8 +176,14 @@
         }
 
         .btn-gold {
-            background: linear-gradient(135deg, #b8860b, var(--gold));
+            background: linear-gradient(135deg, #d4af37, var(--gold));
             color: #000;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #8b0000, #ff2a2a);
+            color: #fff;
+            margin-top: 8px;
         }
 
         .toggle-auth {
@@ -198,8 +205,8 @@
         }
 
         .app-header {
-            height: 55px;
-            background: rgba(15, 5, 8, 0.95);
+            height: 60px;
+            background: rgba(15, 5, 10, 0.98);
             border-bottom: 1px solid var(--card-border);
             display: flex;
             align-items: center;
@@ -208,18 +215,39 @@
             flex-shrink: 0;
         }
 
+        .header-title-box {
+            display: flex;
+            flex-direction: column;
+        }
+
         .header-title {
             font-family: var(--font-title);
             font-size: 1.3rem;
             color: var(--gold);
         }
 
+        .online-status-indicator {
+            font-size: 0.75rem;
+            color: #2ec4b6;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #2ec4b6;
+            box-shadow: 0 0 8px #2ec4b6;
+        }
+
         .icon-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(212,175,55,0.2);
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,183,3,0.3);
             color: var(--text-main);
-            width: 34px;
-            height: 34px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
@@ -230,7 +258,7 @@
 
         .app-tabs {
             height: 48px;
-            background: rgba(10, 3, 6, 0.95);
+            background: rgba(10, 3, 7, 0.95);
             border-bottom: 1px solid rgba(255,255,255,0.08);
             display: flex;
             flex-shrink: 0;
@@ -250,7 +278,7 @@
         .tab-item.active {
             color: var(--gold);
             border-bottom-color: var(--gold);
-            background: rgba(212, 175, 55, 0.05);
+            background: rgba(255, 183, 3, 0.08);
             font-weight: 700;
         }
 
@@ -288,7 +316,7 @@
             padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -311,17 +339,9 @@
             color: var(--rose-gold);
         }
 
-        .msg-avatar {
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--gold);
-        }
-
         .msg-bubble {
-            padding: 8px 12px;
-            border-radius: 14px;
+            padding: 10px 14px;
+            border-radius: 16px;
             font-size: 0.9rem;
             line-height: 1.4;
             word-break: break-word;
@@ -330,28 +350,27 @@
         }
 
         .msg-wrapper.me .msg-bubble {
-            background: linear-gradient(135deg, #500a12, #800e1b);
-            border: 1px solid rgba(214, 40, 40, 0.3);
+            background: linear-gradient(135deg, #610017, #9e0022);
+            border: 1px solid rgba(255, 183, 3, 0.3);
             color: #fff;
             border-top-right-radius: 2px;
         }
 
         .msg-wrapper.them .msg-bubble {
-            background: linear-gradient(135deg, #1c1018, #2a1522);
+            background: linear-gradient(135deg, #230c1e, #3a1332);
             border: 1px solid var(--card-border);
             color: var(--text-main);
             border-top-left-radius: 2px;
         }
 
-        .msg-img {
+        .msg-img, .msg-video {
             max-width: 100%;
-            max-height: 200px;
-            border-radius: 8px;
-            margin-top: 5px;
+            max-height: 220px;
+            border-radius: 10px;
+            margin-top: 6px;
             display: block;
         }
 
-        /* Voice Note Styling */
         .msg-audio {
             width: 220px;
             height: 36px;
@@ -360,14 +379,13 @@
             border-radius: 18px;
         }
 
-        /* Message Reactions Styling */
         .msg-reactions {
             display: flex;
             gap: 4px;
             position: absolute;
             bottom: -10px;
             left: 8px;
-            background: rgba(20, 8, 14, 0.9);
+            background: rgba(20, 8, 14, 0.95);
             border: 1px solid var(--gold);
             border-radius: 12px;
             padding: 1px 6px;
@@ -382,15 +400,15 @@
 
         .reactions-picker {
             position: absolute;
-            top: -38px;
-            background: rgba(20, 8, 14, 0.95);
+            top: -42px;
+            background: rgba(20, 8, 14, 0.98);
             border: 1px solid var(--gold);
             border-radius: 20px;
-            padding: 3px 8px;
+            padding: 4px 10px;
             display: flex;
             gap: 8px;
             z-index: 100;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.8);
         }
         .msg-wrapper.me .reactions-picker { right: 0; }
         .msg-wrapper.them .reactions-picker { left: 0; }
@@ -417,7 +435,7 @@
             align-items: center;
             justify-content: flex-end;
             font-size: 0.65rem;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255,255,255,0.6);
             margin-top: 3px;
         }
 
@@ -459,8 +477,8 @@
         .chat-input-row input {
             flex: 1;
             margin: 0;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(212,175,55,0.25);
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,183,3,0.3);
             padding: 10px 12px;
             border-radius: 20px;
         }
@@ -480,7 +498,7 @@
         .attach-btn, .record-btn {
             background: rgba(255,255,255,0.08);
             color: var(--rose-gold);
-            border: 1px solid rgba(212,175,55,0.2);
+            border: 1px solid rgba(255,183,3,0.3);
             font-size: 1rem;
         }
 
@@ -491,13 +509,13 @@
         }
 
         @keyframes pulse-red {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 40, 40, 0.7); }
-            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(214, 40, 40, 0); }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(214, 40, 40, 0); }
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(230, 57, 70, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
         }
 
         .send-btn {
-            background: linear-gradient(135deg, var(--gold), #b8860b);
+            background: linear-gradient(135deg, var(--gold), #d4af37);
             color: #000;
             font-size: 1rem;
         }
@@ -510,18 +528,18 @@
 
         .story-actions-bar {
             display: flex;
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 15px;
         }
 
         .story-create-btn {
             flex: 1;
-            padding: 10px;
-            background: rgba(26, 10, 16, 0.8);
+            padding: 8px 4px;
+            background: rgba(30, 12, 22, 0.9);
             border: 1px dashed var(--gold);
             border-radius: var(--radius-md);
             color: var(--gold);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: bold;
             display: flex;
             align-items: center;
@@ -579,12 +597,15 @@
 
         .story-media {
             max-width: 100%;
+            max-height: 300px;
             border-radius: 8px;
             margin-top: 8px;
+            width: 100%;
+            object-fit: contain;
         }
 
         .delete-btn {
-            background: rgba(214, 40, 40, 0.2);
+            background: rgba(230, 57, 70, 0.2);
             border: 1px solid var(--bright-red);
             color: #ff8888;
             padding: 2px 6px;
@@ -610,8 +631,8 @@
         }
 
         .profile-avatar-container {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             margin: 0 auto 10px;
             position: relative;
             cursor: pointer;
@@ -625,8 +646,23 @@
             border: 2px solid var(--gold);
         }
 
+        .profile-avatar-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--gold);
+            color: #000;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
         .admin-box {
-            background: rgba(40, 10, 20, 0.9);
+            background: rgba(40, 10, 20, 0.95);
             border: 1px solid var(--gold);
             border-radius: var(--radius-md);
             padding: 12px;
@@ -635,7 +671,7 @@
 
         .user-card-item {
             background: rgba(20, 8, 14, 0.6);
-            border: 1px solid rgba(212,175,55,0.15);
+            border: 1px solid rgba(255,183,3,0.2);
             border-radius: var(--radius-md);
             padding: 10px 12px;
             display: flex;
@@ -644,20 +680,12 @@
             margin-bottom: 8px;
         }
 
-        .badge-btn {
-            padding: 4px 8px;
-            font-size: 0.7rem;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #2ec4b6; }
-        .offline-dot { width: 8px; height: 8px; border-radius: 50%; background: #666; }
+        .online-dot { width: 10px; height: 10px; border-radius: 50%; background: #2ec4b6; box-shadow: 0 0 6px #2ec4b6; }
+        .offline-dot { width: 10px; height: 10px; border-radius: 50%; background: #666; }
 
         .marquee-footer {
-            height: 30px;
-            background: linear-gradient(90deg, #300008, #600010, #300008);
+            height: 32px;
+            background: linear-gradient(90deg, #400010, #800020, #400010);
             border-top: 1px solid var(--gold);
             overflow: hidden;
             display: flex;
@@ -669,9 +697,9 @@
             display: inline-block;
             white-space: nowrap;
             padding-right: 100%;
-            animation: marquee 16s linear infinite;
+            animation: marquee 14s linear infinite;
             font-family: var(--font-title);
-            font-size: 0.95rem;
+            font-size: 1rem;
             color: var(--gold);
         }
 
@@ -717,8 +745,12 @@
     <!-- App Screen -->
     <div id="app-screen" class="screen hidden">
         <header class="app-header">
-            <div class="header-title">
-                <span>3MR ❤️ Roa</span>
+            <div class="header-title-box">
+                <span class="header-title">3MR ❤️ Roa</span>
+                <div id="partner-status-bar" class="online-status-indicator hidden">
+                    <span class="status-dot"></span>
+                    <span id="partner-status-text">متصل الآن</span>
+                </div>
             </div>
             <div>
                 <button class="icon-btn" onclick="handleLogout()" title="خروج">🚪</button>
@@ -760,9 +792,10 @@
             <!-- Stories View -->
             <section id="stories-view" class="view-content">
                 <div class="story-actions-bar">
-                    <div class="story-create-btn" onclick="createStoryText()">📝 نشر حالة نصية</div>
-                    <div class="story-create-btn" onclick="triggerStoryImageUpload()">🖼️ نشر صورة</div>
-                    <input type="file" id="story-image-input" accept="image/*" style="display:none;" onchange="handleStoryImageUpload(this)">
+                    <div class="story-create-btn" onclick="createStoryText()">📝 نصية</div>
+                    <div class="story-create-btn" onclick="triggerStoryMediaUpload('image/*')">🖼️ صورة</div>
+                    <div class="story-create-btn" onclick="triggerStoryMediaUpload('video/*')">🎥 فيديو</div>
+                    <input type="file" id="story-media-input" style="display:none;" onchange="handleStoryMediaUpload(this)">
                 </div>
                 <div class="stories-list" id="stories-list-container"></div>
             </section>
@@ -772,6 +805,7 @@
                 <div class="profile-card">
                     <div class="profile-avatar-container" onclick="triggerProfileAvatarChange()">
                         <img id="my-profile-img" src="" class="profile-avatar-img">
+                        <div class="profile-avatar-badge">📷</div>
                     </div>
                     <input type="file" id="profile-avatar-file-input" accept="image/*" style="display:none;" onchange="handleProfileAvatarUpload(this)">
 
@@ -788,7 +822,7 @@
 
         <footer class="marquee-footer">
             <div class="marquee-content">
-                روءا قلبي اللي بعشقها ❤️ • روءا قلبي اللي بعشقها ❤️ • روءا قلبي اللي بعشقها ❤️
+                روءت قلبي بعشقك ❤️ • روءت قلبي بعشقك ❤️ • روءت قلبي بعشقك ❤️
             </div>
         </footer>
     </div>
@@ -805,7 +839,6 @@
         let selectedReplyMsg = null;
         let typingTimeout = null;
 
-        // Recording Audio variables
         let mediaRecorder = null;
         let audioChunks = [];
         let isRecording = false;
@@ -822,7 +855,7 @@
             let width = canvas.width = window.innerWidth;
             let height = canvas.height = window.innerHeight;
 
-            const hearts = Array.from({ length: 10 }, () => ({
+            const hearts = Array.from({ length: 12 }, () => ({
                 x: Math.random() * width,
                 y: Math.random() * height,
                 size: Math.random() * 8 + 4,
@@ -842,7 +875,7 @@
                 hearts.forEach(h => {
                     h.y -= h.speedY;
                     if (h.y < -20) h.y = height + 20;
-                    drawHeart(h.x, h.y, h.size, `rgba(212, 175, 55, ${h.opacity})`);
+                    drawHeart(h.x, h.y, h.size, `rgba(255, 183, 3, ${h.opacity})`);
                 });
                 requestAnimationFrame(animate);
             }
@@ -939,6 +972,7 @@
             listenToTyping();
             listenToStories();
             listenToUsers();
+            listenToPartnerPresence();
         }
 
         function setupPresence() {
@@ -946,6 +980,19 @@
             const userRef = db.ref(`users/${currentUser.username}`);
             userRef.update({ isOnline: true });
             userRef.onDisconnect().update({ isOnline: false });
+        }
+
+        function listenToPartnerPresence() {
+            const partnerName = currentUser.username === '3MR' ? 'Roa' : '3MR';
+            db.ref(`users/${partnerName}/isOnline`).on('value', snap => {
+                const isOnline = snap.val();
+                const statusBar = document.getElementById('partner-status-bar');
+                if (isOnline) {
+                    statusBar.classList.remove('hidden');
+                } else {
+                    statusBar.classList.add('hidden');
+                }
+            });
         }
 
         function switchTab(tabId, el) {
@@ -1146,6 +1193,19 @@
             };
             picker.appendChild(replyBtn);
 
+            // خيار حذف الرسالة لو الرسالة للي أرسلها أو لو أدمن
+            if (sender === currentUser.username || currentUser.isAdmin) {
+                const delBtn = document.createElement('span');
+                delBtn.innerText = '🗑️';
+                delBtn.title = 'حذف الرسالة';
+                delBtn.onclick = (ev) => {
+                    ev.stopPropagation();
+                    deleteSingleMessage(msgId);
+                    picker.remove();
+                };
+                picker.appendChild(delBtn);
+            }
+
             wrapper.appendChild(picker);
             activeReactionPickerId = picker.id;
         }
@@ -1157,6 +1217,24 @@
         function addReaction(msgId, emoji) {
             if (!currentUser) return;
             db.ref(`messages/${msgId}/reactions/${currentUser.username}`).set(emoji);
+        }
+
+        function deleteSingleMessage(msgId) {
+            if (confirm('هل تريد حذف هذه الرسالة؟')) {
+                db.ref(`messages/${msgId}`).remove();
+            }
+        }
+
+        function clearAllMessages() {
+            if (confirm('هل أنت تأكد من مسح جميع الرسائل بشكل كامل وسريع؟')) {
+                db.ref('messages').remove();
+            }
+        }
+
+        function clearAllStories() {
+            if (confirm('هل أنت تأكد من مسح جميع الحالات؟')) {
+                db.ref('stories').remove();
+            }
         }
 
         function setReply(sender, text) {
@@ -1177,23 +1255,28 @@
                 db.ref('stories').push({
                     author: currentUser.username,
                     text: text,
+                    type: 'text',
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
             }
         }
 
-        function triggerStoryImageUpload() {
-            document.getElementById('story-image-input').click();
+        function triggerStoryMediaUpload(acceptType) {
+            const input = document.getElementById('story-media-input');
+            input.accept = acceptType;
+            input.click();
         }
 
-        function handleStoryImageUpload(input) {
+        function handleStoryMediaUpload(input) {
             const file = input.files[0];
             if (!file) return;
+            const isVideo = file.type.startsWith('video');
             const reader = new FileReader();
             reader.onload = e => {
                 db.ref('stories').push({
                     author: currentUser.username,
                     mediaUrl: e.target.result,
+                    type: isVideo ? 'video' : 'image',
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
             };
@@ -1210,7 +1293,6 @@
                 
                 Object.keys(stories).reverse().forEach(key => {
                     const story = stories[key];
-                    // Delete automatically if older than 24h
                     if (story.timestamp && (now - story.timestamp > 24 * 60 * 60 * 1000)) {
                         db.ref(`stories/${key}`).remove();
                         return;
@@ -1219,17 +1301,30 @@
                     const isOwnerOrAdmin = story.author === currentUser.username || currentUser.isAdmin;
                     const deleteBtnHtml = isOwnerOrAdmin ? `<button class="delete-btn" onclick="deleteStory('${key}')">حذف</button>` : '';
 
+                    let mediaContent = '';
+                    if (story.mediaUrl) {
+                        if (story.type === 'video') {
+                            mediaContent = `<video src="${story.mediaUrl}" controls class="story-media"></video>`;
+                        } else {
+                            mediaContent = `<img src="${story.mediaUrl}" class="story-media">`;
+                        }
+                    }
+
+                    const avatarSrc = (currentUser.customAvatar && story.author === currentUser.username) 
+                        ? currentUser.customAvatar 
+                        : (DEFAULT_AVATARS[story.author] || 'https://via.placeholder.com/35');
+
                     const card = document.createElement('div');
                     card.className = 'story-card';
                     card.innerHTML = `
                         <div class="story-header">
-                            <img src="${DEFAULT_AVATARS[story.author] || 'https://via.placeholder.com/35'}" class="story-avatar">
+                            <img src="${avatarSrc}" class="story-avatar">
                             <span class="story-author">${story.author}</span>
                             <span class="story-time">${story.timestamp ? new Date(story.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : ''}</span>
                             ${deleteBtnHtml}
                         </div>
                         ${story.text ? `<div class="story-body">${story.text}</div>` : ''}
-                        ${story.mediaUrl ? `<img src="${story.mediaUrl}" class="story-media">` : ''}
+                        ${mediaContent}
                     `;
                     container.appendChild(card);
                 });
@@ -1242,18 +1337,7 @@
             }
         }
 
-        /* --- Members & Admin Logic --- */
-        function loadProfileView() {
-            document.getElementById('my-profile-name').innerText = currentUser.username;
-            document.getElementById('my-profile-role').innerText = currentUser.role;
-            const avatarImg = document.getElementById('my-profile-img');
-            avatarImg.src = DEFAULT_AVATARS[currentUser.username] || 'https://via.placeholder.com/80';
-            
-            if (currentUser.isAdmin) {
-                renderAdminPanel();
-            }
-        }
-
+        /* --- Profile Avatar Upload --- */
         function triggerProfileAvatarChange() {
             document.getElementById('profile-avatar-file-input').click();
         }
@@ -1263,9 +1347,34 @@
             if (!file) return;
             const reader = new FileReader();
             reader.onload = e => {
-                document.getElementById('my-profile-img').src = e.target.result;
+                const imgData = e.target.result;
+                document.getElementById('my-profile-img').src = imgData;
+                currentUser.customAvatar = imgData;
+                localStorage.setItem('3mr_roa_session', JSON.stringify(currentUser));
+                db.ref(`users/${currentUser.username}/avatar`).set(imgData);
             };
             reader.readAsDataURL(file);
+        }
+
+        /* --- Members & Admin Logic --- */
+        function loadProfileView() {
+            document.getElementById('my-profile-name').innerText = currentUser.username;
+            document.getElementById('my-profile-role').innerText = currentUser.role;
+            const avatarImg = document.getElementById('my-profile-img');
+            
+            db.ref(`users/${currentUser.username}/avatar`).once('value', snap => {
+                const av = snap.val();
+                if (av) {
+                    avatarImg.src = av;
+                    currentUser.customAvatar = av;
+                } else {
+                    avatarImg.src = DEFAULT_AVATARS[currentUser.username] || 'https://via.placeholder.com/80';
+                }
+            });
+            
+            if (currentUser.isAdmin) {
+                renderAdminPanel();
+            }
         }
 
         function renderAdminPanel() {
@@ -1273,7 +1382,9 @@
             container.innerHTML = `
                 <div class="admin-box">
                     <h3 style="color:var(--gold); font-size:0.95rem; margin-bottom:8px;">لوحة تحكم الأدمن 👑</h3>
-                    <p style="font-size:0.8rem; color:var(--text-sub);">لديك صلاحيات كاملة لإدارة الأعضاء والحالات والمحادثة.</p>
+                    <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:10px;">إدارة وحذف البيانات فورياً:</p>
+                    <button class="btn btn-danger" onclick="clearAllMessages()">🧹 مسح جميع الرسائل</button>
+                    <button class="btn btn-danger" onclick="clearAllStories()">🧹 مسح جميع الاستوريهات</button>
                 </div>
             `;
         }
@@ -1284,7 +1395,6 @@
                 container.innerHTML = '';
                 const users = snap.val() || {};
                 
-                // Static Default Users display if database empty
                 const allUsers = { ...users };
                 if (!allUsers['3MR']) allUsers['3MR'] = { username: '3MR', role: 'المالك والآدمن 👑', isOnline: true };
                 if (!allUsers['Roa']) allUsers['Roa'] = { username: 'Roa', role: 'قلب القائد ❤️', isOnline: false };
